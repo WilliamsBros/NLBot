@@ -1,5 +1,7 @@
 package command;
 
+import game.Deck;
+
 public class Driver {
 
 	/**
@@ -8,7 +10,10 @@ public class Driver {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("hello world");
+		Deck d=new Deck();
+		d.p();
+		d.shuffle();
+		d.p();
 	}
 
 }
