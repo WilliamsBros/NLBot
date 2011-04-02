@@ -7,7 +7,6 @@ public class Deck {
 	
 	int[] deck=new int[52];
 	Random r=new Random();
-	int swaps=200;
 	
 	public Deck(){
 		for(int i=0;i<52;i++){
@@ -15,15 +14,15 @@ public class Deck {
 		}
 	}
 	
+	//Fisher-Yates Shuffle
 	public void shuffle(){
-		for(int i=0;i<swaps;i++){
-			int a,b,tmp;
-			a=r.nextInt(52);
-			b=r.nextInt(52);
+		for(int i=51;i>=0;i--){
+			int a,tmp;
+			a=r.nextInt(i+1);
 			
-			tmp=deck[a];
-			deck[a]=deck[b];
-			deck[b]=tmp;
+			tmp=deck[i];
+			deck[i]=deck[a];
+			deck[a]=tmp;
 			
 		}
 	}
