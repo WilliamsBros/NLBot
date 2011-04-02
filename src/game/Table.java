@@ -14,7 +14,7 @@ public class Table {
 	int[] board=new int[5];
 	int round=0;
 	
-	//this is a state
+	//This is a state!!!
 	Vector<Vector<Action>> HH=new Vector<Vector<Action>>(4);
 
 	public Table(){
