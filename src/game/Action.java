@@ -10,10 +10,10 @@ public class Action {
  * 3:raise
  * 4:post small blind
  * 5:post big blind
- * 6:end preflop
- * 7:end flop
- * 8:end turn
- * 9:end river
+ * 6:call
+ * 7:
+ * 8:
+ * 9:
  * 
  */
 	public Player player;

@@ -14,6 +14,7 @@ public class Table {
 	double bb=2;
 	
 	double pot=0;
+	double toCall=0;
 	int[] board=new int[5];
 	int round=0;
 	boolean actionComplete;
@@ -54,9 +55,23 @@ public class Table {
 	public void playHand(){
 		//seats[(button+1)%10];
 		
+		deck.shuffle();
+		round=0;
 		
-		resurrectPlayers();		
+		resurrectPlayers();
+		while(livePlayers<2){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		actionComplete=false;
+		
+		dealCards();
+		
 		advanceButton();
 		postSB();
 		advanceAction();
@@ -66,17 +81,95 @@ public class Table {
 		
 		//preflop
 		while(!actionComplete){
+			update(seats[toAct].generateAction());
 			
+			}
+			if(livePlayers==1){
+				completeHand();
+			}
+		
+			round=1;
+			toAct=button;
+			advanceAction();
+			for(int i=0;i<3;i++){
+				board[i]=deck.deck[i];
+			}
 			
+		//flop
+		while(!actionComplete){
+			update(seats[toAct].generateAction());
+			
+			}
+		
+		if(livePlayers==1){
+			completeHand();
+		}
+		
+		round=2;
+		toAct=button;
+		advanceAction();
+		board[3]=deck.deck[3];
+		
+		//turn
+		while(!actionComplete){
+			update(seats[toAct].generateAction());
+			
+			}
+		
+		if(livePlayers==1){
+			completeHand();
+		}
+		
+		round=3;
+		toAct=button;
+		advanceAction();
+		board[4]=deck.deck[4];
+		
+		//river
+		while(!actionComplete){
+			update(seats[toAct].generateAction());
+			
+			}
+		if(livePlayers==1){
+			completeHand();
+		}
+		else{
+			showdown();
+		}
+	}
+	
+	private void showdown() {
+		
+		
+	}
+
+	private void completeHand() {
+		seats[findNextLivePlayer(toAct)].setStack(pot);
+		pot=0;
+		advanceButton();
+		
+	}
+
+	private void dealCards() {
+		int cards=livePlayers*2;
+		for(int i=0;i<10;i++){
+			if(seats[i]!=null){
+				seats[i].setHand(deck.deck[51-cards],
+						deck.deck[51-(cards-1)]);
+				cards-=2;
+			}
 		}
 		
 	}
-	
+
 	//Sets all plyers live field to true, meaning they can act again.
 	private void resurrectPlayers() {
 		for(int i=0;i<10;i++){
 			if(seats[i]!=null){
-				seats[i].setLive(true);
+				seats[i].sitOut();
+				if(seats[i].isSittingOut()==false){
+					seats[i].setLive(true);
+				}
 			}
 		}
 		
@@ -104,9 +197,8 @@ public class Table {
 	
 	//Returns true if the round is over, otherwise returns false.
 	private Boolean isActionComplete(){
-		if(livePlayers==1)
+		if(livePlayers==1 ||toAct==lastAggressor)
 			return true;
-		
 		
 		
 		return false;
@@ -114,11 +206,12 @@ public class Table {
 	
 	//Forces the player at index toAct to post the big blind.
 	
-	//TODO Does seats[toAct] need to be seats[toAct-1]?
+	
 	private void postBB() {
-		HH.get(round).add(new Action(seats[toAct], 4, bb));
+		HH.get(round).add(new Action(seats[toAct], 5, bb));
 		seats[toAct].setStack(-bb);
 		setPot(bb);
+		toCall=bb;
 		
 	}
 
@@ -131,7 +224,7 @@ public class Table {
 	
 	//Moves the button forward one player, skips null seats.
 	private void advanceButton(){
-		while(seats[button]==null){
+		while(seats[button]==null ||seats[button].isSittingOut()==true){
 		button=(button+1)%10;
 		}
 	}
@@ -149,9 +242,43 @@ public class Table {
 		pot+=d;
 	}
 	
+	
+	
+
 	//Adds a to the list of actions.
 	public void update(Action a){
 		HH.get(round).add(a);
+		
+		
+		switch(a.action){
+		
+			case 0:{seats[toAct].setLive(false);
+					actionComplete=isActionComplete();
+					advanceAction();
+			} 	break;
+			case 1:{actionComplete=isActionComplete();
+					advanceAction();
+			}		break;
+			case 2:{setPot(a.wager);
+					seats[toAct].setStack(-a.wager);
+					lastAggressor=toAct;
+					toCall=a.wager;
+					advanceAction();
+			}	break;
+			case 3:{setPot(a.wager);
+					seats[toAct].setStack(-a.wager);
+					lastAggressor=toAct;
+					toCall=a.wager;
+					advanceAction();
+			}		break;
+		
+			case 6:{actionComplete=isActionComplete();
+					advanceAction();
+			}		break;
+		}
+		
+		
+	
 	}
 	
 	//Adds a new player to the table if the seat is open.
@@ -159,6 +286,7 @@ public class Table {
 		if(seats[seat-1]==null){
 			seats[seat-1]=p;
 		}
+		p.setSittingOut(true);
 	}
 	
 	

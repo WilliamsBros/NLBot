@@ -9,6 +9,8 @@ public class Player {
 	private double stack;
 	private Table table;
 	private Boolean isLive=false;
+	private Hand hand=new Hand();
+	boolean isSittingOut;
 	
 	public Player(){
 		this("Player", 0);
@@ -48,6 +50,23 @@ public class Player {
 	}
 	public void setLive(Boolean b) {
 		isLive=b;
+		
+	}
+	
+	public void setHand(int a, int b){
+		hand.cardA=a;
+		hand.cardB=b;
+	}
+	public boolean isSittingOut() {
+		
+		
+		return isSittingOut;
+	}
+	public void setSittingOut(boolean b) {
+		isSittingOut=b;
+	}
+	public void sitOut() {
+		isSittingOut=false;
 		
 	}
 }
