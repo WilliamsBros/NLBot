@@ -139,12 +139,29 @@ public class Table {
 	}
 	
 	private void showdown() {
+		Vector<Player> winners=new Vector<Player>();
+		for(int i=0;i<10;i++){
+			if(seats[i].isLive()){
+				//if()
+			}
+		}
 		
-		
+		//HH.get(round).add(new Action(, 9, pot));
 	}
 
 	private void completeHand() {
-		seats[findNextLivePlayer(toAct)].setStack(pot);
+		Player winner=seats[findNextLivePlayer(toAct)];
+		Action lastAggr=HH.get(round).get(1);
+		for(int i=HH.get(round).size()-1;i>=0; i--){
+			if(HH.get(round).get(i).player.equals(winner)){
+				lastAggr=HH.get(round).get(i);
+				break;
+			}
+			
+		}
+//TODO two player will be buggy need to fix
+		HH.get(round).add(new Action(winner, 8, pot-lastAggr.wager));      
+		winner.setStack(pot);
 		pot=0;
 		advanceButton();
 		

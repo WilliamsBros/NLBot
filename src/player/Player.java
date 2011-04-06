@@ -69,4 +69,7 @@ public class Player {
 		isSittingOut=false;
 		
 	}
+	public Table getTable(){
+		return table;
+	}
 }
