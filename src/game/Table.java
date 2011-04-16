@@ -2,6 +2,10 @@ package game;
 
 import java.util.Vector;
 
+import UofAHandEval.ca.ualberta.cs.poker.Card;
+import UofAHandEval.ca.ualberta.cs.poker.Hand;
+import UofAHandEval.ca.ualberta.cs.poker.HandEvaluator;
+
 import player.Player;
 
 public class Table {
@@ -38,6 +42,16 @@ public class Table {
 		
 	}
 	
+	public void p(){
+		for(int i=0;i<0;i++){
+			for(int j=0;j<HH.get(i).size(); j++){
+				System.out.println(HH.get(i).get(j).toString());
+			}
+		}
+		System.out.println("------------------------------------------" +
+				"-----------------------");
+	}
+	
 	public void run(int numHands){
 		
 		
@@ -57,8 +71,11 @@ public class Table {
 		
 		deck.shuffle();
 		round=0;
-		
+		resetContributed();
+		System.out.println("about to enter resurrect Players");
 		resurrectPlayers();
+		
+		System.out.println("about to enter while loop");
 		while(livePlayers<2){
 			try {
 				Thread.sleep(100);
@@ -66,7 +83,7 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-		
+		System.out.println("exiting while loop");
 		
 		actionComplete=false;
 		
@@ -84,6 +101,7 @@ public class Table {
 			update(seats[toAct].generateAction());
 			
 			}
+			resetContributed();
 			if(livePlayers==1){
 				completeHand();
 			}
@@ -100,7 +118,7 @@ public class Table {
 			update(seats[toAct].generateAction());
 			
 			}
-		
+		resetContributed();
 		if(livePlayers==1){
 			completeHand();
 		}
@@ -115,7 +133,7 @@ public class Table {
 			update(seats[toAct].generateAction());
 			
 			}
-		
+		resetContributed();
 		if(livePlayers==1){
 			completeHand();
 		}
@@ -130,6 +148,7 @@ public class Table {
 			update(seats[toAct].generateAction());
 			
 			}
+		resetContributed();
 		if(livePlayers==1){
 			completeHand();
 		}
@@ -138,15 +157,59 @@ public class Table {
 		}
 	}
 	
-	private void showdown() {
-		Vector<Player> winners=new Vector<Player>();
+	private void resetContributed() {
 		for(int i=0;i<10;i++){
-			if(seats[i].isLive()){
-				//if()
+			if(seats[i]!=null){
+				seats[i].clearContributed();
 			}
 		}
 		
-		//HH.get(round).add(new Action(, 9, pot));
+	}
+
+	private void showdown() {
+		Vector<Player> winners=new Vector<Player>();
+		Hand h=boardToHand();
+		HandEvaluator he=new HandEvaluator();
+		int bestHand=-1;
+		
+		for(int i=0;i<10;i++){
+			if(seats[i]!=null && seats[i].isLive()){
+				int tmp=he.rankHand(new Card(seats[i].getHand().cardA),
+						new Card(seats[i].getHand().cardB), h);
+				if(tmp>bestHand){
+					winners.clear();
+					winners.add(seats[i]);
+				
+				}
+				if(tmp==bestHand){
+					winners.add(seats[i]);
+				}
+					
+			}
+			
+		}
+		
+		double win=pot/winners.size();
+		for(int i=0;i<winners.size();i++){
+			winners.get(i).setStack(win);
+			pot=pot-win;
+			HH.get(round).add(new Action(winners.get(i), 9, win));
+			p();
+		}
+		
+	
+		pot=0;
+		advanceButton();
+	}
+
+	private Hand boardToHand() {
+		Hand h=new Hand();
+		
+		for(int i=0;i<5;i++){
+			h.addCard(board[i]);
+		}
+		
+		return h;
 	}
 
 	private void completeHand() {
@@ -186,6 +249,7 @@ public class Table {
 				seats[i].sitOut();
 				if(seats[i].isSittingOut()==false){
 					seats[i].setLive(true);
+					livePlayers++;
 				}
 			}
 		}
@@ -227,6 +291,7 @@ public class Table {
 	private void postBB() {
 		HH.get(round).add(new Action(seats[toAct], 5, bb));
 		seats[toAct].setStack(-bb);
+		seats[toAct].setContributed(bb);
 		setPot(bb);
 		toCall=bb;
 		
@@ -236,6 +301,7 @@ public class Table {
 	private void postSB(){
 		HH.get(round).add(new Action(seats[toAct], 4, sb));
 		seats[toAct].setStack(-sb);
+		seats[toAct].setContributed(sb);
 		setPot(sb);
 	}
 	
@@ -279,18 +345,25 @@ public class Table {
 			case 2:{setPot(a.wager);
 					seats[toAct].setStack(-a.wager);
 					lastAggressor=toAct;
+					seats[toAct].setContributed(a.wager);
 					toCall=a.wager;
 					advanceAction();
 			}	break;
-			case 3:{setPot(a.wager);
-					seats[toAct].setStack(-a.wager);
+			case 3:{setPot(a.wager-seats[toAct].getContributed());
+					seats[toAct].setStack(-(a.wager-seats[toAct].getContributed()));
+					seats[toAct].setContributed(a.wager-
+							seats[toAct].getContributed());
 					lastAggressor=toAct;
 					toCall=a.wager;
 					advanceAction();
 			}		break;
 		
 			case 6:{actionComplete=isActionComplete();
-					advanceAction();
+				seats[toAct].setStack(toCall-seats[toAct].getContributed());
+				setPot(a.wager-seats[toAct].getContributed());
+				seats[toAct].setContributed(a.wager-
+						seats[toAct].getContributed());
+				advanceAction();
 			}		break;
 		}
 		
@@ -304,6 +377,7 @@ public class Table {
 			seats[seat-1]=p;
 		}
 		p.setSittingOut(true);
+		p.sit(this);
 	}
 	
 	
