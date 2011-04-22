@@ -43,11 +43,15 @@ public class Table {
 	}
 	
 	public void p(){
-		for(int i=0;i<0;i++){
+		System.out.println("------------------------------------------" +
+		"-----------------------");
+		for(int i=0;i<round;i++){
 			for(int j=0;j<HH.get(i).size(); j++){
 				System.out.println(HH.get(i).get(j).toString());
 			}
 		}
+		
+		
 		System.out.println("------------------------------------------" +
 				"-----------------------");
 	}
@@ -83,7 +87,7 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("exiting while loop");
+		//System.out.println("exiting while loop");
 		
 		actionComplete=false;
 		
@@ -93,17 +97,25 @@ public class Table {
 		postSB();
 		advanceAction();
 		postBB();
-		advanceAction();
 		lastAggressor=toAct;
+		advanceAction();
+		
 		
 		//preflop
-		while(!actionComplete){
+		do{
 			update(seats[toAct].generateAction());
 			
-			}
+			System.out.println("the last aggressor is:" +
+					" "+seats[lastAggressor].getName());
+			System.out.println("action is on:" +
+					" "+seats[toAct].getName());
+			p();
+			}while(!actionComplete);
+			System.out.println("preflop is over");
 			resetContributed();
 			if(livePlayers==1){
 				completeHand();
+				return;
 			}
 		
 			round=1;
@@ -112,49 +124,62 @@ public class Table {
 			for(int i=0;i<3;i++){
 				board[i]=deck.deck[i];
 			}
+			actionComplete=false;
 			
+			lastAggressor=toAct;
 		//flop
-		while(!actionComplete){
+		do{
 			update(seats[toAct].generateAction());
+			System.out.println("the last aggressor is:" +
+					" "+seats[lastAggressor].getName());
+			System.out.println("action is on:" +
+					" "+seats[toAct].getName());
+			p();
 			
-			}
+			}while(!actionComplete);
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
+			return;
 		}
 		
 		round=2;
 		toAct=button;
 		advanceAction();
 		board[3]=deck.deck[3];
-		
+		actionComplete=false;
+		lastAggressor=toAct;
 		//turn
-		while(!actionComplete){
+		do{
 			update(seats[toAct].generateAction());
-			
-			}
+			p();
+			}while(!actionComplete);
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
+			return;
 		}
 		
 		round=3;
 		toAct=button;
 		advanceAction();
 		board[4]=deck.deck[4];
-		
+		actionComplete=false;
+		lastAggressor=toAct;
 		//river
-		while(!actionComplete){
+		do{
 			update(seats[toAct].generateAction());
-			
-			}
+			p();
+			}while(!actionComplete);
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
+			return;
 		}
 		else{
 			showdown();
 		}
+		p();
 	}
 	
 	private void resetContributed() {
@@ -200,6 +225,7 @@ public class Table {
 	
 		pot=0;
 		advanceButton();
+		round=0;
 	}
 
 	private Hand boardToHand() {
@@ -227,6 +253,7 @@ public class Table {
 		winner.setStack(pot);
 		pot=0;
 		advanceButton();
+		round=0;
 		
 	}
 
@@ -334,7 +361,19 @@ public class Table {
 		
 		
 		switch(a.action){
-		
+		/*
+		 * 0:fold
+		 * 1:check
+		 * 2:bet
+		 * 3:raise
+		 * 4:post small blind
+		 * 5:post big blind
+		 * 6:call
+		 * 7:wins hand
+		 * 8:potsizeNoShow
+		 * 9:potsizeShowdown
+		 * 
+		 */
 			case 0:{seats[toAct].setLive(false);
 					actionComplete=isActionComplete();
 					advanceAction();
@@ -380,5 +419,11 @@ public class Table {
 		p.sit(this);
 	}
 	
+	public double getSB(){
+		return sb;
+	}
 	
+	public double getBB(){
+		return bb;
+	}
 }

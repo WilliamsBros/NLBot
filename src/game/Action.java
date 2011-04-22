@@ -37,10 +37,11 @@ public class Action {
 
 		case 3: return (player.getName()+" raises to $"+wager);
 
-		case 4: return (player.getName()+" posts the small blind");
+		case 4: return (player.getName()+" posts the small blind: "+wager);
 
-		case 5: return (player.getName()+" posts the big blind");
+		case 5: return (player.getName()+" posts the big blind "+wager);
 		
+		case 6: return (player.getName()+" calls ");
 		//case 7: return (player.getName()+" wins the pot");
 		
 		case 8: return (player.getName()+" wins: $" + wager);

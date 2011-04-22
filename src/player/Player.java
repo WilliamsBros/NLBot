@@ -29,6 +29,7 @@ public class Player {
 		int actionNum;
 		double amt;
 		
+		System.out.println("action is on: "+ name);
 		System.out.println("action number please: ");
 		
 		actionNum=s.nextInt();
@@ -36,8 +37,8 @@ public class Player {
 		amt=s.nextDouble();
 		//s.close();
 		
-		System.out.println("about to print, actionNum: "+actionNum);
-		System.out.println("amt: "+amt);
+		//System.out.println("about to print, actionNum: "+actionNum);
+		//System.out.println("amt: "+amt);
 		table.p();
 		
 		return new Action(this, actionNum, amt);
