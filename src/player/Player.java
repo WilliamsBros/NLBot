@@ -31,6 +31,7 @@ public class Player {
 		
 		System.out.println("action is on: "+ name);
 		System.out.println("action number please: ");
+		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
 		
 		actionNum=s.nextInt();
 		System.out.println("wager please: ");

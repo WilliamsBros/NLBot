@@ -45,7 +45,7 @@ public class Table {
 	public void p(){
 		System.out.println("------------------------------------------" +
 		"-----------------------");
-		for(int i=0;i<round;i++){
+		for(int i=0;i<round+1;i++){
 			for(int j=0;j<HH.get(i).size(); j++){
 				System.out.println(HH.get(i).get(j).toString());
 			}
@@ -76,10 +76,8 @@ public class Table {
 		deck.shuffle();
 		round=0;
 		resetContributed();
-		System.out.println("about to enter resurrect Players");
 		resurrectPlayers();
 		
-		System.out.println("about to enter while loop");
 		while(livePlayers<2){
 			try {
 				Thread.sleep(100);
@@ -114,6 +112,7 @@ public class Table {
 			System.out.println("preflop is over");
 			resetContributed();
 			if(livePlayers==1){
+				System.out.println("going to run complete hand");
 				completeHand();
 				return;
 			}
@@ -137,6 +136,7 @@ public class Table {
 			p();
 			
 			}while(!actionComplete);
+		System.out.println("flop is over");
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
@@ -154,6 +154,8 @@ public class Table {
 			update(seats[toAct].generateAction());
 			p();
 			}while(!actionComplete);
+		
+		System.out.println("turn is over");
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
@@ -171,6 +173,7 @@ public class Table {
 			update(seats[toAct].generateAction());
 			p();
 			}while(!actionComplete);
+		System.out.println("river is over");
 		resetContributed();
 		if(livePlayers==1){
 			completeHand();
@@ -193,6 +196,7 @@ public class Table {
 
 	private void showdown() {
 		Vector<Player> winners=new Vector<Player>();
+		Vector<Player> losers=new Vector<Player>();
 		Hand h=boardToHand();
 		HandEvaluator he=new HandEvaluator();
 		int bestHand=-1;
@@ -202,6 +206,9 @@ public class Table {
 				int tmp=he.rankHand(new Card(seats[i].getHand().cardA),
 						new Card(seats[i].getHand().cardB), h);
 				if(tmp>bestHand){
+					for(int j=0;j<winners.size();j++){
+						losers.add(winners.get(j));
+					}
 					winners.clear();
 					winners.add(seats[i]);
 				
@@ -219,13 +226,17 @@ public class Table {
 			winners.get(i).setStack(win);
 			pot=pot-win;
 			HH.get(round).add(new Action(winners.get(i), 9, win));
+		
+		}
+		for(int i=0;i<winners.size();i++){
+			HH.get(round).add(new Action(losers.get(i), 10, 0));
 			p();
 		}
-		
 	
 		pot=0;
 		advanceButton();
 		round=0;
+		p();
 	}
 
 	private Hand boardToHand() {
@@ -254,7 +265,7 @@ public class Table {
 		pot=0;
 		advanceButton();
 		round=0;
-		
+		p();
 	}
 
 	private void dealCards() {
@@ -286,8 +297,8 @@ public class Table {
 	//Returns the index of the next player who has a live=true field.
 	private int findNextLivePlayer(int index){
 		
-		index++;
-		while(!seats[index].isLive() ||seats[index]==null){
+		index=(index+1)%10;
+		while(seats[index]==null || !seats[index].isLive()){
 			index=(index+1)%10;
 		}
 		return index;
@@ -375,6 +386,7 @@ public class Table {
 		 * 
 		 */
 			case 0:{seats[toAct].setLive(false);
+					livePlayers--;
 					actionComplete=isActionComplete();
 					advanceAction();
 			} 	break;

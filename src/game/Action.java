@@ -14,7 +14,7 @@ public class Action {
  * 7:wins hand
  * 8:potsizeNoShow
  * 9:potsizeShowdown
- * 
+ * 10:loses hand
  */
 	public Player player;
 	public int action;
@@ -48,6 +48,7 @@ public class Action {
 		
 		case 9: return (player.getName()+" wins: $" +wager);
 		
+		case 10: return (player.getName()+ " lost");
 	
 	}
 	return "";
