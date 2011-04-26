@@ -438,4 +438,21 @@ public class Table {
 	public double getBB(){
 		return bb;
 	}
+	
+	public Player[] getSeats(){
+		return seats;
+	}
+	
+	public int getButton(){
+		return button;
+	}
+
+	public int getLastAggressor() {
+		// TODO Auto-generated method stub
+		return lastAggressor;
+	}
+	public double getLastAggWager() {
+		// TODO Auto-generated method stub
+		return lastAggressor;
+	}
 }

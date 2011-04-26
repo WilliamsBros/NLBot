@@ -28,8 +28,34 @@ public class Player {
 		Scanner s=new Scanner(System.in);
 		int actionNum;
 		double amt;
+		Player[] seats=table.getSeats();
 		
-		System.out.println("action is on: "+ name);
+		for(int i=0;i<10;i++){
+			if(seats[i]!=null){
+				System.out.print(i+": "+seats[i].getName());
+				
+				if(i==table.getButton()){
+					System.out.print(" <B<:");
+				}
+				if(seats[i]==this){
+					System.out.print(" <toAct<:");
+				}
+				if(i==table.getLastAggressor()){
+					System.out.print(" <lastAggressor<:");
+				}
+				if(seats[i].isSittingOut){
+					System.out.print(" :sitting out ");
+				}
+				if(seats[i].isLive()==false){
+					System.out.print(" :folded ");
+				}
+				System.out.print(" Contributed: "+ seats[i].getContributed());
+				System.out.println();
+				continue;
+			}
+			System.out.println(i+": empty");
+		}
+		//System.out.println("action is on: "+ name);
 		System.out.println("action number please: ");
 		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
 		
