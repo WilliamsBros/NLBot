@@ -12,6 +12,8 @@ public class Table {
 
 	Player[] seats=new Player[10];
 	Deck deck=new Deck();
+	
+	int bigBlind=2;
 	int button=1;
 	int toAct=2;
 	double sb=1;
@@ -22,7 +24,7 @@ public class Table {
 	int[] board=new int[5];
 	int round=0;
 	boolean actionComplete;
-	
+	boolean bbActsLast=true;
 	int livePlayers;
 	int playerCount;
 	int lastAggressor;
@@ -125,7 +127,7 @@ public class Table {
 			}
 			actionComplete=false;
 			
-			lastAggressor=toAct;
+			lastAggressor=button;
 		//flop
 		do{
 			update(seats[toAct].generateAction());
@@ -148,7 +150,7 @@ public class Table {
 		advanceAction();
 		board[3]=deck.deck[3];
 		actionComplete=false;
-		lastAggressor=toAct;
+		lastAggressor=button;
 		//turn
 		do{
 			update(seats[toAct].generateAction());
@@ -167,7 +169,7 @@ public class Table {
 		advanceAction();
 		board[4]=deck.deck[4];
 		actionComplete=false;
-		lastAggressor=toAct;
+		lastAggressor= button;
 		//river
 		do{
 			update(seats[toAct].generateAction());
@@ -213,8 +215,11 @@ public class Table {
 					winners.add(seats[i]);
 				
 				}
-				if(tmp==bestHand){
+				else if(tmp==bestHand){
 					winners.add(seats[i]);
+				}
+				else{
+					losers.add(seats[i]);
 				}
 					
 			}
@@ -316,13 +321,23 @@ public class Table {
 	
 	//Returns true if the round is over, otherwise returns false.
 	private Boolean isActionComplete(){
-		if(livePlayers==1 ||toAct==lastAggressor)
+		if(livePlayers==1 || (findNextLivePlayer(toAct)==lastAggressor &&
+				bbActsLast==false) || (lastAggressor==toAct && bbActsLast==true)
+				||(lastAggressor==toAct && !(totalContributed()>0)))
 			return true;
 		
 		
 		return false;
 	}
-	
+	private double totalContributed(){
+		double sum=0;
+		for(int i=0;i<10;i++){
+			if(seats[i]!=null && !seats[i].isSittingOut()){
+				sum=sum+seats[i].getContributed();
+			}
+		}
+		return sum;
+	}
 	//Forces the player at index toAct to post the big blind.
 	
 	
@@ -348,6 +363,8 @@ public class Table {
 		while(seats[button]==null ||seats[button].isSittingOut()==true){
 		button=(button+1)%10;
 		}
+		bigBlind=findNextLivePlayer(findNextLivePlayer(button));
+
 	}
 	
 	//Sets toAct to the next player, skips null/"dead" players.
@@ -385,22 +402,36 @@ public class Table {
 		 * 9:potsizeShowdown
 		 * 
 		 */
-			case 0:{seats[toAct].setLive(false);
+			case 0:{
+				if(a.player==seats[bigBlind]){
+						bbActsLast=false;
+			}
+				seats[toAct].setLive(false);
 					livePlayers--;
 					actionComplete=isActionComplete();
 					advanceAction();
 			} 	break;
-			case 1:{actionComplete=isActionComplete();
+			case 1:{
+				if(a.player==seats[bigBlind]){
+					bbActsLast=false;
+		}
+				actionComplete=isActionComplete();
 					advanceAction();
 			}		break;
-			case 2:{setPot(a.wager);
+			case 2:{if(a.player==seats[bigBlind]){
+						bbActsLast=false;
+			}
+					setPot(a.wager);
 					seats[toAct].setStack(-a.wager);
 					lastAggressor=toAct;
 					seats[toAct].setContributed(a.wager);
 					toCall=a.wager;
 					advanceAction();
 			}	break;
-			case 3:{setPot(a.wager-seats[toAct].getContributed());
+			case 3:{if(a.player==seats[bigBlind]){
+						bbActsLast=false;
+			}
+					setPot(a.wager-seats[toAct].getContributed());
 					seats[toAct].setStack(-(a.wager-seats[toAct].getContributed()));
 					seats[toAct].setContributed(a.wager-
 							seats[toAct].getContributed());
@@ -409,8 +440,12 @@ public class Table {
 					advanceAction();
 			}		break;
 		
-			case 6:{actionComplete=isActionComplete();
-				seats[toAct].setStack(toCall-seats[toAct].getContributed());
+			case 6:{
+				if(a.player==seats[bigBlind]){
+					bbActsLast=false;
+		}
+				actionComplete=isActionComplete();
+				seats[toAct].setStack(-(toCall-seats[toAct].getContributed()));
 				setPot(a.wager-seats[toAct].getContributed());
 				seats[toAct].setContributed(a.wager-
 						seats[toAct].getContributed());
@@ -454,5 +489,20 @@ public class Table {
 	public double getLastAggWager() {
 		// TODO Auto-generated method stub
 		return lastAggressor;
+	}
+
+	public Double getPot() {
+		
+		return pot;
+	}
+
+	public int getRound() {
+	
+		return round;
+	}
+
+	public int[] getBoard() {
+		// TODO Auto-generated method stub
+		return board;
 	}
 }
