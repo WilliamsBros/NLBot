@@ -74,6 +74,7 @@ public class Table {
 
 		deck.shuffle();
 		round = 0;
+		toCall=0;
 		resetContributed();
 		resurrectPlayers();
 
@@ -123,6 +124,7 @@ public class Table {
 		actionComplete = false;
 
 		lastAggressor = indexOfLastLivePlayer();
+		toCall=0;
 		// flop
 		do {
 			update(seats[toAct].generateAction());
@@ -145,6 +147,7 @@ public class Table {
 		board[3] = deck.deck[3];
 		actionComplete = false;
 		lastAggressor = indexOfLastLivePlayer();
+		toCall=0;
 		// turn
 		do {
 			update(seats[toAct].generateAction());
@@ -164,6 +167,7 @@ public class Table {
 		board[4] = deck.deck[4];
 		actionComplete = false;
 		lastAggressor = indexOfLastLivePlayer();
+		toCall=0;
 		// river
 		do {
 			update(seats[toAct].generateAction());
@@ -458,7 +462,7 @@ public class Table {
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct].setStack(-(a.wager - seats[toAct].getContributed()));
 			seats[toAct]
-					.setContributed(a.wager - seats[toAct].getContributed());
+					.setContributed(a.wager);
 			lastAggressor = toAct;
 			toCall = a.wager;
 			advanceAction();
@@ -521,6 +525,10 @@ public class Table {
 		return pot;
 	}
 
+	public Double getToCall() {
+
+		return toCall;
+	}
 	public int getRound() {
 
 		return round;
@@ -529,5 +537,10 @@ public class Table {
 	public int[] getBoard() {
 		// TODO Auto-generated method stub
 		return board;
+	}
+
+	public int getToAct() {
+		// TODO Auto-generated method stub
+		return toAct;
 	}
 }

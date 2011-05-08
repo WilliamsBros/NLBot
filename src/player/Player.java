@@ -2,10 +2,13 @@ package player;
 
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 
 import game.Action;
 import game.Table;
+import graphics.PlayerView;
 
 public class Player {
 
@@ -16,6 +19,11 @@ public class Player {
 	private Hole hand = new Hole();
 	boolean isSittingOut;
 	private double contributed = 0;
+	public int action=-1;
+	public double amount=0;
+	
+	public JFrame frame;
+	PlayerView view;
 
 	public Player() {
 		this("Player", 0);
@@ -31,6 +39,7 @@ public class Player {
 		double amt;
 		Player[] seats = table.getSeats();
 
+		view.repaint();
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null) {
 				System.out.print(i + ": " + seats[i].getName());
@@ -96,9 +105,19 @@ public class Player {
 		System.out.println("action number please: ");
 		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
 
-		actionNum = s.nextInt();
+		while(action==-1){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		actionNum = action;//s.nextInt();
 		System.out.println("wager please: ");
-		amt = s.nextDouble();
+		amt = amount;//s.nextDouble();
+		action=-1;
+		amount=0;
 		// s.close();
 
 		// System.out.println("about to print, actionNum: "+actionNum);
@@ -111,6 +130,8 @@ public class Player {
 	public Player(String n, double s) {
 		name = n;
 		stack = s;
+		frame=new JFrame(name);
+		view=new PlayerView(this);
 	}
 
 	public String getName() {
