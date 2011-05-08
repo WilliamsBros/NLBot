@@ -55,7 +55,8 @@ public class Player {
 				System.out.print(" Hole cards: " + "["+
 						new Card(seats[i].getHand().cardA).toString()+"]"
 						+ "["+
-						new Card(seats[i].getHand().cardB).toString()+"]");
+						(new Card(seats[i].getHand().cardB)).toString()+"]");
+						
 				System.out.println();
 				continue;
 			}
