@@ -1,6 +1,11 @@
 package game;
 
+import graphics.PlayerView;
+import graphics.TableView;
+
 import java.util.Vector;
+
+import javax.swing.JFrame;
 
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 import UofAHandEval.ca.ualberta.cs.poker.Hand;
@@ -28,6 +33,9 @@ public class Table {
 	int livePlayers;
 	int playerCount;
 	int lastAggressor;
+	
+	public JFrame frame;
+	public TableView view;
 	// This is a state!!!
 	Vector<Vector<Action>> HH = new Vector<Vector<Action>>(4);
 
@@ -39,6 +47,9 @@ public class Table {
 		for (int i = 0; i < 4; i++) {
 			HH.add(i, new Vector<Action>(100));
 		}
+		frame=new JFrame("Table");
+		view=new TableView(this);
+		view.repaint();
 	}
 
 	public Table(State s) {

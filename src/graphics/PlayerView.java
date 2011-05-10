@@ -61,6 +61,9 @@ public class PlayerView extends JPanel implements MouseInputListener,
 
 	}
 
+	
+	
+	
 	public void draw() {
 
 		repaint();
@@ -68,6 +71,11 @@ public class PlayerView extends JPanel implements MouseInputListener,
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+//		g.
+//		for(int i=0)
+//		g.drawString(arg0, arg1, arg2)
+		
 	}
 
 	@Override
@@ -158,8 +166,8 @@ public class PlayerView extends JPanel implements MouseInputListener,
 					.getToAct()]) {
 
 				player.action = 2;
-				player.amount = (player.getStack() > player.getTable().getPot()
-						+ player.getTable().getToCall()-player.getContributed()) ? player.getTable()
+				player.amount = (player.getStack() > (player.getTable().getPot()
+						+ player.getTable().getToCall()-player.getContributed())) ? player.getTable()
 						.getPot()
 						+ player.getTable().getToCall()-player.getContributed() : player.getStack();
 			}
@@ -180,4 +188,7 @@ public class PlayerView extends JPanel implements MouseInputListener,
 
 	}
 
+	public void setPlayer(Player p){
+		player=p;
+	}
 }

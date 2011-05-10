@@ -34,12 +34,13 @@ public class Player {
 	}
 
 	public Action generateAction() {
+		//view.setPlayer(this);
 		Scanner s = new Scanner(System.in);
 		int actionNum;
 		double amt;
 		Player[] seats = table.getSeats();
 
-		view.repaint();
+		table.view.repaint();
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null) {
 				System.out.print(i + ": " + seats[i].getName());
@@ -130,8 +131,8 @@ public class Player {
 	public Player(String n, double s) {
 		name = n;
 		stack = s;
-		frame=new JFrame(name);
-		view=new PlayerView(this);
+		//frame=table.frame;//new JFrame(name);
+		//view=table.view;//new PlayerView(this);
 	}
 
 	public String getName() {
