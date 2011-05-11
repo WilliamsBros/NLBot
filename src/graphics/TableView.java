@@ -5,6 +5,7 @@ package graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.MouseEvent;
@@ -38,7 +39,7 @@ public class TableView  extends JPanel implements MouseInputListener,
 		JButton raise = new JButton("raise");
 		JButton call = new JButton("call");
 		BufferedImage tbl;
-		
+		Point[] sPos=new Point[10];
 
 	
 		// JButton clear=new JButton("clear");
@@ -61,7 +62,7 @@ public class TableView  extends JPanel implements MouseInputListener,
 			table=t;
 			frame = table.frame;
 
-			frame.setSize(600, 300);
+			frame.setSize(700, 450);
 			// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.add(this);
 
@@ -83,6 +84,17 @@ public class TableView  extends JPanel implements MouseInputListener,
 			frame.setJMenuBar(menu);
 			addMouseListener(this);
 			frame.setVisible(true);
+			
+			sPos[0]=new Point(50,40);
+			sPos[1]=new Point(580,40);
+			sPos[2]=new Point(620,140);
+			sPos[3]=new Point(580, 260);
+			sPos[4]=new Point(500, 310);
+			sPos[5]=new Point(380, 310);
+			sPos[6]=new Point(260, 310);
+			sPos[7]=new Point(140,310);
+			sPos[8]=new Point(50, 260);
+			sPos[9]=new Point(0, 140);
 
 		}
 
@@ -97,9 +109,32 @@ public class TableView  extends JPanel implements MouseInputListener,
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			g.setColor(Color.black);
+			g.drawImage(tbl, 50, 50, 572, 240, new Color(255,255,255), this);
+			
+			for(int i=0;i<10;i++){
+				g.setColor(Color.black);
+			g.drawRoundRect(sPos[i].x, sPos[i].y, 45, 45, 10,10);
+			if(table.getSeats()[i]!=null){
+				if(!table.getSeats()[i].isLive()){
+					g.drawString(table.getSeats()[i].getName(), sPos[i].x, sPos[i].y);
+					g.drawString("sitting out", sPos[i].x, sPos[i].y+10);
+				}
+				else{g.drawString(table.getSeats()[i].getName(), sPos[i].x, sPos[i].y);
+				g.drawString(Double.toString(table.getSeats()[i].getStack()), sPos[i].x, sPos[i].y+15);
+				if(i==table.getToAct()){
+					g.setColor(Color.yellow);
+					g.fillOval(sPos[i].x+2, sPos[i].y+30, 10, 10);
+				}
+				}
+				}
+			else if(table.getSeats()[i]==null){
+				g.drawString("empty", sPos[i].x, sPos[i].y);
+			}
+			}
+			
 			//g.setColor(Color.red);
-			g.drawImage(tbl, 0, 0, 572, 240, new Color(255,255,255), this);
-			//g.draw3DRect(10, 10, 200, 200, true);
+			//g.drawRoundRect(50, 50, 50, 30, 5, 5);
 //			for(int i=0)
 //			g.drawString(arg0, arg1, arg2)
 			
