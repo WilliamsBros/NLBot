@@ -8,6 +8,8 @@ public class Deck {
 	int[] deck=new int[52];
 	Random r=new Random();
 	
+	
+	
 	public Deck(){
 		for(int i=0;i<52;i++){
 			deck[i]=i;

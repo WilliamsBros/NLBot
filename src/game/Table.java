@@ -17,8 +17,9 @@ public class Table {
 
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
-
-	int bigBlind = 2;
+	
+	int smallBlind=2;
+	int bigBlind = 3;
 	int button = 1;
 	int toAct = 2;
 	double sb = 1;
@@ -82,12 +83,17 @@ public class Table {
 	// Plays an entire hand - pre-flop, flop, turn, and river.
 	public void playHand() {
 		// seats[(button+1)%10];
-
+		
+		bbActsLast=true;
 		deck.shuffle();
 		round = 0;
 		toCall=0;
+		pot=0;
 		resetContributed();
 		resurrectPlayers();
+		for(int i=0;i<HH.size();i++){
+			HH.get(i).clear();
+		}
 
 		while (livePlayers < 2) {
 			try {
@@ -96,13 +102,14 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-		// System.out.println("exiting while loop");
+	
 
 		actionComplete = false;
 
 		dealCards();
-
+		
 		advanceButton();
+		toAct=findNextLivePlayer(button);
 		postSB();
 		advanceAction();
 		postBB();
@@ -112,20 +119,16 @@ public class Table {
 		// preflop
 		do {
 			update(seats[toAct].generateAction());
-
-			System.out.println("the last aggressor is:" + " "
-					+ seats[lastAggressor].getName());
-			System.out.println("action is on:" + " " + seats[toAct].getName());
-			// p();
 		} while (!actionComplete);
+		System.out.println(livePlayers);
 		System.out.println("preflop is over");
-		resetContributed();
-		if (livePlayers == 1) {
+		if (livePlayers < 2) {
 			System.out.println("going to run complete hand");
 			completeHand();
 			return;
 		}
 
+		resetContributed();
 		round = 1;
 		toAct = button;
 		advanceAction();
@@ -139,15 +142,11 @@ public class Table {
 		// flop
 		do {
 			update(seats[toAct].generateAction());
-			System.out.println("the last aggressor is:" + " "
-					+ seats[lastAggressor].getName());
-			System.out.println("action is on:" + " " + seats[toAct].getName());
-			// p();
-
 		} while (!actionComplete);
+		
 		System.out.println("flop is over");
 		resetContributed();
-		if (livePlayers == 1) {
+		if (livePlayers < 2) {
 			completeHand();
 			return;
 		}
@@ -162,12 +161,11 @@ public class Table {
 		// turn
 		do {
 			update(seats[toAct].generateAction());
-			// p();
 		} while (!actionComplete);
 
 		System.out.println("turn is over");
 		resetContributed();
-		if (livePlayers == 1) {
+		if (livePlayers <2) {
 			completeHand();
 			return;
 		}
@@ -182,17 +180,17 @@ public class Table {
 		// river
 		do {
 			update(seats[toAct].generateAction());
-			// p();
 		} while (!actionComplete);
+		
 		System.out.println("river is over");
 		resetContributed();
-		if (livePlayers == 1) {
+		if (livePlayers <2) {
 			completeHand();
-			return;
-		} else {
+			
+		} 
+		else {
 			showdown();
 		}
-		p();
 	}
 
 	private void resetContributed() {
@@ -242,13 +240,10 @@ public class Table {
 		}
 		for (int i = 0; i < losers.size(); i++) {
 			HH.get(round).add(new Action(losers.get(i), 10, 0));
-			p();
 		}
 
-		pot = 0;
-		advanceButton();
-		round = 0;
 		p();
+		
 	}
 
 	private Hand boardToHand() {
@@ -284,10 +279,9 @@ public class Table {
 		// TODO two player will be buggy need to fix
 		HH.get(round).add(new Action(winner, 8, pot - lastAggr.wager));
 		winner.setStack(pot);
-		pot = 0;
-		advanceButton();
-		round = 0;
 		p();
+		
+
 	}
 
 	private int indexOfLastLivePlayer(){
@@ -318,10 +312,11 @@ public class Table {
 
 	// Sets all plyers live field to true, meaning they can act again.
 	private void resurrectPlayers() {
+		livePlayers=0;
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null) {
 				seats[i].sitOut();
-				if (seats[i].isSittingOut() == false) {
+				if (!seats[i].isSittingOut()) {
 					seats[i].setLive(true);
 					livePlayers++;
 				}
@@ -405,10 +400,13 @@ public class Table {
 
 	// Moves the button forward one player, skips null seats.
 	private void advanceButton() {
-		while (seats[button] == null || seats[button].isSittingOut() == true) {
+		do {
 			button = (button + 1) % 10;
-		}
-		bigBlind = findNextLivePlayer(findNextLivePlayer(button));
+		}while (seats[button] == null 
+				|| seats[button].isSittingOut());
+		
+		smallBlind=findNextLivePlayer(button);
+		bigBlind = findNextLivePlayer(smallBlind);
 
 	}
 
@@ -416,6 +414,7 @@ public class Table {
 	private void advanceAction() {
 
 		do {
+			
 			toAct = (toAct + 1) % 10;
 		} while (seats[toAct] == null || !seats[toAct].isLive());
 	}

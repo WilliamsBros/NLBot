@@ -38,8 +38,15 @@ public class Driver {
 		t.addPlayer(new Player("Forrest",200), 1);
 		t.addPlayer(new Player("Alexa",200), 2);
 		t.addPlayer(new Player("Prometheus",200), 4);
+		t.addPlayer(new Player("Corey",200), 5);
+		t.addPlayer(new Player("Rani",200), 6);
+		t.addPlayer(new Player("Bob",200), 7);
+		t.addPlayer(new Player("Turner",200), 8);
+		t.addPlayer(new Player("Amy",200), 9);
+		t.addPlayer(new Player("Ben Franklin",200), 10);
 		
-		t.playHand();
+		//t.playHand();
+		t.run(3);
 	}
 
 }

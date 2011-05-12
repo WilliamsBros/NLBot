@@ -35,76 +35,76 @@ public class Player {
 
 	public Action generateAction() {
 		//view.setPlayer(this);
-		Scanner s = new Scanner(System.in);
+		//Scanner s = new Scanner(System.in);
 		int actionNum;
 		double amt;
 		Player[] seats = table.getSeats();
 
 		table.view.repaint();
-		for (int i = 0; i < 10; i++) {
-			if (seats[i] != null) {
-				System.out.print(i + ": " + seats[i].getName());
-
-				if (i == table.getButton()) {
-					System.out.print(" <B<:");
-				}
-				if (seats[i] == this) {
-					System.out.print(" <toAct<:");
-				}
-				if (i == table.getLastAggressor()) {
-					System.out.print(" <lastAggressor<:");
-				}
-				if (seats[i].isSittingOut) {
-					System.out.print(" :sitting out ");
-				}
-				if (seats[i].isLive() == false) {
-					System.out.print(" :folded ");
-				}
-				System.out.print(" Contributed: " + seats[i].getContributed());
-				System.out.print(" Stack size: " + seats[i].getStack());
-				System.out.print(" Hole cards: " + "["+
-						new Card(seats[i].getHand().cardA).toString()+"]"
-						+ "["+
-						(new Card(seats[i].getHand().cardB)).toString()+"]");
-						
-				System.out.println();
-				continue;
-			}
-			System.out.println(i + ": empty");
-		}
+//		for (int i = 0; i < 10; i++) {
+//			if (seats[i] != null) {
+//				System.out.print(i + ": " + seats[i].getName());
+//
+//				if (i == table.getButton()) {
+//					System.out.print(" <B<:");
+//				}
+//				if (seats[i] == this) {
+//					System.out.print(" <toAct<:");
+//				}
+//				if (i == table.getLastAggressor()) {
+//					System.out.print(" <lastAggressor<:");
+//				}
+//				if (seats[i].isSittingOut) {
+//					System.out.print(" :sitting out ");
+//				}
+//				if (seats[i].isLive() == false) {
+//					System.out.print(" :folded ");
+//				}
+//				System.out.print(" Contributed: " + seats[i].getContributed());
+//				System.out.print(" Stack size: " + seats[i].getStack());
+//				System.out.print(" Hole cards: " + "["+
+//						new Card(seats[i].getHand().cardA).toString()+"]"
+//						+ "["+
+//						(new Card(seats[i].getHand().cardB)).toString()+"]");
+//						
+//				System.out.println();
+//				continue;
+//			}
+//			System.out.println(i + ": empty");
+//		}
 		// System.out.println("action is on: "+ name);
-		System.out.println(" Potsize: " + table.getPot());
-		System.out.println(" Board: ");
+//		System.out.println(" Potsize: " + table.getPot());
+//		System.out.println(" Board: ");
 
-		switch (table.getRound()) {
-
-		case 0:
-			System.out.println(" [][][][][] ");
-			break;
-		case 1:
-			for (int i = 0; i < 3; i++) {
-				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-						+ "]");
-			}
-			break;
-
-		case 2:
-			for (int i = 0; i < 4; i++) {
-				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-						+ "]");
-			}
-			break;
-		case 3:
-			for (int i = 0; i < 5; i++) {
-				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-						+ "]");
-			}
-			break;
-
-		}
-		System.out.println();
-		System.out.println("action number please: ");
-		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
+//		switch (table.getRound()) {
+//
+//		case 0:
+//			System.out.println(" [][][][][] ");
+//			break;
+//		case 1:
+//			for (int i = 0; i < 3; i++) {
+//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
+//						+ "]");
+//			}
+//			break;
+//
+//		case 2:
+//			for (int i = 0; i < 4; i++) {
+//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
+//						+ "]");
+//			}
+//			break;
+//		case 3:
+//			for (int i = 0; i < 5; i++) {
+//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
+//						+ "]");
+//			}
+//			break;
+//
+//		}
+//		System.out.println();
+//		System.out.println("action number please: ");
+//		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
 
 		while(action==-1){
 			try {
@@ -115,7 +115,7 @@ public class Player {
 			}
 		}
 		actionNum = action;//s.nextInt();
-		System.out.println("wager please: ");
+		//System.out.println("wager please: ");
 		amt = amount;//s.nextDouble();
 		action=-1;
 		amount=0;
@@ -123,7 +123,7 @@ public class Player {
 
 		// System.out.println("about to print, actionNum: "+actionNum);
 		// System.out.println("amt: "+amt);
-		table.p();
+		//table.p();
 
 		return new Action(this, actionNum, amt);
 	}
