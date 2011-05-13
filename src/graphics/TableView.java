@@ -44,17 +44,22 @@ public class TableView extends JPanel implements MouseInputListener,
 	BufferedImage cardImgs;
 	Point[] sPos = new Point[10];
 
+	Double[] chipVals = { .01, .05, .25, 1.0, 5.0, 25.0, 100.0, 500.0, 1000.0,
+			5000.0, 25000.0, 100000.0, 500000.0, 1000000.0, 5000000.0 };
+
+	BufferedImage chips;
+
+	int[] pot = new int[15];
+	Point[] chipPos = new Point[10];
+
 	// JButton clear=new JButton("clear");
 	// JSlider amount=new JSlider(0,(int)player.getStack(),0);
 
 	public TableView(Table t) {
 		try {
-			tbl = ImageIO.read(new File("C:"
-					+ "\\Documents and Settings\\ccadmin.LT-SF-0XX\\Desktop\\"
-					+ "java\\NLBot\\src\\Texas_Holdem_Poker_Table.jpg"));
-			cardImgs = ImageIO.read(new File("C:"
-					+ "\\Documents and Settings\\ccadmin.LT-SF-0XX\\Desktop\\"
-					+ "java\\NLBot\\src\\clip_image004_2.gif"));
+			tbl = ImageIO.read(new File("src\\Texas_Holdem_Poker_Table.jpg"));
+			cardImgs = ImageIO.read(new File("src\\clip_image004_2.gif"));
+			chips = ImageIO.read(new File("src\\Chips3.png"));
 		} catch (IOException e) {
 			System.out.println("Image could not be read");
 			System.exit(1);
@@ -88,6 +93,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		// menu.add(amount);
 
 		// frame.setTitle(player.getName());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setJMenuBar(menu);
 		addMouseListener(this);
 		frame.setVisible(true);
@@ -96,13 +102,68 @@ public class TableView extends JPanel implements MouseInputListener,
 		sPos[1] = new Point(610, 50);
 		sPos[2] = new Point(680, 120);
 		sPos[3] = new Point(710, 210);
-		sPos[4] = new Point(560, 340);
-		sPos[5] = new Point(440, 340);
-		sPos[6] = new Point(320, 340);
-		sPos[7] = new Point(200, 340);
+		sPos[4] = new Point(560, 370);
+		sPos[5] = new Point(440, 370);
+		sPos[6] = new Point(320, 370);
+		sPos[7] = new Point(200, 370);
 		sPos[8] = new Point(40, 210);
 		sPos[9] = new Point(70, 120);
 
+		chipPos[0] = new Point(sPos[0].x + 100, sPos[0].y + 80);
+		chipPos[1] = new Point(sPos[1].x - 80, sPos[1].y + 80);
+		chipPos[2] = new Point(sPos[2].x - 95, sPos[2].y + 50);
+		chipPos[3] = new Point(sPos[3].x - 105, sPos[3].y + 20);
+		chipPos[4] = new Point(sPos[4].x - 20, sPos[4].y - 100);
+		chipPos[5] = new Point(sPos[5].x - 10, sPos[5].y - 100);
+		chipPos[6] = new Point(sPos[6].x - 10, sPos[6].y - 100);
+		chipPos[7] = new Point(sPos[7].x + 20, sPos[7].y - 100);
+		chipPos[8] = new Point(sPos[8].x + 115, sPos[8].y + 20);
+		chipPos[9] = new Point(sPos[9].x + 105, sPos[9].y + 60);
+
+	}
+
+//	 public static void main(String[] args) {
+//	 TableView v = new TableView(new Table());
+//	
+//	 v.toChips(v.pot, 544.0);
+//	 }
+
+	public void toChips(int[] c, double d) {
+		double chips = d;
+		int i = 14;
+
+		for (int k = 0; k < 15; k++) {
+			c[k] = 0;
+		}
+
+		while (chips > 0) {
+			i = 14;
+			while (true) {
+				if (chipVals[i] < chips) {
+					i = i + 1;
+					if (i > 14) {
+						i = 14;
+					}
+				}
+				if (chipVals[i] > chips)
+					i = i / 2;
+				if ((i == 14) || (i == 0)
+						|| (chipVals[i] <= chips && chipVals[i + 1] > chips)) {
+					break;
+				}
+				// System.out.println(i + ": " + chipVals[i]);
+			}
+			 //System.out.println(i + ": " + chipVals[i]);
+
+			c[i] = c[i] + 1;
+			chips = chips - chipVals[i];
+		}
+
+//		 for(int j=0;j<15; j++){
+//		 if(c[j]!=0){
+//		 System.out.println(c[j]+" times "+chipVals[j]);
+//		 }
+//		 }
 	}
 
 	public BufferedImage getCardImage(int i) {
@@ -132,7 +193,7 @@ public class TableView extends JPanel implements MouseInputListener,
 			}
 			g.drawRoundRect(sPos[i].x, sPos[i].y, 45, 45, 10, 10);
 			g.setColor(Color.black);
-			
+
 			if (table.getSeats()[i] != null) {
 				if (!table.getSeats()[i].isLive()) {
 					if (table.getSeats()[i].isSittingOut()) {
@@ -140,14 +201,6 @@ public class TableView extends JPanel implements MouseInputListener,
 								sPos[i].y);
 						g.drawString("sitting out", sPos[i].x, sPos[i].y + 10);
 					} else {
-//						g
-//								.drawImage(getCardImage(table.getSeats()[i]
-//										.getHand().cardA), sPos[i].x - 88,
-//										sPos[i].y, 44, 60, null);
-//						g
-//								.drawImage(getCardImage(table.getSeats()[i]
-//										.getHand().cardB), sPos[i].x - 44,
-//										sPos[i].y, 44, 60, null);
 						g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 								sPos[i].y);
 						g.drawString(Double.toString(table.getSeats()[i]
@@ -155,49 +208,59 @@ public class TableView extends JPanel implements MouseInputListener,
 						g.drawString("folded", sPos[i].x, sPos[i].y + 30);
 					}
 				} else {
-					if(i>3 && i<8){
-						g.drawImage(
-								getCardImage(table.getSeats()[i].getHand().cardA),
-								sPos[i].x -5, sPos[i].y
-										-70, 44, 60, null);
-						
-						g.drawImage(
-								getCardImage(table.getSeats()[i].getHand().cardB),
-								sPos[i].x+6, sPos[i].y-70, 44, 60, null);
+					if (i > 3 && i < 8) {
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardA), sPos[i].x - 5,
+										sPos[i].y - 70, 44, 60, null);
+
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardB), sPos[i].x + 6,
+										sPos[i].y - 70, 44, 60, null);
+					} else if (i > 0 && i < 4) {
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardA), sPos[i].x - 60,
+										sPos[i].y - 10, 44, 60, null);
+
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardB), sPos[i].x - 49,
+										sPos[i].y - 10, 44, 60, null);
+
 					}
-					else if(i>0 && i<4){
-					g.drawImage(
-							getCardImage(table.getSeats()[i].getHand().cardA),
-							sPos[i].x -60, sPos[i].y
-									-10, 44, 60, null);
-					
-					
-					g.drawImage(
-							getCardImage(table.getSeats()[i].getHand().cardB),
-							sPos[i].x-49, sPos[i].y-10, 44, 60, null);
-					
-				
+
+					else {
+
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardB), sPos[i].x + 49,
+										sPos[i].y, 44, 60, null);
+						g
+								.drawImage(getCardImage(table.getSeats()[i]
+										.getHand().cardA), sPos[i].x + 60,
+										sPos[i].y, 44, 60, null);
+
 					}
-					
-					
-					else{
-						
-						g.drawImage(
-								getCardImage(table.getSeats()[i].getHand().cardB),
-								sPos[i].x+49, sPos[i].y, 44, 60, null);
-						g.drawImage(
-								getCardImage(table.getSeats()[i].getHand().cardA),
-								sPos[i].x +60, sPos[i].y
-										, 44, 60, null);
-						
-						
-						
+
+					if (table.getSeats()[i].getContributed() > 0) {
+						for (int q = 14, count = 0; q >= 0; q--) {
+							if (table.getSeats()[i].stackChips[q] != 0) {
+								for (int z = 0; z < table.getSeats()[i].stackChips[q]; z++) {
+									count++;
+									g.drawImage(getChipImg(q), chipPos[i].x,
+											chipPos[i].y - count * 4, 29, 23,
+											null);
+								}
+
+							}
+						}
 					}
-					
-					
+
 					g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 							sPos[i].y);
-					
+
 					g.drawString(Double
 							.toString(table.getSeats()[i].getStack()),
 							sPos[i].x, sPos[i].y + 15);
@@ -208,6 +271,27 @@ public class TableView extends JPanel implements MouseInputListener,
 				g.drawString("empty", sPos[i].x, sPos[i].y);
 			}
 		}
+		
+		toChips(pot, table.getPot());
+		for (int q = 14, count = 0; q >= 0; q--) {
+			// count=0;
+			if (pot[q] != 0) {
+				for (int z = 0; z < pot[q]; z++) {
+					count++;
+					g.drawImage(getChipImg(q), 300, 200 - count * 4, 29, 23,
+							null);
+				}
+
+			}
+
+		}
+		for (int j = 0; j < 15; j++) {
+			if (pot[j] != 0) {
+				System.out.println(pot[j] + " times " + chipVals[j]);
+			}
+		}
+
+		g.drawString(Double.toString(table.getPot()), 500, 50);
 
 		switch (table.getRound()) {
 
@@ -234,6 +318,13 @@ public class TableView extends JPanel implements MouseInputListener,
 			break;
 
 		}
+
+	}
+
+	private BufferedImage getChipImg(int i) {
+
+		return chips.getSubimage(i % 5 * 24, i / 5 * 19, 24, 19);
+		// return chips.getSubimage(i%5*29, i/5*23, 29, 23);
 
 	}
 

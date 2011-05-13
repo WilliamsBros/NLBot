@@ -46,7 +46,7 @@ public class Driver {
 		t.addPlayer(new Player("Ben Franklin",200), 10);
 		
 		//t.playHand();
-		t.run(3);
+		t.run(300);
 	}
 
 }

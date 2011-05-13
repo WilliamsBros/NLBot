@@ -120,7 +120,8 @@ public class Table {
 		do {
 			update(seats[toAct].generateAction());
 		} while (!actionComplete);
-		System.out.println(livePlayers);
+		
+		view.repaint();
 		System.out.println("preflop is over");
 		if (livePlayers < 2) {
 			System.out.println("going to run complete hand");
@@ -142,6 +143,7 @@ public class Table {
 		// flop
 		do {
 			update(seats[toAct].generateAction());
+			
 		} while (!actionComplete);
 		
 		System.out.println("flop is over");
@@ -299,12 +301,13 @@ public class Table {
 	}
 	
 	private void dealCards() {
-		int cards = livePlayers * 2;
+		int cards = 5; //livePlayers * 2;
 		for (int i = 0; i < 10; i++) {
-			if (seats[i] != null) {
-				seats[i].setHand(deck.deck[51 - cards],
-						deck.deck[51 - (cards - 1)]);
-				cards -= 2;
+			if (seats[i] != null && !seats[i].isSittingOut()) {
+				seats[i].setHand(deck.deck[cards],
+						//can be negative -fixing bug -connor
+						deck.deck[cards + 1]);
+				cards += 2;
 			}
 		}
 
@@ -319,6 +322,9 @@ public class Table {
 				if (!seats[i].isSittingOut()) {
 					seats[i].setLive(true);
 					livePlayers++;
+				}
+				else{
+					seats[i].setLive(false);
 				}
 			}
 		}
@@ -387,6 +393,8 @@ public class Table {
 		seats[toAct].setContributed(bb);
 		setPot(bb);
 		toCall = bb;
+		view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
+		//view.repaint();
 
 	}
 
@@ -396,6 +404,8 @@ public class Table {
 		seats[toAct].setStack(-sb);
 		seats[toAct].setContributed(sb);
 		setPot(sb);
+		view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
+		//view.repaint();
 	}
 
 	// Moves the button forward one player, skips null seats.
@@ -462,6 +472,7 @@ public class Table {
 			lastAggressor = toAct;
 			seats[toAct].setContributed(a.wager);
 			toCall = a.wager;
+			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
 		}
 			break;
@@ -475,6 +486,7 @@ public class Table {
 					.setContributed(a.wager);
 			lastAggressor = toAct;
 			toCall = a.wager;
+			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
 		}
 			break;
@@ -488,6 +500,7 @@ public class Table {
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct]
 					.setContributed(a.wager - seats[toAct].getContributed());
+			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
 		}
 			break;

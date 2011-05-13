@@ -21,6 +21,7 @@ public class Player {
 	private double contributed = 0;
 	public int action=-1;
 	public double amount=0;
+	public int[] stackChips=new int[15];
 	
 	public JFrame frame;
 	PlayerView view;
@@ -171,6 +172,9 @@ public class Player {
 
 	public boolean isSittingOut() {
 
+		if(stack<=1){
+			isSittingOut=true;
+		}
 		return isSittingOut;
 	}
 
@@ -179,7 +183,12 @@ public class Player {
 	}
 
 	public void sitOut() {
-		isSittingOut = false;
+		if(stack<=1){
+			isSittingOut=true;
+		}
+		else{
+			isSittingOut = false;
+			}
 
 	}
 
