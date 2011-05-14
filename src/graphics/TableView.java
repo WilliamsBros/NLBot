@@ -274,6 +274,8 @@ public class TableView extends JPanel implements MouseInputListener,
 							sPos[i].x, sPos[i].y + 15);
 					g.drawString(f.format(table.getSeats()[i]
 							.getContributed()), sPos[i].x, sPos[i].y + 30);
+					g.drawString(f.format(table.getSeats()[i]
+					           .getTContributed()), sPos[i].x, sPos[i].y + 45);
 				}
 			} else if (table.getSeats()[i] == null) {
 				g.drawString("empty", sPos[i].x, sPos[i].y);

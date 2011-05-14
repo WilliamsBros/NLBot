@@ -19,7 +19,7 @@ public class Driver {
 //		d.p();
 //		d.shuffle();
 //		d.p();
-		int[] a={13,14,44,45,9};
+		//int[] a={13,14,44,45,9};
 		Table t=new Table();
 		
 //		Hand h = t.boardToHand(a);
@@ -33,6 +33,16 @@ public class Driver {
 //			System.out.println(
 //					he.rankHand(new Card(50),
 //							new Card(37), h));
+		
+		
+//		Hand tmpHand=new Hand();
+//		int[] board={33,34,35,42,3};
+//		tmpHand.addCard(new Card(38));
+//		tmpHand.addCard(new Card(51));
+//		for(int a=0;a<5;a++){
+//			tmpHand.addCard(new Card(board[a]));
+//		}
+//		System.out.println(HandEvaluator.nameHand(tmpHand));
 		
 		double startingStack=50;
 		

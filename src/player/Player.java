@@ -19,9 +19,11 @@ public class Player {
 	private Hole hand = new Hole();
 	boolean isSittingOut;
 	private double contributed = 0;
+	private double tContributed=0;
 	public int action=-1;
 	public double amount=0;
 	public int[] stackChips=new int[15];
+	public int handRank=-1;
 	
 	public JFrame frame;
 	PlayerView view;
@@ -204,6 +206,9 @@ public class Player {
 		return contributed;
 	}
 
+	public double getTContributed() {
+		return tContributed;
+	}
 	public void setContributed(double d) {
 		contributed = contributed + d;
 	}
@@ -211,5 +216,15 @@ public class Player {
 	public void clearContributed() {
 		contributed = 0;
 
+	}
+
+	public void clearTContributed() {
+		tContributed=0;
+		
+	}
+
+	public void setTContributed(double c) {
+		tContributed=tContributed+c;
+		
 	}
 }
