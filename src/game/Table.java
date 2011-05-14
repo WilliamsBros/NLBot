@@ -23,8 +23,8 @@ public class Table {
 	int bigBlind = 3;
 	int button = 1;
 	int toAct = 2;
-	double sb = 1;
-	double bb = 2;
+	double sb = .25;
+	double bb = .50;
 
 	double pot = 0;
 	double toCall = 0;
@@ -36,6 +36,7 @@ public class Table {
 	int playerCount;
 	int lastAggressor;
 	
+	public int playersAllin=0;
 	public JFrame frame;
 	public TableView view;
 	public boolean[] legalActions={true,false,true,false,false,false,true};
@@ -86,6 +87,7 @@ public class Table {
 	public void playHand() {
 		// seats[(button+1)%10];
 		
+		playersAllin=0;
 		view.clearChipCount(view.pot);
 		bbActsLast=true;
 		deck.shuffle();
@@ -122,11 +124,16 @@ public class Table {
 		// preflop
 		do {
 			setLegalActions();
-			if(seats[toAct].getStack()>0){
+			System.out.println("livePlayers: "+livePlayers);
+			System.out.println("playersAllin: "+playersAllin);
+			if(seats[toAct].getStack()>0 && (livePlayers-playersAllin>1
+					|| seats[toAct].getContributed()<toCall)){
+				
 			update(seats[toAct].generateAction());
 			}
 			else{
 				actionComplete = isActionComplete();
+				
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -161,7 +168,10 @@ public class Table {
 		// flop
 		do {
 			setLegalActions();
-			if(seats[toAct].getStack()>0){
+			System.out.println("livePlayers: "+livePlayers);
+			System.out.println("playersAllin: "+playersAllin);
+			if(seats[toAct].getStack()>0 && (livePlayers-playersAllin>1
+					|| seats[toAct].getContributed()<toCall)){
 				update(seats[toAct].generateAction());
 				}
 				else{
@@ -197,7 +207,10 @@ public class Table {
 		// turn
 		do {
 			setLegalActions();
-			if(seats[toAct].getStack()>0){
+			System.out.println("livePlayers: "+livePlayers);
+			System.out.println("playersAllin: "+playersAllin);
+			if(seats[toAct].getStack()>0 && (livePlayers-playersAllin>1
+					|| seats[toAct].getContributed()<toCall)){
 				update(seats[toAct].generateAction());
 				}
 				else{
@@ -232,7 +245,10 @@ public class Table {
 		// river
 		do {
 			setLegalActions();
-			if(seats[toAct].getStack()>0){
+			System.out.println("livePlayers: "+livePlayers);
+			System.out.println("playersAllin: "+playersAllin);
+			if(seats[toAct].getStack()>0 && (livePlayers-playersAllin>1
+					|| seats[toAct].getContributed()<toCall)){
 				update(seats[toAct].generateAction());
 				}
 				else{
@@ -261,6 +277,16 @@ public class Table {
 		}
 	}
 
+	private int playersAllIn() {
+		int count=0;
+		for(int i=0;i<10;i++){
+			if(seats[i]!=null && seats[i].isLive() && seats[i].getStack()<=0){
+				count++;
+			}
+		}
+		return count;
+	}
+
 	private void setLegalActions() {
 		//fold 
 		if(seats[toAct].getContributed()-toCall==0){
@@ -287,7 +313,8 @@ public class Table {
 		}
 		
 		//check
-		if(toCall==0){
+		if(toCall==0 || (bbActsLast && toAct==bigBlind && 
+				toCall==bb)){
 			legalActions[1]=true;
 			view.check.setBackground(
 					Color.yellow);
@@ -311,7 +338,8 @@ public class Table {
 		}
 		
 		//raise
-		if(toCall>0 && seats[toAct].getStack()+seats[toAct].getContributed()>toCall){
+		if(toCall>0 && seats[toAct].getStack()+seats[toAct].getContributed()>toCall
+				&& livePlayers-playersAllin>1){
 			legalActions[3]=true;
 			view.raise.setBackground(
 					Color.yellow);
@@ -611,6 +639,9 @@ public class Table {
 			}
 			setPot(a.wager);
 			seats[toAct].setStack(-a.wager);
+			if(seats[toAct].getStack()<=0){
+				playersAllin++;
+			}
 			lastAggressor = toAct;
 			seats[toAct].setContributed(a.wager);
 			//test(a);
@@ -626,6 +657,9 @@ public class Table {
 
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct].setStack(-(a.wager - seats[toAct].getContributed()));
+			if(seats[toAct].getStack()<=0){
+				playersAllin++;
+			}
 			seats[toAct]
 					.setContributed(a.wager-seats[toAct].getContributed());//
 			lastAggressor = toAct;
@@ -641,10 +675,15 @@ public class Table {
 				bbActsLast = false;
 			}
 			actionComplete = isActionComplete();
-//			if(seats[toAct].getStack()<(a.wager+seats[toAct].getContributed())){
-//				a.wager=seats[toAct].getStack()+seats[toAct].getContributed();
-//			}
+			if(seats[toAct].getStack()<(a.wager-seats[toAct].getContributed())){
+				a.wager=seats[toAct].getStack()+seats[toAct].getContributed();
+			}
+			
 			seats[toAct].setStack(-(a.wager - seats[toAct].getContributed()));
+			
+			if(seats[toAct].getStack()<=0){
+				playersAllin++;
+			}
 			
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct]

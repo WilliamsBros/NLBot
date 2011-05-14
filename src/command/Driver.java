@@ -34,16 +34,18 @@ public class Driver {
 //					he.rankHand(new Card(50),
 //							new Card(37), h));
 		
-		t.addPlayer(new Player("Connor",200), 3);
-		t.addPlayer(new Player("Forrest",200), 1);
-		t.addPlayer(new Player("Alexa",200), 2);
-		t.addPlayer(new Player("Prometheus",200), 4);
-		t.addPlayer(new Player("Corey",200), 5);
-		t.addPlayer(new Player("Rani",200), 6);
-		t.addPlayer(new Player("Bob",200), 7);
-		t.addPlayer(new Player("Turner",200), 8);
-		t.addPlayer(new Player("Amy",200), 9);
-		t.addPlayer(new Player("Ben Franklin",200), 10);
+		double startingStack=50;
+		
+		t.addPlayer(new Player("Connor",startingStack), 3);
+		t.addPlayer(new Player("Forrest",startingStack), 1);
+		t.addPlayer(new Player("Alexa",startingStack), 2);
+		t.addPlayer(new Player("Prometheus",startingStack), 4);
+		t.addPlayer(new Player("Corey",startingStack), 5);
+		t.addPlayer(new Player("Rani",startingStack), 6);
+		t.addPlayer(new Player("Bob",startingStack), 7);
+		t.addPlayer(new Player("Turner",startingStack), 8);
+		t.addPlayer(new Player("Amy",startingStack), 9);
+		t.addPlayer(new Player("Ben Franklin",startingStack), 10);
 		
 		//t.playHand();
 		t.run(300);

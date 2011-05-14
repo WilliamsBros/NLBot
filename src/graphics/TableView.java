@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -187,6 +188,7 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		NumberFormat f=NumberFormat.getCurrencyInstance();
 		g.setColor(Color.black);
 		g.drawImage(tbl, 110, 80, 572, 240, new Color(255, 255, 255), this);
 
@@ -209,7 +211,7 @@ public class TableView extends JPanel implements MouseInputListener,
 					} else {
 						g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 								sPos[i].y);
-						g.drawString(Double.toString(table.getSeats()[i]
+						g.drawString(f.format(table.getSeats()[i]
 								.getStack()), sPos[i].x, sPos[i].y + 15);
 						g.drawString("folded", sPos[i].x, sPos[i].y + 30);
 					}
@@ -264,13 +266,13 @@ public class TableView extends JPanel implements MouseInputListener,
 						}
 					}
 
+					
 					g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 							sPos[i].y);
 
-					g.drawString(Double
-							.toString(table.getSeats()[i].getStack()),
+					g.drawString(f.format(table.getSeats()[i].getStack()),
 							sPos[i].x, sPos[i].y + 15);
-					g.drawString(Double.toString(table.getSeats()[i]
+					g.drawString(f.format(table.getSeats()[i]
 							.getContributed()), sPos[i].x, sPos[i].y + 30);
 				}
 			} else if (table.getSeats()[i] == null) {
@@ -285,7 +287,7 @@ public class TableView extends JPanel implements MouseInputListener,
 				denom++;
 				for (int z = 0; z < pot[q]; z++) {
 					count++;
-					g.drawImage(getChipImg(q), 300+denom*29, 200 - count * 4, 29, 23,
+					g.drawImage(getChipImg(q), 240+denom*29, 200 - count * 4, 29, 23,
 							null);
 				}
 
@@ -454,23 +456,12 @@ public class TableView extends JPanel implements MouseInputListener,
 				
 				
 				table.getSeats()[table.getToAct()].amount = table.getToCall();
-//				if(table.getSeats()[table.getToAct()].getStack()+
-//						table.getSeats()[table.getToAct()].getContributed()	>=table.getToCall()-table.getSeats()[table.getToAct()].getContributed()){
-//					table.getSeats()[table.getToAct()].amount = table.getToCall();
-//				}
-//				else{
-//					table.getSeats()[table.getToAct()].amount = 
-//						table.getSeats()[table.getToAct()].getStack()+
-//						;
-//				}
 			
 			}
 			return;
 		}
 		if (e.getSource() == bet) {
 			if(table.legalActions[2]){
-			//bet.setBackground(Color.yellow);
-			//bet.setContentAreaFilled(true);//(Color.yellow);
 			table.getSeats()[table.getToAct()].action = 2;
 			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
 					.getToAct()].getStack() > table.getPot()
@@ -481,8 +472,6 @@ public class TableView extends JPanel implements MouseInputListener,
 		}
 		if (e.getSource() == raise) {
 				if(table.legalActions[3]){
-			//bet.getColorModel();
-			//bet.setBackground(bet.getParent().getBackground());
 			table.getSeats()[table.getToAct()].action = 3;
 			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
 					.getToAct()].getStack() > (table.getPot()
