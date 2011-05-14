@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 
@@ -35,11 +36,11 @@ public class TableView extends JPanel implements MouseInputListener,
 	Table table;
 	JMenuBar menu = new JMenuBar();
 
-	JButton fold = new JButton("fold");
-	JButton check = new JButton("check");
-	JButton bet = new JButton("bet");
-	JButton raise = new JButton("raise");
-	JButton call = new JButton("call");
+	public JButton fold = new JButton("fold");
+	public JButton check = new JButton("check");
+	public JButton bet = new JButton("bet");
+	public JButton raise = new JButton("raise");
+	public JButton call = new JButton("call");
 	BufferedImage tbl;
 	BufferedImage cardImgs;
 	Point[] sPos = new Point[10];
@@ -49,7 +50,7 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	BufferedImage chips;
 
-	int[] pot = new int[15];
+	public int[] pot = new int[15];
 	Point[] chipPos = new Point[10];
 
 	// JButton clear=new JButton("clear");
@@ -85,6 +86,13 @@ public class TableView extends JPanel implements MouseInputListener,
 		raise.addActionListener(this);
 		// amount.addChangeListener(this);
 
+		
+		fold.setBackground(Color.yellow);
+		check.setBackground(Color.yellow);
+		call.setBackground(Color.yellow);
+		bet.setBackground(Color.yellow);
+		raise.setBackground(Color.yellow);
+		
 		menu.add(fold);
 		menu.add(check);
 		menu.add(call);
@@ -132,9 +140,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		double chips = d;
 		int i = 14;
 
-		for (int k = 0; k < 15; k++) {
-			c[k] = 0;
-		}
+		clearChipCount(c);
 
 		while (chips > 0) {
 			i = 14;
@@ -272,24 +278,25 @@ public class TableView extends JPanel implements MouseInputListener,
 			}
 		}
 		
-		toChips(pot, table.getPot());
-		for (int q = 14, count = 0; q >= 0; q--) {
-			// count=0;
+		//toChips(pot, table.getPot());
+		for (int q = 14, denom=0, count = 0; q >= 0; q--) {
+			count=0; 
 			if (pot[q] != 0) {
+				denom++;
 				for (int z = 0; z < pot[q]; z++) {
 					count++;
-					g.drawImage(getChipImg(q), 300, 200 - count * 4, 29, 23,
+					g.drawImage(getChipImg(q), 300+denom*29, 200 - count * 4, 29, 23,
 							null);
 				}
 
 			}
 
 		}
-		for (int j = 0; j < 15; j++) {
-			if (pot[j] != 0) {
-				System.out.println(pot[j] + " times " + chipVals[j]);
-			}
-		}
+//		for (int j = 0; j < 15; j++) {
+//			if (pot[j] != 0) {
+//				System.out.println(pot[j] + " times " + chipVals[j]);
+//			}
+//		}
 
 		g.drawString(Double.toString(table.getPot()), 500, 50);
 
@@ -299,21 +306,21 @@ public class TableView extends JPanel implements MouseInputListener,
 			break;
 		case 1:
 			for (int i = 0; i < 3; i++) {
-				g.drawImage(getCardImage(table.getBoard()[i]), 240 + i * 44,
-						145, 44, 60, null);
+				g.drawImage(getCardImage(table.getBoard()[i]), 284 + i * 44,
+						105, 44, 60, null);
 			}
 			break;
 
 		case 2:
 			for (int i = 0; i < 4; i++) {
-				g.drawImage(getCardImage(table.getBoard()[i]), 240 + i * 44,
-						145, 44, 60, null);
+				g.drawImage(getCardImage(table.getBoard()[i]), 284 + i * 44,
+						105, 44, 60, null);
 			}
 			break;
 		case 3:
 			for (int i = 0; i < 5; i++) {
-				g.drawImage(getCardImage(table.getBoard()[i]), 240 + i * 44,
-						145, 44, 60, null);
+				g.drawImage(getCardImage(table.getBoard()[i]), 284 + i * 44,
+						105, 44, 60, null);
 			}
 			break;
 
@@ -427,47 +434,64 @@ public class TableView extends JPanel implements MouseInputListener,
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == fold) {
-
-			table.getSeats()[table.getToAct()].action = 0;
-			table.getSeats()[table.getToAct()].amount = 0;
-
+			if(table.legalActions[0]){
+				table.getSeats()[table.getToAct()].action = 0;
+				table.getSeats()[table.getToAct()].amount = 0;
+			}
 			return;
 		}
 
 		if (e.getSource() == check) {
-
-			table.getSeats()[table.getToAct()].action = 1;
-			table.getSeats()[table.getToAct()].amount = 0;
-
+			if(table.legalActions[1]){
+				table.getSeats()[table.getToAct()].action = 1;
+				table.getSeats()[table.getToAct()].amount = 0;
+			}
 			return;
 		}
 		if (e.getSource() == call) {
-
-			table.getSeats()[table.getToAct()].action = 6;
-			table.getSeats()[table.getToAct()].amount = table.getToCall();
-
+			if(table.legalActions[6]){
+				table.getSeats()[table.getToAct()].action = 6;
+				
+				
+				table.getSeats()[table.getToAct()].amount = table.getToCall();
+//				if(table.getSeats()[table.getToAct()].getStack()+
+//						table.getSeats()[table.getToAct()].getContributed()	>=table.getToCall()-table.getSeats()[table.getToAct()].getContributed()){
+//					table.getSeats()[table.getToAct()].amount = table.getToCall();
+//				}
+//				else{
+//					table.getSeats()[table.getToAct()].amount = 
+//						table.getSeats()[table.getToAct()].getStack()+
+//						;
+//				}
+			
+			}
 			return;
 		}
 		if (e.getSource() == bet) {
-
+			if(table.legalActions[2]){
+			//bet.setBackground(Color.yellow);
+			//bet.setContentAreaFilled(true);//(Color.yellow);
 			table.getSeats()[table.getToAct()].action = 2;
 			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
 					.getToAct()].getStack() > table.getPot()
 					+ table.getToCall()) ? table.getPot() + table.getToCall()
 					: table.getSeats()[table.getToAct()].getStack();
-
+			}
 			return;
 		}
 		if (e.getSource() == raise) {
-
-			table.getSeats()[table.getToAct()].action = 2;
+				if(table.legalActions[3]){
+			//bet.getColorModel();
+			//bet.setBackground(bet.getParent().getBackground());
+			table.getSeats()[table.getToAct()].action = 3;
 			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
 					.getToAct()].getStack() > (table.getPot()
 					+ table.getToCall() - table.getSeats()[table.getToAct()]
 					.getContributed())) ? table.getPot() + table.getToCall()
-					- table.getSeats()[table.getToAct()].getContributed()
-					: table.getSeats()[table.getToAct()].getStack();
-
+					//- table.getSeats()[table.getToAct()].getContributed()
+					: table.getSeats()[table.getToAct()].getStack()+
+					table.getSeats()[table.getToAct()].getContributed();
+				}
 			return;
 		}
 		// if(e.getSource()==clear){
@@ -486,5 +510,12 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	public void setPlayer(Player p) {
 		player = p;
+	}
+
+	public void clearChipCount(int[] pot2) {
+		for(int i=0;i<pot2.length; i++){
+			pot2[i]=0;
+		}
+		
 	}
 }

@@ -3,6 +3,7 @@ package game;
 import graphics.PlayerView;
 import graphics.TableView;
 
+import java.awt.Color;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -37,6 +38,7 @@ public class Table {
 	
 	public JFrame frame;
 	public TableView view;
+	public boolean[] legalActions={true,false,true,false,false,false,true};
 	// This is a state!!!
 	Vector<Vector<Action>> HH = new Vector<Vector<Action>>(4);
 
@@ -84,6 +86,7 @@ public class Table {
 	public void playHand() {
 		// seats[(button+1)%10];
 		
+		view.clearChipCount(view.pot);
 		bbActsLast=true;
 		deck.shuffle();
 		round = 0;
@@ -118,9 +121,24 @@ public class Table {
 
 		// preflop
 		do {
+			setLegalActions();
+			if(seats[toAct].getStack()>0){
 			update(seats[toAct].generateAction());
+			}
+			else{
+				actionComplete = isActionComplete();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				advanceAction();
+			}
+
 		} while (!actionComplete);
 		
+		view.toChips(view.pot, pot);
 		view.repaint();
 		System.out.println("preflop is over");
 		if (livePlayers < 2) {
@@ -142,9 +160,25 @@ public class Table {
 		toCall=0;
 		// flop
 		do {
-			update(seats[toAct].generateAction());
+			setLegalActions();
+			if(seats[toAct].getStack()>0){
+				update(seats[toAct].generateAction());
+				}
+				else{
+					actionComplete = isActionComplete();
+					advanceAction();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			
 		} while (!actionComplete);
+		
+		view.toChips(view.pot, pot);
+		view.repaint();
 		
 		System.out.println("flop is over");
 		resetContributed();
@@ -162,9 +196,25 @@ public class Table {
 		toCall=0;
 		// turn
 		do {
-			update(seats[toAct].generateAction());
+			setLegalActions();
+			if(seats[toAct].getStack()>0){
+				update(seats[toAct].generateAction());
+				}
+				else{
+					actionComplete = isActionComplete();
+					advanceAction();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 		} while (!actionComplete);
 
+		view.toChips(view.pot, pot);
+		view.repaint();
+		
 		System.out.println("turn is over");
 		resetContributed();
 		if (livePlayers <2) {
@@ -181,8 +231,24 @@ public class Table {
 		toCall=0;
 		// river
 		do {
-			update(seats[toAct].generateAction());
+			setLegalActions();
+			if(seats[toAct].getStack()>0){
+				update(seats[toAct].generateAction());
+				}
+				else{
+					actionComplete = isActionComplete();
+					advanceAction();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 		} while (!actionComplete);
+		
+		view.toChips(view.pot, pot);
+		view.repaint();
 		
 		System.out.println("river is over");
 		resetContributed();
@@ -193,6 +259,70 @@ public class Table {
 		else {
 			showdown();
 		}
+	}
+
+	private void setLegalActions() {
+		//fold 
+		if(seats[toAct].getContributed()-toCall==0){
+			legalActions[0]=false;
+			view.fold.setBackground(
+					view.fold.getParent().getBackground());
+		}
+		else{
+			legalActions[0]=true;
+			view.fold.setBackground(
+					Color.yellow);
+		}
+		
+		//call
+		if(seats[toAct].getContributed()-toCall==0){
+			legalActions[6]=false;
+			view.call.setBackground(
+					view.call.getParent().getBackground());
+		}
+		else{
+			legalActions[6]=true;
+			view.call.setBackground(
+					Color.yellow);
+		}
+		
+		//check
+		if(toCall==0){
+			legalActions[1]=true;
+			view.check.setBackground(
+					Color.yellow);
+		}
+		else{
+			legalActions[1]=false;
+			view.check.setBackground(
+					view.check.getParent().getBackground());
+		}
+		
+		//bet
+		if(toCall==0 && seats[toAct].getStack()>0){
+			legalActions[2]=true;
+			view.bet.setBackground(
+					Color.yellow);
+		}
+		else{
+			legalActions[2]=false;
+			view.bet.setBackground(
+					view.bet.getParent().getBackground());
+		}
+		
+		//raise
+		if(toCall>0 && seats[toAct].getStack()+seats[toAct].getContributed()>toCall){
+			legalActions[3]=true;
+			view.raise.setBackground(
+					Color.yellow);
+		}
+		else{
+			legalActions[3]=false;
+			view.raise.setBackground(
+					view.raise.getParent().getBackground());
+		}
+		
+		
 	}
 
 	private void resetContributed() {
@@ -245,7 +375,12 @@ public class Table {
 		}
 
 		p();
-		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private Hand boardToHand() {
@@ -282,6 +417,12 @@ public class Table {
 		HH.get(round).add(new Action(winner, 8, pot - lastAggr.wager));
 		winner.setStack(pot);
 		p();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 
 	}
@@ -404,6 +545,7 @@ public class Table {
 		seats[toAct].setStack(-sb);
 		seats[toAct].setContributed(sb);
 		setPot(sb);
+		toCall=sb;
 		view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 		//view.repaint();
 	}
@@ -471,6 +613,7 @@ public class Table {
 			seats[toAct].setStack(-a.wager);
 			lastAggressor = toAct;
 			seats[toAct].setContributed(a.wager);
+			//test(a);
 			toCall = a.wager;
 			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
@@ -480,11 +623,13 @@ public class Table {
 			if (a.player == seats[bigBlind]) {
 				bbActsLast = false;
 			}
+
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct].setStack(-(a.wager - seats[toAct].getContributed()));
 			seats[toAct]
-					.setContributed(a.wager);
+					.setContributed(a.wager-seats[toAct].getContributed());//
 			lastAggressor = toAct;
+			//test(a);
 			toCall = a.wager;
 			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
@@ -496,10 +641,16 @@ public class Table {
 				bbActsLast = false;
 			}
 			actionComplete = isActionComplete();
-			seats[toAct].setStack(-(toCall - seats[toAct].getContributed()));
+//			if(seats[toAct].getStack()<(a.wager+seats[toAct].getContributed())){
+//				a.wager=seats[toAct].getStack()+seats[toAct].getContributed();
+//			}
+			seats[toAct].setStack(-(a.wager - seats[toAct].getContributed()));
+			
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct]
-					.setContributed(a.wager - seats[toAct].getContributed());
+					.setContributed(a.wager- seats[toAct].getContributed());//- seats[toAct].getContributed());
+			
+			//test(a);
 			view.toChips(seats[toAct].stackChips,seats[toAct].getContributed());
 			advanceAction();
 		}
@@ -508,6 +659,12 @@ public class Table {
 
 	}
 
+	private void test(Action a){
+		System.out.println("toCall: "+toCall);
+		System.out.println("pot: "+pot);
+		System.out.println("a.wager: "+a.wager);
+		System.out.println("toAct.getContributed: "+seats[toAct].getContributed());
+	}
 	// Adds a new player to the table if the seat is open.
 	public void addPlayer(Player p, int seat) {
 		if (seats[seat - 1] == null) {
