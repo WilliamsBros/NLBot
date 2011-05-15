@@ -46,14 +46,14 @@ public class Player {
 			try {
 				Thread.sleep(table.sleep);
 				
-				switch((int)(Math.random()*5)){
-					
-				case 0: table.view.bet.doClick(pushed);break;
-				case 1:	table.view.call.doClick(pushed);break;
-				case 2:	table.view.check.doClick(pushed);break;
-				case 3:	table.view.raise.doClick(pushed);break;
-				case 4:	table.view.fold.doClick(pushed);break;
-				}
+//				switch((int)(Math.random()*5)){
+//					
+//				case 0: table.view.bet.doClick(pushed);break;
+//				case 1:	table.view.call.doClick(pushed);break;
+//				case 2:	table.view.check.doClick(pushed);break;
+//				case 3:	table.view.raise.doClick(pushed);break;
+//				case 4:	table.view.fold.doClick(pushed);break;
+//				}
 				
 				
 			} catch (InterruptedException e) {

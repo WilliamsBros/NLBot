@@ -4,6 +4,7 @@ import graphics.PlayerView;
 import graphics.TableView;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.text.NumberFormat;
 import java.util.Vector;
 
@@ -20,7 +21,7 @@ public class Table {
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
-	public int sleep=0;
+	public int sleep=100;
 	int smallBlind = 2;
 	int bigBlind = 3;
 	int button = 1;
@@ -388,7 +389,9 @@ public class Table {
 		Vector<Player> winners = new Vector<Player>();
 		Hand h = boardToHand();
 		HandEvaluator he = new HandEvaluator();
-
+		NumberFormat f=NumberFormat.getCurrencyInstance();
+		
+		
 		hClasses.add(winners);
 
 		for (int i = 0; i < 10; i++) {
@@ -540,9 +543,9 @@ public class Table {
 			}
 			
 			tmpHand.makeEmpty();
-			for(int m=0,deadPlyrs=0;m<hClasses.lastElement().size();m++){
+			for(int m=0;m<hClasses.lastElement().size();m++){
 				
-					hClasses.lastElement().get(m).setStack(pt/(hClasses.lastElement().size()-deadPlyrs));
+					hClasses.lastElement().get(m).setStack(pt/(hClasses.lastElement().size()));
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardA));
 				//System.out.println(new Card(hClasses.lastElement().get(0).getHand().cardA).toString());
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardB));
@@ -553,12 +556,22 @@ public class Table {
 				}
 				
 			
-				
-				System.out.println(hClasses.lastElement().get(0).getName()
-						+" hand rank: "+hClasses.lastElement().get(0).handRank
-						+", wins: "
-						+pt/hClasses.lastElement().size()
-						+" with a "+HandEvaluator.nameHand(tmpHand));
+				if(pt>0){
+					view.getGraphics().setColor(Color.yellow);
+					view.getGraphics().setFont(new Font(null,Font.BOLD,30));
+					view.getGraphics().drawString((hClasses.lastElement().get(0).getName()
+						+" wins "
+						+f.format(pt/hClasses.lastElement().size())
+						+" with "+HandEvaluator.nameHand(tmpHand)),220,240);
+					
+					try {
+						Thread.sleep(100*sleep);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//view.getGraphics().setColor(Color.WHITE);
+				}
 				//System.out.println(sumAllMoney());
 				
 			//}

@@ -2,8 +2,11 @@ package graphics;
 
 import game.Table;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -45,6 +48,7 @@ public class TableView extends JPanel implements MouseInputListener,
 	BufferedImage tbl;
 	BufferedImage cardImgs;
 	Point[] sPos = new Point[10];
+	Point[] cardPos = new Point[20];
 
 	Double[] chipVals = { .01, .05, .25, 1.0, 5.0, 25.0, 100.0, 500.0, 1000.0,
 			5000.0, 25000.0, 100000.0, 500000.0, 1000000.0, 5000000.0 };
@@ -76,7 +80,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		table = t;
 		frame = table.frame;
 
-		frame.setSize(780, 480);
+		frame.setSize(800, 480);
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(this);
 
@@ -128,6 +132,27 @@ public class TableView extends JPanel implements MouseInputListener,
 		chipPos[7] = new Point(sPos[7].x + 20, sPos[7].y - 100);
 		chipPos[8] = new Point(sPos[8].x + 115, sPos[8].y + 20);
 		chipPos[9] = new Point(sPos[9].x + 105, sPos[9].y + 60);
+		
+		cardPos[0] = new Point(sPos[0].x + 49, sPos[0].y );
+		cardPos[1] = new Point(sPos[0].x + 60, sPos[0].y + 80);
+		cardPos[2] = new Point(sPos[1].x - 60, sPos[1].y -10);
+		cardPos[3] = new Point(sPos[1].x - 49, sPos[1].y -10);
+		cardPos[4] = new Point(sPos[2].x - 60, sPos[2].y - 10);
+		cardPos[5] = new Point(sPos[2].x - 49, sPos[2].y - 10);
+		cardPos[6] = new Point(sPos[3].x - 60, sPos[3].y - 10);
+		cardPos[7] = new Point(sPos[3].x -5, sPos[3].y - 70);
+		cardPos[8] = new Point(sPos[4].x -5, sPos[4].y - 70);
+		cardPos[9] = new Point(sPos[4].x + 6, sPos[4].y - 70);
+		cardPos[10] = new Point(sPos[5].x -5, sPos[5].y - 70);
+		cardPos[11] = new Point(sPos[5].x + 6, sPos[5].y - 70);
+		cardPos[12] = new Point(sPos[6].x -5, sPos[6].y - 70);
+		cardPos[13] = new Point(sPos[6].x + 6, sPos[6].y- 70);
+		cardPos[14] = new Point(sPos[7].x -5, sPos[7].y - 70);
+		cardPos[15] = new Point(sPos[7].x + 6, sPos[7].y - 70);
+		cardPos[16] = new Point(sPos[8].x + 49, sPos[8].y);
+		cardPos[17] = new Point(sPos[8].x + 60, sPos[8].y );
+		cardPos[18] = new Point(sPos[9].x + 49, sPos[9].y );
+		cardPos[19] = new Point(sPos[9].x + 60, sPos[9].y );
 
 	}
 
@@ -192,15 +217,46 @@ public class TableView extends JPanel implements MouseInputListener,
 		g.setColor(Color.black);
 		g.drawImage(tbl, 110, 80, 572, 240, new Color(255, 255, 255), this);
 
+		g.setFont(new Font("Lucida Sans",Font.BOLD,12));
 		for (int i = 0; i < 10; i++) {
 			// g.setColor(Color.black);
-			if (i == table.getToAct()) {
-				g.setColor(Color.red);
-				// g.fillOval(sPos[i].x+2, sPos[i].y+30, 10, 10);
-
-			}
-			g.drawRoundRect(sPos[i].x, sPos[i].y, 45, 45, 10, 10);
+			//g.drawRoundRect(sPos[i].x, sPos[i].y, 45, 45, 10, 10);
 			g.setColor(Color.black);
+			if (i == table.getToAct()) {
+				//g.setColor(Color.red);
+				// g.fillOval(sPos[i].x+2, sPos[i].y+30, 10, 10);
+				Graphics2D g2D = (Graphics2D) g;      
+
+				
+//				g.setColor(Color.red);
+//				g2D.setStroke(new BasicStroke(12F));
+//				g2D.drawRoundRect(cardPos[i*2].x-7, cardPos[i*2].y-7, 66, 71, 10, 10);
+				
+				g.setColor(Color.red);
+				g2D.setStroke(new BasicStroke(10F));
+				g2D.drawRoundRect(cardPos[i*2].x-5, cardPos[i*2].y-5, 62, 67, 10, 10);
+				
+//				g.setColor(Color.orange);
+//				g2D.setStroke(new BasicStroke(3F));
+//				g2D.drawRoundRect(cardPos[i*2].x-4, cardPos[i*2].y-4, 61, 66, 10, 10);
+//				
+//				g.setColor(Color.yellow);
+//				g2D.setStroke(new BasicStroke(3F));
+//				g2D.drawRoundRect(cardPos[i*2].x-3, cardPos[i*2].y-3, 60, 65, 10, 10);
+//				
+//				g.setColor(Color.green);
+//			    g2D.setStroke(new BasicStroke(2F));
+//				g2D.drawRoundRect(cardPos[i*2].x-2, cardPos[i*2].y-2, 59, 64, 10, 10);
+//				
+//				g.setColor(Color.black);
+//				g2D.setStroke(new BasicStroke(4F));
+//				g2D.drawRoundRect(cardPos[i*2].x, cardPos[i*2].y, 55, 60, 10, 10);
+				
+				
+				g.setColor(Color.black);
+			}
+			
+			
 
 			if (table.getSeats()[i] != null) {
 				if (!table.getSeats()[i].isLive()) {
@@ -252,6 +308,8 @@ public class TableView extends JPanel implements MouseInputListener,
 
 					}
 
+					
+					
 					if (table.getSeats()[i].getContributed() > 0) {
 						for (int q = 14, count = 0; q >= 0; q--) {
 							if (table.getSeats()[i].stackChips[q] != 0) {
@@ -339,59 +397,7 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	}
 
-	private int cardOffsetY(int i) {
-		switch (i) {
-
-		case 0:
-			return (-10);
-		case 1:
-			return (-10);
-		case 2:
-			return (-10);
-		case 3:
-			return (-10);
-		case 4:
-			return (-60);
-		case 5:
-			return (-60);
-		case 6:
-			return (-60);
-		case 7:
-			return (-60);
-		case 8:
-			return (0);
-		case 9:
-			return (0);
-		}
-		return 0;
-	}
-
-	private int cardOffsetX(int i) {
-		switch (i) {
-
-		case 0:
-			return (44);
-		case 1:
-			return (-44);
-		case 2:
-			return (-44);
-		case 3:
-			return (-44);
-		case 4:
-			return (22);
-		case 5:
-			return (0);
-		case 6:
-			return (0);
-		case 7:
-			return (0);
-		case 8:
-			return (0);
-		case 9:
-			return (0);
-		}
-		return 0;
-	}
+	
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {

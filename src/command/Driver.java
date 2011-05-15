@@ -48,7 +48,7 @@ public class Driver {
 		
 		
 		
-		double startingStack=5000;
+		double startingStack=50;
 		
 		t.addPlayer(new Player("Connor",startingStack), 3);
 		t.addPlayer(new Player("Forrest",startingStack), 1);
