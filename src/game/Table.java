@@ -4,6 +4,7 @@ import graphics.PlayerView;
 import graphics.TableView;
 
 import java.awt.Color;
+import java.text.NumberFormat;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ public class Table {
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
+	public int sleep=0;
 	int smallBlind = 2;
 	int bigBlind = 3;
 	int button = 1;
@@ -78,7 +80,8 @@ public class Table {
 
 		initPlayerCount();
 
-		for (int i = 0; i < numHands; i++) {
+		for (int i = 1; i < numHands+1; i++) {
+			System.out.println("hand number "+i+"\n");
 			playHand();
 		}
 
@@ -88,6 +91,7 @@ public class Table {
 	public void playHand() {
 		// seats[(button+1)%10];
 
+		
 		resetTContributed();
 		playersAllin = 0;
 		view.clearChipCount(view.pot);
@@ -102,6 +106,8 @@ public class Table {
 			HH.get(i).clear();
 		}
 
+		view.repaint();
+		//System.out.println(generateStartingAction());
 		while (livePlayers < 2) {
 			try {
 				Thread.sleep(100);
@@ -109,10 +115,14 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-
+		
+		HH.get(0).add(generateStartingAction());
+		
+		System.out.println(sumAllMoney());
 		actionComplete = false;
 
 		dealCards();
+		
 
 		advanceButton();
 		toAct = findNextLivePlayer(button);
@@ -136,7 +146,7 @@ public class Table {
 				actionComplete = isActionComplete();
 
 				try {
-					Thread.sleep(100);
+					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -182,7 +192,7 @@ public class Table {
 				actionComplete = isActionComplete();
 				advanceAction();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -222,7 +232,7 @@ public class Table {
 				actionComplete = isActionComplete();
 				advanceAction();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -261,7 +271,7 @@ public class Table {
 				actionComplete = isActionComplete();
 				advanceAction();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -387,25 +397,29 @@ public class Table {
 						seats[i].getHand().cardA), new Card(
 						seats[i].getHand().cardB), h);
 
-				
+				System.out.println("trying to add "+seats[i].getName()+
+						" with handrank: "+seats[i].handRank);
 				for (int j = hClasses.size() - 1; j >= 0; j--) {
 					if (!hClasses.lastElement().isEmpty()) {
 						if (seats[i].handRank > hClasses.get(j).get(0).handRank) {
 							hClasses.add(j+1,new Vector<Player>());
 							hClasses.get(j+1).add(seats[i]);
+							System.out.println("adding "+seats[i].getName()+" in greater than");
 							break;
 
 						} 
 						else if (seats[i].handRank == hClasses.get(j).get(0).handRank) {
+							System.out.println("made it into equals");
 							for (int k = hClasses.get(j).size() - 1; k >= 0; k--) {
 								if (seats[i].getTContributed() >= hClasses.get(j).get(k)
 									.getTContributed()) {
-									hClasses.get(j).add(k,seats[i]);
+									hClasses.get(j).add(k+1,seats[i]);
+									System.out.println("adding "+seats[i].getName()+" at equals");
 									break;
 								}
-								else if(k==0 && seats[i].handRank 
-										< hClasses.get(j).get(0).handRank){
+								else if(k==0){
 									hClasses.get(j).add(0,seats[i]);
+									System.out.println("adding "+seats[i].getName()+" at equals");
 									break;
 								}
 							}
@@ -415,12 +429,14 @@ public class Table {
 						else if(j==0 &&seats[i].handRank < hClasses.get(0).get(0).handRank ){
 							hClasses.add(0, new Vector<Player>());
 							hClasses.get(0).add(seats[i]);
+							System.out.println("adding "+seats[i].getName()+" at less than 0th class");
 							break;
 						}
 					} 
 					
 					else {
 						hClasses.lastElement().add(seats[i]);
+						System.out.println("adding "+seats[i].getName()+" in final else");
 							break;
 					}
 				}
@@ -429,28 +445,55 @@ public class Table {
 
 		}
 
+		int plyrAtShowdown=0;
+		for(int s=0;s<hClasses.size();s++){
+			System.out.println("hand rank class: "+s);
+			for(int b=0;b<hClasses.get(s).size();b++){
+				plyrAtShowdown++;
+				System.out.println(hClasses.get(s).get(b).getName()+
+						" hand rank: "+hClasses.get(s).get(b).handRank);
+			}
+		}
+		System.out.println("livePlayers: "+livePlayers+" playersAtShowdown: "
+				+plyrAtShowdown);
+		
 		
 		
 		Hand tmpHand=new Hand();
-		for(int l=0;l<10;l++){
-			if(seats[l]!=null && !seats[l].isLive() 
-					&& seats[l].getTContributed()>0){
-				hClasses.get(0).add(0,seats[l]);
-			}
-		}
+
 		while(!hClasses.isEmpty()){
+			
 			double pt=0;
 			double frstPlyrAmt=hClasses.lastElement().get(0).getTContributed();
 			for(int n=0;n<hClasses.size();n++){
 				for(int m=0;m<hClasses.get(n).size();m++){
 					if(frstPlyrAmt>hClasses.get(n).get(m).getTContributed()){
+						
+						System.out.println(hClasses.get(n).get(m).getName()
+								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
+								+", stack: "+hClasses.get(n).get(m).getStack());
+						
 						pt=pt+hClasses.get(n).get(m).getTContributed();
 						hClasses.get(n).get(m).setTContributed
 							(-hClasses.get(n).get(m).getTContributed());
+						
+						System.out.println(hClasses.get(n).get(m).getName()
+								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
+								+", stack: "+hClasses.get(n).get(m).getStack());
+						//System.out.println(sumAllMoney());
 					}
 					else{
+						System.out.println(hClasses.get(n).get(m).getName()
+								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
+								+", stack: "+hClasses.get(n).get(m).getStack());
+						
 						pt=pt+frstPlyrAmt;
 						hClasses.get(n).get(m).setTContributed(-frstPlyrAmt);
+						
+						System.out.println(hClasses.get(n).get(m).getName()
+								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
+								+", stack: "+hClasses.get(n).get(m).getStack());
+						//System.out.println(sumAllMoney());
 					}
 					
 					
@@ -460,14 +503,46 @@ public class Table {
 			//System.out.println();
 		}
 			
+			for(int l=0;l<10;l++){
+				if(seats[l]!=null && !seats[l].isLive() 
+						&& seats[l].getTContributed()>0){
+					if(frstPlyrAmt>seats[l].getTContributed()){
+						
+						System.out.println(seats[l].getName()
+								+" total contributed: "+seats[l].getTContributed()
+								+", stack: "+seats[l].getStack());
+						
+						pt=pt+seats[l].getTContributed();
+						seats[l].setTContributed
+							(-seats[l].getTContributed());
+						
+						System.out.println(seats[l].getName()
+								+" total contributed: "+seats[l].getTContributed()
+								+", stack: "+seats[l].getStack());
+						
+						
+						//System.out.println(sumAllMoney());
+					}
+					else{
+						System.out.println(seats[l].getName()
+								+" total contributed: "+seats[l].getTContributed()
+								+", stack: "+seats[l].getStack());
+						
+						pt=pt+frstPlyrAmt;
+						seats[l].setTContributed(-frstPlyrAmt);
+						
+						System.out.println(seats[l].getName()
+								+" total contributed: "+seats[l].getTContributed()
+								+", stack: "+seats[l].getStack());
+						//System.out.println(sumAllMoney());
+					}
+				}
+			}
 			
 			tmpHand.makeEmpty();
-			for(int m=0;m<hClasses.lastElement().size();m++){
+			for(int m=0,deadPlyrs=0;m<hClasses.lastElement().size();m++){
 				
-					
-				hClasses.lastElement().get(m).setStack(pt/hClasses.lastElement().size());
-				
-				
+					hClasses.lastElement().get(m).setStack(pt/(hClasses.lastElement().size()-deadPlyrs));
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardA));
 				//System.out.println(new Card(hClasses.lastElement().get(0).getHand().cardA).toString());
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardB));
@@ -477,12 +552,16 @@ public class Table {
 					//System.out.println(new Card(board[a]).toString());
 				}
 				
+			
+				
 				System.out.println(hClasses.lastElement().get(0).getName()
 						+" hand rank: "+hClasses.lastElement().get(0).handRank
 						+", wins: "
 						+pt/hClasses.lastElement().size()
 						+" with a "+HandEvaluator.nameHand(tmpHand));
+				//System.out.println(sumAllMoney());
 				
+			//}
 			}
 			
 			while(hClasses.get(0).get(0).handRank==-1 && 
@@ -490,33 +569,37 @@ public class Table {
 				hClasses.get(0).remove(0);
 			}
 			hClasses.lastElement().remove(0);
+			
 			if(hClasses.lastElement().isEmpty()){
 				hClasses.remove(hClasses.size()-1);
 			}
+			//System.out.println(sumAllMoney());
 			
 		}
 		
-	
-//		double win = pot / winners.size();
-//		for (int i = 0; i < winners.size(); i++) {
-//			winners.get(i).setStack(win);
-//			pot = pot - win;
-//			HH.get(round).add(new Action(winners.get(i), 9, win));
-//
-//		}
-//		for (int i = 0; i < losers.size(); i++) {
-//			HH.get(round).add(new Action(losers.get(i), 10, 0));
-//		}
-
-		p();
+	p();
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(30*sleep);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	
+	private double sumAllMoney(){
+		double acc=0;
+		for(int l=0;l<10;l++){
+			if(seats[l]!=null //&& !seats[l].isSittingOut() 
+					){
+				acc=acc+seats[l].getStack();
+				System.out.println(acc);
+			}
+		}
+		System.out.println(acc);
+		return acc+pot;
+	}
+	
 	private Hand boardToHand() {
 		Hand h = new Hand();
 
@@ -552,7 +635,7 @@ public class Table {
 		winner.setStack(pot);
 		p();
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(30*sleep);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -673,6 +756,32 @@ public class Table {
 	}
 
 	// Forces the player at index toAct to post the small blind.
+	private Action generateStartingAction(){
+		String s="";
+		NumberFormat f=NumberFormat.getCurrencyInstance();
+		
+		for(int i=0;i<10;i++){
+			if(seats[i]==null){
+				s=s+"seat "+(i+1)+": empty.\n";
+			}
+			else if(seats[i].isSittingOut()){
+				s=s+"seat "+(i+1)+": "+seats[i].getName()
+				     +" has "+f.format(seats[i].getStack())
+				     +" and is sitting out.\n";
+			}
+			
+			else{
+				s=s+"seat "+(i+1)+": "+seats[i].getName()
+				       		+" has "+f.format(seats[i].getStack())
+				       	+".\n";
+				
+			}
+		}
+		Action start=new Action(null,11,0);
+		start.string=s;
+		return start;
+	}
+	
 	private void postSB() {
 		HH.get(round).add(new Action(seats[toAct], 4, sb));
 		seats[toAct].setStack(-sb);

@@ -15,10 +15,12 @@ public class Action {
  * 8:potsizeNoShow
  * 9:potsizeShowdown
  * 10:loses hand
+ * 11:beginning state
  */
 	public Player player;
 	public int action;
 	public double wager;
+	public String string="";
 	
 	public Action(Player p, int a, double w){
 		player=p;
@@ -26,6 +28,9 @@ public class Action {
 		wager=w;
 	}
 	
+	public void setString(String s){
+		string=s;
+	}
 	public String toString(){
 		
 	switch (action){
@@ -49,6 +54,8 @@ public class Action {
 		case 9: return (player.getName()+" wins: $" +wager);
 		
 		case 10: return (player.getName()+ " lost");
+		
+		case 11: return (string);
 	
 	}
 	return "";

@@ -44,7 +44,11 @@ public class Driver {
 //		}
 //		System.out.println(HandEvaluator.nameHand(tmpHand));
 		
-		double startingStack=50;
+		
+		
+		
+		
+		double startingStack=5000;
 		
 		t.addPlayer(new Player("Connor",startingStack), 3);
 		t.addPlayer(new Player("Forrest",startingStack), 1);
@@ -58,7 +62,9 @@ public class Driver {
 		t.addPlayer(new Player("Ben Franklin",startingStack), 10);
 		
 		//t.playHand();
-		t.run(300);
+		
+		
+		t.run(1000000);
 	}
 
 }

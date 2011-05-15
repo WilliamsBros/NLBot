@@ -12,6 +12,7 @@ import graphics.PlayerView;
 
 public class Player {
 
+	public int pushed=0;
 	private String name;
 	private double stack;
 	private Table table;
@@ -37,81 +38,24 @@ public class Player {
 	}
 
 	public Action generateAction() {
-		//view.setPlayer(this);
-		//Scanner s = new Scanner(System.in);
 		int actionNum;
 		double amt;
-		Player[] seats = table.getSeats();
 
 		table.view.repaint();
-//		for (int i = 0; i < 10; i++) {
-//			if (seats[i] != null) {
-//				System.out.print(i + ": " + seats[i].getName());
-//
-//				if (i == table.getButton()) {
-//					System.out.print(" <B<:");
-//				}
-//				if (seats[i] == this) {
-//					System.out.print(" <toAct<:");
-//				}
-//				if (i == table.getLastAggressor()) {
-//					System.out.print(" <lastAggressor<:");
-//				}
-//				if (seats[i].isSittingOut) {
-//					System.out.print(" :sitting out ");
-//				}
-//				if (seats[i].isLive() == false) {
-//					System.out.print(" :folded ");
-//				}
-//				System.out.print(" Contributed: " + seats[i].getContributed());
-//				System.out.print(" Stack size: " + seats[i].getStack());
-//				System.out.print(" Hole cards: " + "["+
-//						new Card(seats[i].getHand().cardA).toString()+"]"
-//						+ "["+
-//						(new Card(seats[i].getHand().cardB)).toString()+"]");
-//						
-//				System.out.println();
-//				continue;
-//			}
-//			System.out.println(i + ": empty");
-//		}
-		// System.out.println("action is on: "+ name);
-//		System.out.println(" Potsize: " + table.getPot());
-//		System.out.println(" Board: ");
-
-//		switch (table.getRound()) {
-//
-//		case 0:
-//			System.out.println(" [][][][][] ");
-//			break;
-//		case 1:
-//			for (int i = 0; i < 3; i++) {
-//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-//						+ "]");
-//			}
-//			break;
-//
-//		case 2:
-//			for (int i = 0; i < 4; i++) {
-//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-//						+ "]");
-//			}
-//			break;
-//		case 3:
-//			for (int i = 0; i < 5; i++) {
-//				System.out.print("[" + new Card(table.getBoard()[i]).toString()
-//						+ "]");
-//			}
-//			break;
-//
-//		}
-//		System.out.println();
-//		System.out.println("action number please: ");
-//		System.out.println("0: fold, 1: check, 2: bet, 3: raise 6: call ");
-
 		while(action==-1){
 			try {
-				Thread.sleep(100);
+				Thread.sleep(table.sleep);
+				
+				switch((int)(Math.random()*5)){
+					
+				case 0: table.view.bet.doClick(pushed);break;
+				case 1:	table.view.call.doClick(pushed);break;
+				case 2:	table.view.check.doClick(pushed);break;
+				case 3:	table.view.raise.doClick(pushed);break;
+				case 4:	table.view.fold.doClick(pushed);break;
+				}
+				
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -174,7 +118,7 @@ public class Player {
 
 	public boolean isSittingOut() {
 
-		if(stack<=1){
+		if(stack<=0){
 			isSittingOut=true;
 		}
 		return isSittingOut;
@@ -185,7 +129,7 @@ public class Player {
 	}
 
 	public void sitOut() {
-		if(stack<=1){
+		if(stack<=0){
 			isSittingOut=true;
 		}
 		else{
