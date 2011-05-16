@@ -15,7 +15,7 @@ public class Player {
 	//private boolean canReload=false;
 	public boolean autonomous=false;
 	
-	public int pushed=100;
+	public int pushed;
 	private String name;
 	private double stack;
 	private Table table;
@@ -48,19 +48,29 @@ public class Player {
 		table.view.repaint();
 		while(action==-1){
 			
-			
 			try {
-				Thread.sleep(table.sleep+1);
+				Thread.sleep(table.sleep);
+			
 			
 				if(autonomous){
-				switch((int)(Math.random()*6)){
+				switch((int)(Math.random()*5)){
 					
-				case 0: table.view.bet.doClick(pushed);break;
-				case 1:	table.view.call.doClick(pushed);break;
-				case 2:	table.view.check.doClick(pushed);break;
-				case 3:	table.view.raise.doClick(pushed);break;
-				case 4:	table.view.fold.doClick(pushed);break;
-				case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
+				case 0: if(table.legalActions[2])
+							table.view.bet.doClick(pushed);
+								break;
+				case 1:	if(table.legalActions[6])
+							table.view.call.doClick(pushed);
+								break;
+				case 2:	if(table.legalActions[1])
+							table.view.check.doClick(pushed);
+								break;
+				case 3:	if(table.legalActions[3])
+							table.view.raise.doClick(pushed);
+								break;
+				case 4:	if(table.legalActions[0])
+							table.view.fold.doClick(pushed);
+								break;
+				//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
 				}
 				}
 				
@@ -115,6 +125,7 @@ public class Player {
 
 	public void sit(Table t) {
 		table = t;
+		pushed=t.sleep;
 	}
 
 	public boolean isLive() {

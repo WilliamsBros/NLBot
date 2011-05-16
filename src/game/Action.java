@@ -28,6 +28,13 @@ public class Action {
 		wager=w;
 	}
 	
+	public Action(Player p, int a, double w, String s){
+		player=p;
+		action=a;
+		wager=w;
+		string=s;
+	}
+	
 	public void setString(String s){
 		string=s;
 	}
@@ -47,7 +54,8 @@ public class Action {
 		case 5: return (player.getName()+" posts the big blind "+wager);
 		
 		case 6: return (player.getName()+" calls ");
-		//case 7: return (player.getName()+" wins the pot");
+		
+		case 7: return (string);
 		
 		case 8: return (player.getName()+" wins: $" + wager);
 		

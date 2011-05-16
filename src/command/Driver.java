@@ -48,18 +48,17 @@ public class Driver {
 		
 		
 		
-		double startingStack=50;
 		
-		t.addPlayer(new Player("Connor",startingStack), 3);
-		t.addPlayer(new Player("Forrest",startingStack), 1);
-		t.addPlayer(new Player("Alexa",startingStack), 2);
-		t.addPlayer(new Player("Prometheus",startingStack), 4);
-		t.addPlayer(new Player("Corey",startingStack), 5);
-		t.addPlayer(new Player("Rani",startingStack), 6);
-		t.addPlayer(new Player("Bob",startingStack), 7);
-		t.addPlayer(new Player("Turner",startingStack), 8);
-		t.addPlayer(new Player("Amy",startingStack), 9);
-		t.addPlayer(new Player("Ben Franklin",startingStack), 10);
+		t.addPlayer(new Player("Connor",Table.getDefaultStackSize), 3);
+		t.addPlayer(new Player("Forrest",Table.getDefaultStackSize), 1);
+		t.addPlayer(new Player("Alexa",Table.getDefaultStackSize), 2);
+		t.addPlayer(new Player("Prometheus",Table.getDefaultStackSize), 4);
+		t.addPlayer(new Player("Corey",Table.getDefaultStackSize), 5);
+		t.addPlayer(new Player("Rani",Table.getDefaultStackSize), 6);
+		t.addPlayer(new Player("Bob",Table.getDefaultStackSize), 7);
+		t.addPlayer(new Player("Turner",Table.getDefaultStackSize), 8);
+		t.addPlayer(new Player("Amy",Table.getDefaultStackSize), 9);
+		t.addPlayer(new Player("Ben Franklin",Table.getDefaultStackSize), 10);
 		
 		//t.playHand();
 		

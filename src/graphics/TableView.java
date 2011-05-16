@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.NumberFormat;
 
 import javax.imageio.ImageIO;
@@ -70,9 +71,22 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	public TableView(Table t) {
 		try {
-			tbl = ImageIO.read(new File("src\\Texas_Holdem_Poker_Table.jpg"));
-			cardImgs = ImageIO.read(new File("src\\clip_image004_2.gif"));
-			chips = ImageIO.read(new File("src\\Chips3.png"));
+			
+			
+			ClassLoader cldr = TableView.class.getClassLoader();
+			
+//no jar			
+			tbl = ImageIO.read(cldr.getResource("\\graphics\\Texas_Holdem_Poker_Table.jpg"));
+			cardImgs = ImageIO.read(cldr.getResource("\\graphics\\clip_image004_2.gif"));
+			chips = ImageIO.read(cldr.getResource("\\graphics\\Chips3.png"));	
+			
+			
+			
+//for jar
+//			tbl = ImageIO.read(cldr.getResource("NLBot1\\graphics\\Texas_Holdem_Poker_Table.jpg"));
+//			cardImgs = ImageIO.read(cldr.getResource("NLBot1\\graphics\\clip_image004_2.gif"));
+//			chips = ImageIO.read(cldr.getResource("NLBot1\\graphics\\Chips3.png"));
+			
 		} catch (IOException e) {
 			System.out.println("Image could not be read");
 			System.exit(1);
@@ -275,7 +289,7 @@ public class TableView extends JPanel implements MouseInputListener,
 			
 			
 			
-			if (i == table.getToAct()) {
+			if (i == table.getToAct() && table.livePlayers>1) {
 				//g.setColor(Color.red);
 				// g.fillOval(sPos[i].x+2, sPos[i].y+30, 10, 10);
 				Graphics2D g2D = (Graphics2D) g;      
@@ -514,7 +528,6 @@ public class TableView extends JPanel implements MouseInputListener,
 //		}
 	
 		if(e.getActionCommand().startsWith("aut")){
-			//e.getActionCommand().charAt(5);
 			int tmp=(e.getActionCommand().charAt(3)-48);
 			if(table.getSeats()[tmp].autonomous){
 				table.getSeats()[tmp].autonomous=false;
@@ -522,7 +535,6 @@ public class TableView extends JPanel implements MouseInputListener,
 			else{
 				table.getSeats()[tmp].autonomous=true;
 			}
-			System.out.println("setting autonomous");
 			
 			return;
 		}
@@ -599,8 +611,6 @@ public class TableView extends JPanel implements MouseInputListener,
 			
 			else{
 				for(int i=0;i<10;i++){
-					
-					//autonomous[i].setEnabled(true);
 				
 						if(autonomous[i].isSelected()){
 							autonomous[i].doClick();
