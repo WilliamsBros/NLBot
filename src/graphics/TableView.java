@@ -20,6 +20,8 @@ import java.text.NumberFormat;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -45,6 +47,11 @@ public class TableView extends JPanel implements MouseInputListener,
 	public JButton bet = new JButton("bet");
 	public JButton raise = new JButton("raise");
 	public JButton call = new JButton("call");
+	public JButton[] reload=new JButton[10]; 
+	public JCheckBoxMenuItem allAut=new JCheckBoxMenuItem("Autonomous");
+	
+	public JCheckBox[] autonomous=new JCheckBox[10]; 
+	
 	BufferedImage tbl;
 	BufferedImage cardImgs;
 	Point[] sPos = new Point[10];
@@ -70,7 +77,9 @@ public class TableView extends JPanel implements MouseInputListener,
 			System.out.println("Image could not be read");
 			System.exit(1);
 		}
-
+		
+		
+		this.setLayout(null);
 		setBackground(Color.white);
 		// C:" +
 		// "\\Documents and Settings\\ccadmin.LT-SF-0XX\\Desktop\\" +
@@ -80,36 +89,38 @@ public class TableView extends JPanel implements MouseInputListener,
 		table = t;
 		frame = table.frame;
 
-		frame.setSize(800, 480);
+		//frame.setLayout(null);
+		frame.setSize(800, 500);
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(this);
-
+		
 		fold.addActionListener(this);
 		check.addActionListener(this);
 		call.addActionListener(this);
 		bet.addActionListener(this);
 		raise.addActionListener(this);
+		allAut.addActionListener(this);
 		// amount.addChangeListener(this);
 
 		
-		fold.setBackground(Color.yellow);
-		check.setBackground(Color.yellow);
-		call.setBackground(Color.yellow);
-		bet.setBackground(Color.yellow);
-		raise.setBackground(Color.yellow);
+//		fold.setBackground(Color.yellow);
+//		check.setBackground(Color.yellow);
+//		call.setBackground(Color.yellow);
+//		bet.setBackground(Color.yellow);
+//		raise.setBackground(Color.yellow);
 		
 		menu.add(fold);
 		menu.add(check);
 		menu.add(call);
 		menu.add(bet);
 		menu.add(raise);
+		menu.add(allAut);
 		// menu.add(amount);
 
 		// frame.setTitle(player.getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setJMenuBar(menu);
-		addMouseListener(this);
-		frame.setVisible(true);
+		//addMouseListener(this);
 
 		sPos[0] = new Point(130, 50);
 		sPos[1] = new Point(610, 50);
@@ -123,7 +134,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		sPos[9] = new Point(70, 120);
 
 		chipPos[0] = new Point(sPos[0].x + 100, sPos[0].y + 80);
-		chipPos[1] = new Point(sPos[1].x - 80, sPos[1].y + 80);
+		chipPos[1] = new Point(sPos[1].x - 85, sPos[1].y + 80);
 		chipPos[2] = new Point(sPos[2].x - 95, sPos[2].y + 50);
 		chipPos[3] = new Point(sPos[3].x - 105, sPos[3].y + 20);
 		chipPos[4] = new Point(sPos[4].x - 20, sPos[4].y - 100);
@@ -133,14 +144,14 @@ public class TableView extends JPanel implements MouseInputListener,
 		chipPos[8] = new Point(sPos[8].x + 115, sPos[8].y + 20);
 		chipPos[9] = new Point(sPos[9].x + 105, sPos[9].y + 60);
 		
-		cardPos[0] = new Point(sPos[0].x + 49, sPos[0].y );
-		cardPos[1] = new Point(sPos[0].x + 60, sPos[0].y + 80);
+		cardPos[0] = new Point(sPos[0].x + 59, sPos[0].y );
+		cardPos[1] = new Point(sPos[0].x + 70, sPos[0].y );
 		cardPos[2] = new Point(sPos[1].x - 60, sPos[1].y -10);
 		cardPos[3] = new Point(sPos[1].x - 49, sPos[1].y -10);
 		cardPos[4] = new Point(sPos[2].x - 60, sPos[2].y - 10);
 		cardPos[5] = new Point(sPos[2].x - 49, sPos[2].y - 10);
 		cardPos[6] = new Point(sPos[3].x - 60, sPos[3].y - 10);
-		cardPos[7] = new Point(sPos[3].x -5, sPos[3].y - 70);
+		cardPos[7] = new Point(sPos[3].x -49, sPos[3].y - 10);
 		cardPos[8] = new Point(sPos[4].x -5, sPos[4].y - 70);
 		cardPos[9] = new Point(sPos[4].x + 6, sPos[4].y - 70);
 		cardPos[10] = new Point(sPos[5].x -5, sPos[5].y - 70);
@@ -149,11 +160,39 @@ public class TableView extends JPanel implements MouseInputListener,
 		cardPos[13] = new Point(sPos[6].x + 6, sPos[6].y- 70);
 		cardPos[14] = new Point(sPos[7].x -5, sPos[7].y - 70);
 		cardPos[15] = new Point(sPos[7].x + 6, sPos[7].y - 70);
-		cardPos[16] = new Point(sPos[8].x + 49, sPos[8].y);
-		cardPos[17] = new Point(sPos[8].x + 60, sPos[8].y );
-		cardPos[18] = new Point(sPos[9].x + 49, sPos[9].y );
-		cardPos[19] = new Point(sPos[9].x + 60, sPos[9].y );
+		cardPos[16] = new Point(sPos[8].x + 54, sPos[8].y);
+		cardPos[17] = new Point(sPos[8].x + 65, sPos[8].y );
+		cardPos[18] = new Point(sPos[9].x + 59, sPos[9].y );
+		cardPos[19] = new Point(sPos[9].x + 70, sPos[9].y );
 
+		
+		
+		for(int i=0;i<10;i++){
+			
+			reload[i]=new JButton("R");
+			reload[i].setFont((new Font("Lucida Sans",Font.BOLD,10)));
+			reload[i].setSize(45,15);
+			reload[i].setActionCommand("rel"+i);
+			reload[i].addActionListener(this);
+			reload[i].setLocation(sPos[i].x, sPos[i].y+30);
+			this.add(reload[i]);
+		}
+		for(int i=0;i<10;i++){
+			
+			autonomous[i]=new JCheckBox("Aut");
+			autonomous[i].setFont((new Font("Lucida Sans",Font.BOLD,10)));
+			autonomous[i].setSize(45,15);
+			autonomous[i].setActionCommand("aut"+i);
+			autonomous[i].addActionListener(this);
+			autonomous[i].setLocation(sPos[i].x, sPos[i].y+45);
+			this.add(autonomous[i]);
+		
+		}
+		frame.setVisible(true);
+//		for(int i=0;i<10;i++){
+//			
+//		}
+		
 	}
 
 //	 public static void main(String[] args) {
@@ -218,10 +257,24 @@ public class TableView extends JPanel implements MouseInputListener,
 		g.drawImage(tbl, 110, 80, 572, 240, new Color(255, 255, 255), this);
 
 		g.setFont(new Font("Lucida Sans",Font.BOLD,12));
+		
+		g.setColor(new Color(8388608));
+		g.fillOval(chipPos[table.getButton()].x+25
+		                            , chipPos[table.getButton()].y
+		                            , 20, 20);
+		g.setColor(Color.white);
+		g.drawString("D",chipPos[table.getButton()].x+30
+                , chipPos[table.getButton()].y+15);
+		
+		g.setColor(Color.black);
 		for (int i = 0; i < 10; i++) {
 			// g.setColor(Color.black);
 			//g.drawRoundRect(sPos[i].x, sPos[i].y, 45, 45, 10, 10);
 			g.setColor(Color.black);
+			
+			
+			
+			
 			if (i == table.getToAct()) {
 				//g.setColor(Color.red);
 				// g.fillOval(sPos[i].x+2, sPos[i].y+30, 10, 10);
@@ -234,7 +287,7 @@ public class TableView extends JPanel implements MouseInputListener,
 				
 				g.setColor(Color.red);
 				g2D.setStroke(new BasicStroke(10F));
-				g2D.drawRoundRect(cardPos[i*2].x-5, cardPos[i*2].y-5, 62, 67, 10, 10);
+				g2D.drawRoundRect(cardPos[i*2].x-4, cardPos[i*2].y-4, 62, 67, 10, 10);
 				
 //				g.setColor(Color.orange);
 //				g2D.setStroke(new BasicStroke(3F));
@@ -252,7 +305,7 @@ public class TableView extends JPanel implements MouseInputListener,
 //				g2D.setStroke(new BasicStroke(4F));
 //				g2D.drawRoundRect(cardPos[i*2].x, cardPos[i*2].y, 55, 60, 10, 10);
 				
-				
+				g2D.setStroke(new BasicStroke(1F));
 				g.setColor(Color.black);
 			}
 			
@@ -261,37 +314,50 @@ public class TableView extends JPanel implements MouseInputListener,
 			if (table.getSeats()[i] != null) {
 				if (!table.getSeats()[i].isLive()) {
 					if (table.getSeats()[i].isSittingOut()) {
+						
+						if(!table.getSeats()[i].isWaiting){
 						g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 								sPos[i].y);
 						g.drawString("sitting out", sPos[i].x, sPos[i].y + 10);
-					} else {
+						}
+						else {
+							g.drawString(table.getSeats()[i].getName(), sPos[i].x,
+									sPos[i].y);
+							g.drawString(f.format(table.getSeats()[i]
+									.getStack()), sPos[i].x, sPos[i].y + 15);
+							g.drawString("waiting", sPos[i].x, sPos[i].y + 30);
+						}
+					} 
+					else  {
 						g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 								sPos[i].y);
 						g.drawString(f.format(table.getSeats()[i]
 								.getStack()), sPos[i].x, sPos[i].y + 15);
 						g.drawString("folded", sPos[i].x, sPos[i].y + 30);
 					}
+					
+					
 				} else {
 					if (i > 3 && i < 8) {
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardA), sPos[i].x - 5,
-										sPos[i].y - 70, 44, 60, null);
+										.getHand().cardA), cardPos[i*2].x ,
+										cardPos[i*2].y, 44, 60, null);
 
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardB), sPos[i].x + 6,
-										sPos[i].y - 70, 44, 60, null);
+										.getHand().cardB), cardPos[i*2+1].x,
+										cardPos[i*2+1].y, 44, 60, null);
 					} else if (i > 0 && i < 4) {
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardA), sPos[i].x - 60,
-										sPos[i].y - 10, 44, 60, null);
+										.getHand().cardA), cardPos[i*2].x,
+										cardPos[i*2].y, 44, 60, null);
 
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardB), sPos[i].x - 49,
-										sPos[i].y - 10, 44, 60, null);
+										.getHand().cardB), cardPos[i*2+1].x,
+										cardPos[i*2+1].y, 44, 60, null);
 
 					}
 
@@ -299,12 +365,12 @@ public class TableView extends JPanel implements MouseInputListener,
 
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardB), sPos[i].x + 49,
-										sPos[i].y, 44, 60, null);
+										.getHand().cardB), cardPos[i*2].x,
+										 cardPos[i*2].y, 44, 60, null);
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
-										.getHand().cardA), sPos[i].x + 60,
-										sPos[i].y, 44, 60, null);
+										.getHand().cardA), cardPos[i*2+1].x ,
+										 cardPos[i*2+1].y, 44, 60, null);
 
 					}
 
@@ -332,8 +398,8 @@ public class TableView extends JPanel implements MouseInputListener,
 							sPos[i].x, sPos[i].y + 15);
 					g.drawString(f.format(table.getSeats()[i]
 							.getContributed()), sPos[i].x, sPos[i].y + 30);
-					g.drawString(f.format(table.getSeats()[i]
-					           .getTContributed()), sPos[i].x, sPos[i].y + 45);
+//					g.drawString(f.format(table.getSeats()[i]
+//					           .getTContributed()), sPos[i].x, sPos[i].y + 45);
 				}
 			} else if (table.getSeats()[i] == null) {
 				g.drawString("empty", sPos[i].x, sPos[i].y);
@@ -443,6 +509,29 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+//		switch (){
+//		
+//		}
+	
+		if(e.getActionCommand().startsWith("aut")){
+			//e.getActionCommand().charAt(5);
+			int tmp=(e.getActionCommand().charAt(3)-48);
+			if(table.getSeats()[tmp].autonomous){
+				table.getSeats()[tmp].autonomous=false;
+			}
+			else{
+				table.getSeats()[tmp].autonomous=true;
+			}
+			System.out.println("setting autonomous");
+			
+			return;
+		}
+		if(e.getActionCommand().startsWith("rel")){
+			//e.getActionCommand().charAt(5);
+			rebuy(e.getActionCommand().charAt(3)-48);
+			return;
+		}
+		
 		if (e.getSource() == fold) {
 			if(table.legalActions[0]){
 				table.getSeats()[table.getToAct()].action = 0;
@@ -478,6 +567,8 @@ public class TableView extends JPanel implements MouseInputListener,
 			}
 			return;
 		}
+		
+		
 		if (e.getSource() == raise) {
 				if(table.legalActions[3]){
 			table.getSeats()[table.getToAct()].action = 3;
@@ -491,6 +582,95 @@ public class TableView extends JPanel implements MouseInputListener,
 				}
 			return;
 		}
+		
+		if (e.getSource() == allAut) {
+			if(allAut.isSelected()){
+				for(int i=0;i<10;i++){
+				
+				//autonomous[i].setEnabled(true);
+			
+					if(!autonomous[i].isSelected()){
+						autonomous[i].doClick();
+					}
+				
+				}
+				
+			}
+			
+			else{
+				for(int i=0;i<10;i++){
+					
+					//autonomous[i].setEnabled(true);
+				
+						if(autonomous[i].isSelected()){
+							autonomous[i].doClick();
+						}
+					
+					}
+				
+			}
+			return;
+		}
+		
+//			switch(i){
+//			
+//			case 0:	if(table.getSeats()[i].canReload()){
+//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
+//					table.getSeats()[i].setStack(table.getDefaultStackSize
+//							-table.getSeats()[i].getStack());
+//					//table.getSeats()[i].setSittingOut(false);
+//					table.getSeats()[i].isWaiting=true;
+//					repaint();
+//				}
+//			}
+//			return;
+//			case 1:if(table.getSeats()[i].canReload()){
+//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
+//					table.getSeats()[i].setStack(table.getDefaultStackSize
+//							-table.getSeats()[i].getStack());
+//					//table.getSeats()[i].setSittingOut(false);
+//					table.getSeats()[i].isWaiting=true;
+//					repaint();
+//				}
+//			}
+//			return;
+//			case 2:if(table.getSeats()[i].canReload()){
+//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
+//					table.getSeats()[i].setStack(table.getDefaultStackSize
+//							-table.getSeats()[i].getStack());
+//					//table.getSeats()[i].setSittingOut(false);
+//					table.getSeats()[i].isWaiting=true;
+//					repaint();
+//				}
+//			}
+//			return;
+//			case 3:rebuy(i); return;
+//			case 4:
+//			case 5:
+//			case 6:
+//			case 7:
+//			case 8:
+//			case 9:
+//			
+//			
+//			}
+//			
+//		for(int i=0;i<10;i++){
+//			if (e.getSource() == reload[i]){
+//				if(table.getSeats()[i].canReload()){
+//					if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
+//						table.getSeats()[i].setStack(table.getDefaultStackSize
+//								-table.getSeats()[i].getStack());
+//						//table.getSeats()[i].setSittingOut(false);
+//						table.getSeats()[i].isWaiting=true;
+//						repaint();
+//					}
+//				}
+//				return;
+//			}
+//			
+//		}
+//		}
 		// if(e.getSource()==clear){
 		// world.clrImstruct();
 		// repaint();
@@ -499,7 +679,18 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	}
 
-	@Override
+
+	public void rebuy(int i){
+		if(table.getSeats()[i].canReload()){
+			table.getSeats()[i].setStack(Table.getDefaultStackSize
+						-table.getSeats()[i].getStack());
+				//table.getSeats()[i].setSittingOut(false);
+				table.getSeats()[i].isWaiting=true;
+				repaint();
+			
+		}
+		return;
+	}
 	public void stateChanged(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
 

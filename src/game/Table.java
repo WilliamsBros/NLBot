@@ -18,6 +18,7 @@ import player.Player;
 
 public class Table {
 
+	public static final double getDefaultStackSize = 50;
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
@@ -111,7 +112,8 @@ public class Table {
 		//System.out.println(generateStartingAction());
 		while (livePlayers < 2) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(200);
+				resurrectPlayers();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -679,6 +681,10 @@ public class Table {
 				// can be negative -fixing bug -connor
 						deck.deck[cards + 1]);
 				cards += 2;
+			}
+			else{
+				seats[i].getHand().cardA=-1;
+				
 			}
 		}
 

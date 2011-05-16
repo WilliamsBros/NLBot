@@ -12,7 +12,10 @@ import graphics.PlayerView;
 
 public class Player {
 
-	public int pushed=0;
+	//private boolean canReload=false;
+	public boolean autonomous=false;
+	
+	public int pushed=100;
 	private String name;
 	private double stack;
 	private Table table;
@@ -28,6 +31,7 @@ public class Player {
 	
 	public JFrame frame;
 	PlayerView view;
+	public boolean isWaiting=false;
 
 	public Player() {
 		this("Player", 0);
@@ -43,17 +47,22 @@ public class Player {
 
 		table.view.repaint();
 		while(action==-1){
+			
+			
 			try {
-				Thread.sleep(table.sleep);
-				
-//				switch((int)(Math.random()*5)){
-//					
-//				case 0: table.view.bet.doClick(pushed);break;
-//				case 1:	table.view.call.doClick(pushed);break;
-//				case 2:	table.view.check.doClick(pushed);break;
-//				case 3:	table.view.raise.doClick(pushed);break;
-//				case 4:	table.view.fold.doClick(pushed);break;
-//				}
+				Thread.sleep(table.sleep+1);
+			
+				if(autonomous){
+				switch((int)(Math.random()*6)){
+					
+				case 0: table.view.bet.doClick(pushed);break;
+				case 1:	table.view.call.doClick(pushed);break;
+				case 2:	table.view.check.doClick(pushed);break;
+				case 3:	table.view.raise.doClick(pushed);break;
+				case 4:	table.view.fold.doClick(pushed);break;
+				case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
+				}
+				}
 				
 				
 			} catch (InterruptedException e) {
@@ -75,6 +84,12 @@ public class Player {
 		return new Action(this, actionNum, amt);
 	}
 
+	public boolean canReload(){
+		
+		
+		return (!isLive && stack<Table.getDefaultStackSize);
+	}
+	
 	public Player(String n, double s) {
 		name = n;
 		stack = s;
@@ -129,11 +144,13 @@ public class Player {
 	}
 
 	public void sitOut() {
-		if(stack<=0){
-			isSittingOut=true;
+		
+		if(stack>0 ||isWaiting){
+			isSittingOut=false;
+			isWaiting=false;
 		}
 		else{
-			isSittingOut = false;
+			isSittingOut = true;
 			}
 
 	}
