@@ -22,9 +22,9 @@ public class Table {
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
-	public int sleep=100;
-	int smallBlind = 2;
-	int bigBlind = 3;
+	public int sleep=0;
+	public int smallBlind = 2;
+	public int bigBlind = 3;
 	int button = 1;
 	int toAct = 2;
 	double sb = 1.00;
@@ -35,7 +35,7 @@ public class Table {
 	int[] board = new int[5];
 	int round = 0;
 	boolean actionComplete;
-	boolean bbActsLast = true;
+	public boolean bbActsLast = true;
 	public int livePlayers;
 	int playerCount;
 	int lastAggressor;
@@ -129,6 +129,10 @@ public class Table {
 
 		advanceButton();
 		toAct = findNextLivePlayer(button);
+		if(livePlayers==2){
+			advanceAction();
+			//bbActsLast=false;
+		}
 		postSB();
 		advanceAction();
 		postBB();
@@ -686,7 +690,8 @@ public class Table {
 						deck.deck[cards + 1]);
 				cards += 2;
 			}
-			else{
+			else if(seats[i] != null){
+				
 				seats[i].getHand().cardA=-1;
 				
 			}
@@ -737,7 +742,8 @@ public class Table {
 			if (livePlayers == 1
 					|| (findNextLivePlayer(toAct) == lastAggressor && bbActsLast == false)
 					|| (lastAggressor == toAct && bbActsLast == true)
-					|| (lastAggressor == toAct && !(totalContributed() > 0))) {
+					|| (lastAggressor == toAct && !(totalContributed() > 0) ))
+			{
 				return true;
 			}
 
@@ -755,7 +761,7 @@ public class Table {
 
 	}
 
-	private double totalContributed() {
+	public double totalContributed() {
 		double sum = 0;
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null && !seats[i].isSittingOut()) {
@@ -811,6 +817,7 @@ public class Table {
 		seats[toAct].setContributed(sb);
 		setPot(sb);
 		toCall = sb;
+		lastAggressor=toAct;
 		view.toChips(seats[toAct].stackChips, seats[toAct].getContributed());
 		// view.repaint();
 	}
@@ -821,8 +828,19 @@ public class Table {
 			button = (button + 1) % 10;
 		} while (seats[button] == null || seats[button].isSittingOut());
 
-		smallBlind = findNextLivePlayer(button);
-		bigBlind = findNextLivePlayer(smallBlind);
+		
+		
+		if(livePlayers!=2){
+			smallBlind = findNextLivePlayer(button);
+			bigBlind = findNextLivePlayer(smallBlind);
+		}
+		
+		else {
+			smallBlind=button;
+			bigBlind=findNextLivePlayer(smallBlind);
+		}
+		
+
 
 	}
 
@@ -933,8 +951,7 @@ public class Table {
 																				// seats[toAct].getContributed());
 
 			// test(a);
-			view
-					.toChips(seats[toAct].stackChips, seats[toAct]
+			view.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
 			advanceAction();
 		}

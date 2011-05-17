@@ -25,7 +25,7 @@ public class Player {
 	private double contributed = 0;
 	private double tContributed=0;
 	public int action=-1;
-	public double amount=0;
+	public double amount=-1;
 	public int[] stackChips=new int[15];
 	public int handRank=-1;
 	
@@ -46,14 +46,18 @@ public class Player {
 		double amt;
 
 		table.view.repaint();
-		while(action==-1){
+		
+		
+		while(action==-1 ||amount==-1)
+			{
 			
 			try {
-				Thread.sleep(table.sleep);
+				Thread.sleep(pushed);
 			
+				
 			
 				if(autonomous){
-				switch((int)(Math.random()*5)){
+				switch((int)(Math.random()*6)){
 					
 				case 0: if(table.legalActions[2])
 							table.view.bet.doClick(pushed);
@@ -80,11 +84,26 @@ public class Player {
 				e.printStackTrace();
 			}
 		}
+//		try {
+//			wait(view);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		actionNum = action;//s.nextInt();
 		//System.out.println("wager please: ");
 		amt = amount;//s.nextDouble();
 		action=-1;
-		amount=0;
+		amount=-1;
+//		System.out.println("toAct: "+table.getSeats()[table.getToAct()].getName());
+//		System.out.println("small blind: "+table.getSeats()[table.smallBlind].getName());
+//		System.out.println("big blind: "+table.getSeats()[table.bigBlind].getName());
+//		System.out.println("lastAggressor: "+table.getSeats()[table.getLastAggressor()].getName());
+//		System.out.println("bbActsLast: "+table.bbActsLast);
+//		System.out.println("livePlayers: "+table.livePlayers);
+//		System.out.println("totalContributed: "+table.totalContributed());
+//		System.out.println("round: "+table.getRound());
+		
 		// s.close();
 
 		// System.out.println("about to print, actionNum: "+actionNum);

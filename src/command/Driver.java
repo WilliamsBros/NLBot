@@ -62,8 +62,9 @@ public class Driver {
 		
 		//t.playHand();
 		
-		
-		t.run(1000000);
+		long l=System.nanoTime();
+		t.run(1000);
+		System.out.println((System.nanoTime()-l)/1000000000+" seconds");
 	}
 
 }

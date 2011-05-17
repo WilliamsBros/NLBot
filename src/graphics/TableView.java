@@ -529,10 +529,12 @@ public class TableView extends JPanel implements MouseInputListener,
 	
 		if(e.getActionCommand().startsWith("aut")){
 			int tmp=(e.getActionCommand().charAt(3)-48);
-			if(table.getSeats()[tmp].autonomous){
+			if(table.getSeats()[tmp]!=null &&table.getSeats()[tmp].autonomous){
+				
 				table.getSeats()[tmp].autonomous=false;
 			}
-			else{
+			else if(table.getSeats()[tmp]!=null){
+				
 				table.getSeats()[tmp].autonomous=true;
 			}
 			
@@ -691,7 +693,7 @@ public class TableView extends JPanel implements MouseInputListener,
 
 
 	public void rebuy(int i){
-		if(table.getSeats()[i].canReload()){
+		if(table.getSeats()[i]!=null &&table.getSeats()[i].canReload()){
 			table.getSeats()[i].setStack(Table.getDefaultStackSize
 						-table.getSeats()[i].getStack());
 				//table.getSeats()[i].setSittingOut(false);
