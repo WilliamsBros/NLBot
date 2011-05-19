@@ -1,6 +1,7 @@
 package game;
 
 import graphics.PlayerView;
+import graphics.Settings;
 import graphics.TableView;
 
 import java.awt.Color;
@@ -18,7 +19,6 @@ import player.Player;
 
 public class Table {
 
-	public static final double getDefaultStackSize = 200;
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
@@ -27,8 +27,9 @@ public class Table {
 	public int bigBlind = 3;
 	int button = 1;
 	int toAct = 2;
-	double sb = 1.00;
-	double bb = 2.00;
+	double bb = 2;
+	double sb = bb/2;
+	public double getDefaultStackSize = 100*bb;
 
 	double pot = 0;
 	double toCall = 0;
@@ -45,6 +46,10 @@ public class Table {
 	public TableView view;
 	public boolean[] legalActions = { true, false, true, false, false, false,
 			true };
+	public Settings settings;
+	
+	NumberFormat format=NumberFormat.getCurrencyInstance();
+	
 	// This is a state!!!
 	Vector<Vector<Action>> HH = new Vector<Vector<Action>>(4);
 
@@ -57,7 +62,10 @@ public class Table {
 			HH.add(i, new Vector<Action>(100));
 		}
 		frame = new JFrame("Table");
+		settings=new Settings(this);
 		view = new TableView(this);
+		
+		
 		view.repaint();
 	}
 
@@ -84,6 +92,7 @@ public class Table {
 
 		for (int i = 1; i < numHands+1; i++) {
 			System.out.println("hand number "+i+"\n");
+			//System.out.println(sumAllMoney());
 			playHand();
 		}
 
@@ -110,6 +119,10 @@ public class Table {
 
 		view.repaint();
 		//System.out.println(generateStartingAction());
+		if(livePlayers==1){
+			
+		}
+		
 		while (livePlayers < 2) {
 			try {
 				Thread.sleep(200);
@@ -121,7 +134,7 @@ public class Table {
 		
 		HH.get(0).add(generateStartingAction());
 		
-		//System.out.println(sumAllMoney());
+		System.out.println(sumAllMoney());
 		actionComplete = false;
 
 		dealCards();
@@ -142,8 +155,8 @@ public class Table {
 		// preflop
 		do {
 			setLegalActions();
-//			System.out.println("livePlayers: " + livePlayers);
-//			System.out.println("playersAllin: " + playersAllin);
+			System.out.println("livePlayers: " + livePlayers);
+			System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -189,8 +202,8 @@ public class Table {
 		// flop
 		do {
 			setLegalActions();
-//			System.out.println("livePlayers: " + livePlayers);
-//			System.out.println("playersAllin: " + playersAllin);
+			System.out.println("livePlayers: " + livePlayers);
+			System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -229,8 +242,8 @@ public class Table {
 		// turn
 		do {
 			setLegalActions();
-//			System.out.println("livePlayers: " + livePlayers);
-//			System.out.println("playersAllin: " + playersAllin);
+			System.out.println("livePlayers: " + livePlayers);
+			System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -268,8 +281,8 @@ public class Table {
 		// river
 		do {
 			setLegalActions();
-//			System.out.println("livePlayers: " + livePlayers);
-//			System.out.println("playersAllin: " + playersAllin);
+			System.out.println("livePlayers: " + livePlayers);
+			System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -418,7 +431,7 @@ public class Table {
 
 						} 
 						else if (seats[i].handRank == hClasses.get(j).get(0).handRank) {
-							System.out.println("made it into equals");
+							//System.out.println("made it into equals");
 							for (int k = hClasses.get(j).size() - 1; k >= 0; k--) {
 								if (seats[i].getTContributed() >= hClasses.get(j).get(k)
 									.getTContributed()) {
@@ -456,7 +469,7 @@ public class Table {
 
 		int plyrAtShowdown=0;
 		for(int s=0;s<hClasses.size();s++){
-			System.out.println("hand rank class: "+s);
+			//System.out.println("hand rank class: "+s);
 			for(int b=0;b<hClasses.get(s).size();b++){
 				plyrAtShowdown++;
 				//System.out.println(hClasses.get(s).get(b).getName()+
@@ -616,10 +629,10 @@ public class Table {
 			if(seats[l]!=null //&& !seats[l].isSittingOut() 
 					){
 				acc=acc+seats[l].getStack();
-				System.out.println(acc);
+				//System.out.println(acc);
 			}
 		}
-		System.out.println(acc);
+		//System.out.println(acc);
 		return acc+pot;
 	}
 	
@@ -774,10 +787,26 @@ public class Table {
 	// Forces the player at index toAct to post the big blind.
 
 	private void postBB() {
+		
+		if(seats[toAct].getStack()>bb){
 		HH.get(round).add(new Action(seats[toAct], 5, bb));
-		seats[toAct].setStack(-bb);
-		seats[toAct].setContributed(bb);
 		setPot(bb);
+		seats[toAct].setContributed(bb);
+		seats[toAct].setStack(-bb);
+		
+		
+		}
+		
+		else{
+			HH.get(round).add(new Action(seats[toAct], 5, seats[toAct].getStack()));
+			setPot(seats[toAct].getStack());
+			seats[toAct].setContributed(seats[toAct].getStack());
+			seats[toAct].setStack(-seats[toAct].getStack());
+			
+			
+			playersAllin++;
+		}
+		
 		toCall = bb;
 		view.toChips(seats[toAct].stackChips, seats[toAct].getContributed());
 		// view.repaint();
@@ -787,7 +816,7 @@ public class Table {
 	// Forces the player at index toAct to post the small blind.
 	private Action generateStartingAction(){
 		String s="";
-		NumberFormat f=NumberFormat.getCurrencyInstance();
+		
 		
 		for(int i=0;i<10;i++){
 			if(seats[i]==null){
@@ -795,13 +824,13 @@ public class Table {
 			}
 			else if(seats[i].isSittingOut()){
 				s=s+"seat "+(i+1)+": "+seats[i].getName()
-				     +" has "+f.format(seats[i].getStack())
+				     +" has "+format.format(seats[i].getStack())
 				     +" and is sitting out.\n";
 			}
 			
 			else{
 				s=s+"seat "+(i+1)+": "+seats[i].getName()
-				       		+" has "+f.format(seats[i].getStack())
+				       		+" has "+format.format(seats[i].getStack())
 				       	+".\n";
 				
 			}
@@ -812,10 +841,30 @@ public class Table {
 	}
 	
 	private void postSB() {
-		HH.get(round).add(new Action(seats[toAct], 4, sb));
-		seats[toAct].setStack(-sb);
-		seats[toAct].setContributed(sb);
-		setPot(sb);
+//		HH.get(round).add(new Action(seats[toAct], 4, sb));
+//		seats[toAct].setStack(-sb);
+//		seats[toAct].setContributed(sb);
+//		setPot(sb);
+		
+		if(seats[toAct].getStack()>sb){
+			HH.get(round).add(new Action(seats[toAct], 4, sb));
+			seats[toAct].setStack(-sb);
+			seats[toAct].setContributed(sb);
+			setPot(sb);
+			}
+			
+			else{
+				HH.get(round).add(new Action(seats[toAct], 4, seats[toAct].getStack()));
+				setPot(seats[toAct].getStack());
+				seats[toAct].setContributed(seats[toAct].getStack());
+				seats[toAct].setStack(-seats[toAct].getStack());
+				
+				
+				playersAllin++;
+			}
+		
+		
+		
 		toCall = sb;
 		lastAggressor=toAct;
 		view.toChips(seats[toAct].stackChips, seats[toAct].getContributed());
@@ -824,9 +873,16 @@ public class Table {
 
 	// Moves the button forward one player, skips null seats.
 	private void advanceButton() {
-		do {
-			button = (button + 1) % 10;
-		} while (seats[button] == null || seats[button].isSittingOut());
+		
+		for(int i=0;i<10;i++){
+			if(seats[button] == null || seats[button].isSittingOut()){
+				button = (button + 1) % 10;
+			}
+		}
+		
+//		do {
+//			button = (button + 1) % 10;
+//		} while (seats[button] == null || seats[button].isSittingOut());
 
 		
 		
@@ -921,8 +977,7 @@ public class Table {
 			lastAggressor = toAct;
 			// test(a);
 			toCall = a.wager;
-			view
-					.toChips(seats[toAct].stackChips, seats[toAct]
+			view.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
 			advanceAction();
 		}

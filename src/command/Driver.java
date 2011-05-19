@@ -1,5 +1,6 @@
 package command;
 
+import ai.Rote1;
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 import UofAHandEval.ca.ualberta.cs.poker.Hand;
 import UofAHandEval.ca.ualberta.cs.poker.HandEvaluator;
@@ -49,21 +50,23 @@ public class Driver {
 		
 		
 		
-		t.addPlayer(new Player("Connor",Table.getDefaultStackSize), 3);
-		t.addPlayer(new Player("Forrest",Table.getDefaultStackSize), 1);
-		t.addPlayer(new Player("Alexa",Table.getDefaultStackSize), 2);
-		t.addPlayer(new Player("Prometheus",Table.getDefaultStackSize), 4);
-		t.addPlayer(new Player("Corey",Table.getDefaultStackSize), 5);
-		t.addPlayer(new Player("Rani",Table.getDefaultStackSize), 6);
-		t.addPlayer(new Player("Bob",Table.getDefaultStackSize), 7);
-		t.addPlayer(new Player("Turner",Table.getDefaultStackSize), 8);
-		t.addPlayer(new Player("Amy",Table.getDefaultStackSize), 9);
-		t.addPlayer(new Player("Ben Franklin",Table.getDefaultStackSize), 10);
+		t.addPlayer(new Player("Connor",t.getDefaultStackSize), 3);
+		t.getSeats()[2].setAI(new Rote1(t));
+		
+		t.addPlayer(new Player("Forrest",t.getDefaultStackSize), 1);
+		t.addPlayer(new Player("Alexa",t.getDefaultStackSize), 2);
+		t.addPlayer(new Player("Prometheus",t.getDefaultStackSize), 4);
+		t.addPlayer(new Player("Corey",t.getDefaultStackSize), 5);
+		t.addPlayer(new Player("Rani",t.getDefaultStackSize), 6);
+		t.addPlayer(new Player("Bob",t.getDefaultStackSize), 7);
+		t.addPlayer(new Player("Turner",t.getDefaultStackSize), 8);
+		t.addPlayer(new Player("Amy",t.getDefaultStackSize), 9);
+		t.addPlayer(new Player("Ben Franklin",t.getDefaultStackSize), 10);
 		
 		//t.playHand();
 		
 		long l=System.nanoTime();
-		t.run(1000);
+		t.run(100000);
 		System.out.println((System.nanoTime()-l)/1000000000+" seconds");
 	}
 

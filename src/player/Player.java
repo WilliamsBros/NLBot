@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import javax.swing.JFrame;
 
+import ai.AIUnit;
+
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 
 import game.Action;
@@ -14,6 +16,8 @@ public class Player {
 
 	//private boolean canReload=false;
 	public boolean autonomous=false;
+	AIUnit ai;
+	
 	
 	public int pushed;
 	private String name;
@@ -42,6 +46,7 @@ public class Player {
 	}
 
 	public Action generateAction() {
+		pushed=table.sleep*10;
 		int actionNum;
 		double amt;
 
@@ -56,28 +61,49 @@ public class Player {
 			
 				
 			
-				if(autonomous){
-				switch((int)(Math.random()*6)){
+				if(autonomous && ai==null){
+				switch((int)(Math.random()*7)){
 					
-				case 0: if(table.legalActions[2])
-							table.view.bet.doClick(pushed);
+				case 0: if(table.legalActions[0])
+							table.view.fold.doClick(pushed);
 								break;
-				case 1:	if(table.legalActions[6])
-							table.view.call.doClick(pushed);
-								break;
-				case 2:	if(table.legalActions[1])
+				case 1:	if(table.legalActions[1])
 							table.view.check.doClick(pushed);
+								break;
+				case 2:	if(table.legalActions[2])
+							table.view.bet.doClick(pushed);
 								break;
 				case 3:	if(table.legalActions[3])
 							table.view.raise.doClick(pushed);
 								break;
-				case 4:	if(table.legalActions[0])
-							table.view.fold.doClick(pushed);
+				case 6:	if(table.legalActions[6])
+							table.view.call.doClick(pushed);
 								break;
 				//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
 				}
 				}
-				
+				else{
+					if(autonomous){
+						switch(ai.getAction().action){
+							
+						case 0:table.view.fold.doClick(pushed);
+										break;
+						case 1:
+									table.view.check.doClick(pushed);
+										break;
+						case 2:
+									table.view.bet.doClick(pushed);
+										break;
+						case 3:	
+									table.view.raise.doClick(pushed);
+										break;
+						case 6:	
+									table.view.call.doClick(pushed);
+										break;
+						//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
+						}
+						}
+				}
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -116,7 +142,7 @@ public class Player {
 	public boolean canReload(){
 		
 		
-		return (!isLive && stack<Table.getDefaultStackSize);
+		return (!isLive && stack<table.getDefaultStackSize);
 	}
 	
 	public Player(String n, double s) {
@@ -217,5 +243,9 @@ public class Player {
 	public void setTContributed(double c) {
 		tContributed=tContributed+c;
 		
+	}
+	
+	public void setAI(AIUnit a){
+		ai=a;
 	}
 }

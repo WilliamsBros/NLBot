@@ -3,11 +3,16 @@ package graphics;
 import game.Table;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,10 +25,13 @@ import java.net.URL;
 import java.text.NumberFormat;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -104,7 +112,9 @@ public class TableView extends JPanel implements MouseInputListener,
 		frame = table.frame;
 
 		//frame.setLayout(null);
-		frame.setSize(800, 500);
+		frame.setSize(1000, 550);
+		//frame.setResizable(false);
+		//frame.setExtendedState();
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(this);
 		
@@ -122,13 +132,36 @@ public class TableView extends JPanel implements MouseInputListener,
 //		call.setBackground(Color.yellow);
 //		bet.setBackground(Color.yellow);
 //		raise.setBackground(Color.yellow);
+		//menu.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		
+		
+		
+		GridBagLayout grid=new GridBagLayout();
+		GridBagConstraints constraints = new GridBagConstraints();
+		 constraints.weighty = 100;
+	     constraints.gridwidth = 1;
+	     constraints.gridheight = 1;
+	     constraints.gridx = 0;
+	     constraints.gridy = 0;
+		
+	     menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
+	     
+	     
 		menu.add(fold);
+		fold.setBounds(0, 0, 50, 100);
 		menu.add(check);
 		menu.add(call);
 		menu.add(bet);
 		menu.add(raise);
+		menu.add(table.settings.amountLabel);
+		menu.add(table.settings.amountField);
+		menu.add(new JLabel("Stack%"));
+		menu.add(table.settings.sliders.get(1));
+		menu.add(new JLabel("Speed"));
+		menu.add(table.settings.sliders.get(0));
 		menu.add(allAut);
+		
+		//menu.setLayout(LayoutManager)
 		// menu.add(amount);
 
 		// frame.setTitle(player.getName());
@@ -604,7 +637,7 @@ public class TableView extends JPanel implements MouseInputListener,
 				//autonomous[i].setEnabled(true);
 			
 					if(!autonomous[i].isSelected()){
-						autonomous[i].doClick();
+						autonomous[i].doClick(0);
 					}
 				
 				}
@@ -615,7 +648,7 @@ public class TableView extends JPanel implements MouseInputListener,
 				for(int i=0;i<10;i++){
 				
 						if(autonomous[i].isSelected()){
-							autonomous[i].doClick();
+							autonomous[i].doClick(0);
 						}
 					
 					}
@@ -694,8 +727,10 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	public void rebuy(int i){
 		if(table.getSeats()[i]!=null &&table.getSeats()[i].canReload()){
-			table.getSeats()[i].setStack(Table.getDefaultStackSize
-						-table.getSeats()[i].getStack());
+			table.getSeats()[i].setStack(
+					table.getDefaultStackSize
+						-table.getSeats()[i].getStack()
+					);
 				//table.getSeats()[i].setSittingOut(false);
 				table.getSeats()[i].isWaiting=true;
 				repaint();
