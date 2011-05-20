@@ -13,6 +13,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -55,6 +56,7 @@ ChangeListener,PropertyChangeListener{
 		 
 		table=t;
 		amountFormat = NumberFormat.getNumberInstance();
+		amountFormat.setMaximumFractionDigits(2);
 		amountField = new JFormattedTextField(amountFormat);
 	    amountField.setValue(new Double(0));
 	    amountField.setColumns(10);
@@ -82,15 +84,24 @@ ChangeListener,PropertyChangeListener{
         //        BorderFactory.createEmptyBorder(0,0,0,10));
 
 		JSlider amount = new JSlider(SwingConstants.HORIZONTAL,
-                0, 100, 10);
+                0, 1000, 1);
 		amount.addChangeListener(this);
 
 		//Turn on labels at major tick marks.
-		amount.setMajorTickSpacing(10);
-		amount.setMinorTickSpacing(5);
+		amount.setMajorTickSpacing(250);
+		//amount.setMinorTickSpacing(50);
 		//maxCreatures.setBounds(100, 100, 100, 20);
 		//maxCreatures.setPreferredSize(new Dimension(20,300));
 		amount.setPaintTicks(true);
+		
+		Hashtable<Integer, JLabel> lbls2=new Hashtable<Integer,JLabel>();
+		lbls2.put(250, new JLabel("25%"));
+		lbls2.put(1000, new JLabel("100%"));
+		lbls2.put(500, new JLabel("50%"));
+		lbls2.put(750, new JLabel("75%"));
+		lbls2.put(0, new JLabel("0%"));
+		
+		amount.setLabelTable(lbls2);
 		amount.setPaintLabels(true);
 		amount.setVisible(true);
 		
@@ -193,25 +204,9 @@ public void draw(){
 	@Override
 	public void paintComponent(Graphics g){
 		
-		
-		
 		super.paintComponent(g);
 		
-//		g.drawLine(50, 200, 50, 100);
-//		g.drawLine(50, 200, 850, 200);
-//		if(world.getPopGraph().size()>1){
-//		for(int i=0;i<world.getPopGraph().size()-1;i++){
-//		g.setColor(Color.GREEN);
-//		
-//		g.drawLine(i+50, 200-world.getPopGraph().get(i)[0],
-//				i+1+50, 200-world.getPopGraph().get(i+1)[0]);
-//		
-//		g.setColor(brown);
-//		
-//		g.drawLine(i+50, 200-world.getPopGraph().get(i)[1],
-//				i+1+50, 200-world.getPopGraph().get(i+1)[1]);
-//		}
-//		}
+
 	}
 	
 	@Override
@@ -231,10 +226,11 @@ public void draw(){
 	    		
 	    	}
 	    	
-//	    	else if(source.equals(sliders.get(1))){
-//	    		amountField.
-//	    		
-//	    	}
+	    	else if(source.equals(sliders.get(1))){
+	    		amountField.setValue(source.getValue()*
+	    				table.getSeats()[table.getToAct()].getStack()/1000);
+	    		
+	    	}
 //
 //	    	else if(source.equals(sliders.get(2))){
 //	    		world.setMaxCreaturesO(source.getValue());
@@ -244,9 +240,35 @@ public void draw(){
 	   // }
 	}
 
+	
+	public void resetWager(){
+		amountField.setValue(0);
+		sliders.get(1).setValue(0);
+	}
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		
+		if(amountField==arg0.getSource()){
+
+			double amt=((Number)(amountField.getValue())).doubleValue();
+			
+			if(amt>table.getSeats()[table.getToAct()].getStack()){
+				
+				amountField.setValue(table.getSeats()[table.getToAct()].getStack());
+				sliders.get(1).setValue(1000);
+			}
+			else if(amt<0){
+				amountField.setValue(0);
+				sliders.get(1).setValue(0);
+			}
+			else{
+				amountField.setValue(amt);
+				sliders.get(1).setValue((int)(1000*amt/table.getSeats()[table.getToAct()].getStack()));
+			}
+			
+		}
+		//System.out.println(amountField.getValue());
 		
 	}
 

@@ -22,6 +22,8 @@ public class Table {
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
+	
+	public double minRaise;
 	public int sleep=0;
 	public int smallBlind = 2;
 	public int bigBlind = 3;
@@ -44,7 +46,7 @@ public class Table {
 	public int playersAllin = 0;
 	public JFrame frame;
 	public TableView view;
-	public boolean[] legalActions = { true, false, true, false, false, false,
+	public boolean[] legalActions = { true, false, true, false, true, false,
 			true };
 	public Settings settings;
 	
@@ -103,6 +105,7 @@ public class Table {
 		// seats[(button+1)%10];
 
 		
+		minRaise=bb;
 		resetTContributed();
 		playersAllin = 0;
 		view.clearChipCount(view.pot);
@@ -134,14 +137,14 @@ public class Table {
 		
 		HH.get(0).add(generateStartingAction());
 		
-		System.out.println(sumAllMoney());
+		//System.out.println(sumAllMoney());
 		actionComplete = false;
 
 		dealCards();
 		
 
 		advanceButton();
-		toAct = findNextLivePlayer(button);
+		toAct =findNextLivePlayer(button);
 		if(livePlayers==2){
 			advanceAction();
 			//bbActsLast=false;
@@ -155,8 +158,9 @@ public class Table {
 		// preflop
 		do {
 			setLegalActions();
-			System.out.println("livePlayers: " + livePlayers);
-			System.out.println("playersAllin: " + playersAllin);
+			settings.resetWager();
+			//System.out.println("livePlayers: " + livePlayers);
+			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -199,11 +203,13 @@ public class Table {
 
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
+		minRaise=bb;
 		// flop
 		do {
 			setLegalActions();
-			System.out.println("livePlayers: " + livePlayers);
-			System.out.println("playersAllin: " + playersAllin);
+			settings.resetWager();
+			//System.out.println("livePlayers: " + livePlayers);
+			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -239,11 +245,13 @@ public class Table {
 		actionComplete = false;
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
+		minRaise=bb;
 		// turn
 		do {
 			setLegalActions();
-			System.out.println("livePlayers: " + livePlayers);
-			System.out.println("playersAllin: " + playersAllin);
+			settings.resetWager();
+			//System.out.println("livePlayers: " + livePlayers);
+			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -279,10 +287,12 @@ public class Table {
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
 		// river
+		minRaise=bb;
 		do {
 			setLegalActions();
-			System.out.println("livePlayers: " + livePlayers);
-			System.out.println("playersAllin: " + playersAllin);
+			settings.resetWager();
+			//System.out.println("livePlayers: " + livePlayers);
+			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -343,6 +353,8 @@ public class Table {
 		return count;
 	}
 
+	
+	
 	private void setLegalActions() {
 		// fold
 		if (seats[toAct].getContributed() - toCall == 0) {
@@ -391,6 +403,25 @@ public class Table {
 			view.raise.setBackground(view.raise.getParent().getBackground());
 		}
 
+		//pot
+		if (legalActions[2] ) {
+			legalActions[4] = true;
+			view.betPot.setText("Pot");
+			view.betPot.setBackground(Color.green);
+			
+		} 
+		else if ( legalActions[3] ) {
+			legalActions[4] = true;
+			view.betPot.setText("Pot");
+			view.betPot.setBackground(Color.red);
+		} 
+		
+		
+		else {
+			legalActions[4] = false;
+			view.bet.setBackground(view.bet.getParent().getBackground());
+		}
+		
 	}
 
 	private void resetContributed() {
@@ -574,11 +605,11 @@ public class Table {
 					//System.out.println(new Card(board[a]).toString());
 				}
 				
-			
+			//TODO when splitting, prints out same person multiple times
 				if(pt>0){			
 					HH.get(round).add(new Action(hClasses.lastElement().get(0),7
 							,pt/hClasses.lastElement().size()
-							, hClasses.lastElement().get(0).getName()
+							, hClasses.lastElement().get(m).getName()
 							+" wins "
 							+f.format(pt/hClasses.lastElement().size())
 							+" with "+HandEvaluator.nameHand(tmpHand)));
@@ -615,7 +646,7 @@ public class Table {
 		
 	p();
 		try {
-			Thread.sleep(20*sleep);
+			Thread.sleep(30*sleep);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -874,28 +905,31 @@ public class Table {
 	// Moves the button forward one player, skips null seats.
 	private void advanceButton() {
 		
-		for(int i=0;i<10;i++){
-			if(seats[button] == null || seats[button].isSittingOut()){
-				button = (button + 1) % 10;
-			}
-		}
+//		for(int i=0;i<10;i++){
+//			if(seats[button] == null || seats[button].isSittingOut()){
+//				button = (button + 1) % 10;
+//			}
+//		}
 		
-//		do {
-//			button = (button + 1) % 10;
-//		} while (seats[button] == null || seats[button].isSittingOut());
+		do {
+			button = (button + 1) % 10;
+		} while (seats[button] == null || seats[button].isSittingOut());
 
 		
 		
-		if(livePlayers!=2){
+		if(!(livePlayers<3)){
 			smallBlind = findNextLivePlayer(button);
 			bigBlind = findNextLivePlayer(smallBlind);
 		}
 		
-		else {
+		else if(livePlayers==2){
 			smallBlind=button;
 			bigBlind=findNextLivePlayer(smallBlind);
 		}
 		
+		else{
+			
+		}
 
 
 	}
@@ -956,6 +990,7 @@ public class Table {
 			seats[toAct].setContributed(a.wager);
 			// test(a);
 			toCall = a.wager;
+			minRaise=a.wager;
 			view
 					.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
@@ -976,7 +1011,9 @@ public class Table {
 					.setContributed(a.wager - seats[toAct].getContributed());//
 			lastAggressor = toAct;
 			// test(a);
+			minRaise=a.wager-toCall;
 			toCall = a.wager;
+			
 			view.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
 			advanceAction();
@@ -1081,5 +1118,10 @@ public class Table {
 	public int getToAct() {
 		// TODO Auto-generated method stub
 		return toAct;
+	}
+
+	public Vector<Vector<Action>> getState() {
+		
+		return HH;
 	}
 }

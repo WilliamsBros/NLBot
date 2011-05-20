@@ -1,5 +1,6 @@
 package graphics;
 
+import game.Action;
 import game.Table;
 
 import java.awt.BasicStroke;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -51,16 +53,17 @@ public class TableView extends JPanel implements MouseInputListener,
 	Table table;
 	JMenuBar menu = new JMenuBar();
 
-	public JButton fold = new JButton("fold");
-	public JButton check = new JButton("check");
-	public JButton bet = new JButton("bet");
-	public JButton raise = new JButton("raise");
-	public JButton call = new JButton("call");
+	public JButton fold = new JButton("Fold");
+	public JButton check = new JButton("Check");
+	public JButton bet = new JButton("Bet");
+	public JButton raise = new JButton("Raise");
+	public JButton call = new JButton("Call");
+	public JButton betPot= new JButton("Pot");
 	public JButton[] reload=new JButton[10]; 
 	public JCheckBoxMenuItem allAut=new JCheckBoxMenuItem("Autonomous");
 	
 	public JCheckBox[] autonomous=new JCheckBox[10]; 
-	
+	NumberFormat format1=NumberFormat.getCurrencyInstance();
 	BufferedImage tbl;
 	BufferedImage cardImgs;
 	Point[] sPos = new Point[10];
@@ -110,7 +113,8 @@ public class TableView extends JPanel implements MouseInputListener,
 		// Settings\\ccadmin.LT-SF-0XX\\Desktop\\java\\NLBot\\src\\clip_image004_2.gif
 		table = t;
 		frame = table.frame;
-
+		int fontSize=15;
+		
 		//frame.setLayout(null);
 		frame.setSize(1000, 550);
 		//frame.setResizable(false);
@@ -119,40 +123,38 @@ public class TableView extends JPanel implements MouseInputListener,
 		frame.add(this);
 		
 		fold.addActionListener(this);
+		fold.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
+		
 		check.addActionListener(this);
+		check.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
 		call.addActionListener(this);
+		call.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
 		bet.addActionListener(this);
+		bet.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
 		raise.addActionListener(this);
+		raise.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
+		betPot.addActionListener(this);
+		betPot.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
+		
 		allAut.addActionListener(this);
 		// amount.addChangeListener(this);
 
-		
-//		fold.setBackground(Color.yellow);
-//		check.setBackground(Color.yellow);
-//		call.setBackground(Color.yellow);
-//		bet.setBackground(Color.yellow);
-//		raise.setBackground(Color.yellow);
 		//menu.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		
 		
-		
-		GridBagLayout grid=new GridBagLayout();
-		GridBagConstraints constraints = new GridBagConstraints();
-		 constraints.weighty = 100;
-	     constraints.gridwidth = 1;
-	     constraints.gridheight = 1;
-	     constraints.gridx = 0;
-	     constraints.gridy = 0;
-		
-	     menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
 	     
 	     
 		menu.add(fold);
-		fold.setBounds(0, 0, 50, 100);
 		menu.add(check);
 		menu.add(call);
 		menu.add(bet);
 		menu.add(raise);
+		menu.add(betPot);
 		menu.add(table.settings.amountLabel);
 		menu.add(table.settings.amountField);
 		menu.add(new JLabel("Stack%"));
@@ -160,6 +162,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		menu.add(new JLabel("Speed"));
 		menu.add(table.settings.sliders.get(0));
 		menu.add(allAut);
+		//menu.add(new JLabel("|"));
 		
 		//menu.setLayout(LayoutManager)
 		// menu.add(amount);
@@ -299,7 +302,7 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		NumberFormat f=NumberFormat.getCurrencyInstance();
+		
 		g.setColor(Color.black);
 		g.drawImage(tbl, 110, 80, 572, 240, new Color(255, 255, 255), this);
 
@@ -370,7 +373,7 @@ public class TableView extends JPanel implements MouseInputListener,
 						else {
 							g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 									sPos[i].y);
-							g.drawString(f.format(table.getSeats()[i]
+							g.drawString(format1.format(table.getSeats()[i]
 									.getStack()), sPos[i].x, sPos[i].y + 15);
 							g.drawString("waiting", sPos[i].x, sPos[i].y + 30);
 						}
@@ -378,7 +381,7 @@ public class TableView extends JPanel implements MouseInputListener,
 					else  {
 						g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 								sPos[i].y);
-						g.drawString(f.format(table.getSeats()[i]
+						g.drawString(format1.format(table.getSeats()[i]
 								.getStack()), sPos[i].x, sPos[i].y + 15);
 						g.drawString("folded", sPos[i].x, sPos[i].y + 30);
 					}
@@ -441,9 +444,9 @@ public class TableView extends JPanel implements MouseInputListener,
 					g.drawString(table.getSeats()[i].getName(), sPos[i].x,
 							sPos[i].y);
 
-					g.drawString(f.format(table.getSeats()[i].getStack()),
+					g.drawString(format1.format(table.getSeats()[i].getStack()),
 							sPos[i].x, sPos[i].y + 15);
-					g.drawString(f.format(table.getSeats()[i]
+					g.drawString(format1.format(table.getSeats()[i]
 							.getContributed()), sPos[i].x, sPos[i].y + 30);
 //					g.drawString(f.format(table.getSeats()[i]
 //					           .getTContributed()), sPos[i].x, sPos[i].y + 45);
@@ -473,7 +476,7 @@ public class TableView extends JPanel implements MouseInputListener,
 //			}
 //		}
 
-		g.drawString(Double.toString(table.getPot()), 500, 50);
+		g.drawString("Pot:   "+format1.format(table.getPot()), 350, 50);
 
 		switch (table.getRound()) {
 
@@ -560,24 +563,30 @@ public class TableView extends JPanel implements MouseInputListener,
 //		
 //		}
 	
-		if(e.getActionCommand().startsWith("aut")){
-			int tmp=(e.getActionCommand().charAt(3)-48);
-			if(table.getSeats()[tmp]!=null &&table.getSeats()[tmp].autonomous){
-				
-				table.getSeats()[tmp].autonomous=false;
-			}
-			else if(table.getSeats()[tmp]!=null){
-				
-				table.getSeats()[tmp].autonomous=true;
+		
+		
+		if (e.getSource() == betPot) {
+			if(table.legalActions[3]){
+		table.getSeats()[table.getToAct()].action = 3;
+		table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
+				.getToAct()].getStack() > (table.getPot()
+				+ table.getToCall() - table.getSeats()[table.getToAct()]
+				.getContributed())) ? table.getPot() + table.getToCall()
+				//- table.getSeats()[table.getToAct()].getContributed()
+				: table.getSeats()[table.getToAct()].getStack()+
+				table.getSeats()[table.getToAct()].getContributed();
 			}
 			
-			return;
-		}
-		if(e.getActionCommand().startsWith("rel")){
-			//e.getActionCommand().charAt(5);
-			rebuy(e.getActionCommand().charAt(3)-48);
-			return;
-		}
+			else if(table.legalActions[2]){
+				table.getSeats()[table.getToAct()].action = 2;
+				table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
+						.getToAct()].getStack() > table.getPot()
+						+ table.getToCall()) ? table.getPot() + table.getToCall()
+						: table.getSeats()[table.getToAct()].getStack();
+				}
+		return;
+	}
+		
 		
 		if (e.getSource() == fold) {
 			if(table.legalActions[0]){
@@ -606,27 +615,78 @@ public class TableView extends JPanel implements MouseInputListener,
 		}
 		if (e.getSource() == bet) {
 			if(table.legalActions[2]){
-			table.getSeats()[table.getToAct()].action = 2;
-			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
-					.getToAct()].getStack() > table.getPot()
-					+ table.getToCall()) ? table.getPot() + table.getToCall()
-					: table.getSeats()[table.getToAct()].getStack();
+				if(((Number)table.settings.amountField
+					.getValue()).doubleValue() >= table.getBB()
+					){
+					
+					table.getSeats()[table.getToAct()].action = 2;
+					table.getSeats()[table.getToAct()].amount = 
+						((Number)table.settings.amountField
+								.getValue()).doubleValue();
+				}
+			
 			}
+		
 			return;
 		}
 		
 		
 		if (e.getSource() == raise) {
 				if(table.legalActions[3]){
-			table.getSeats()[table.getToAct()].action = 3;
-			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
-					.getToAct()].getStack() > (table.getPot()
-					+ table.getToCall() - table.getSeats()[table.getToAct()]
-					.getContributed())) ? table.getPot() + table.getToCall()
-					//- table.getSeats()[table.getToAct()].getContributed()
-					: table.getSeats()[table.getToAct()].getStack()+
-					table.getSeats()[table.getToAct()].getContributed();
+					double lastToCall;
+//					int index=table.getState().get(table.getRound()).size()-1;
+//					Vector<Action> round=table.getState().get(table.getRound());
+//					
+//					while(index>=0 && !(round.get(index).action
+//							>1 && round.get(index).action
+//							<6)){
+//						index--;
+//						}
+				//	lastToCall=table.getState().get(table.getRound()).get(index).wager;
+					if(((Number)table.settings.amountField
+							.getValue()).doubleValue() >= table.getToCall()+table.minRaise
+							){
+						table.getSeats()[table.getToAct()].action = 3;
+						table.getSeats()[table.getToAct()].amount=((Number)table.settings.amountField
+								.getValue()).doubleValue();
+						
+						//System.out.println("last toCall: "+(lastToCall));
+						//System.out.println("min raise: "+(table.getToCall()+lastToCall));
+						
+					}
+//			table.getSeats()[table.getToAct()].action = 3;
+//			
+//			
+//			
+//			
+//			table.getSeats()[table.getToAct()].amount = (table.getSeats()[table
+//					.getToAct()].getStack() > (table.getPot()
+//					+ table.getToCall() - table.getSeats()[table.getToAct()]
+//					.getContributed())) ? table.getPot() + table.getToCall()
+//					//- table.getSeats()[table.getToAct()].getContributed()
+//					: table.getSeats()[table.getToAct()].getStack()+
+//					table.getSeats()[table.getToAct()].getContributed();
 				}
+			return;
+		}
+		
+		
+		if(e.getActionCommand().startsWith("aut")){
+			int tmp=(e.getActionCommand().charAt(3)-48);
+			if(table.getSeats()[tmp]!=null &&table.getSeats()[tmp].autonomous){
+				
+				table.getSeats()[tmp].autonomous=false;
+			}
+			else if(table.getSeats()[tmp]!=null){
+				
+				table.getSeats()[tmp].autonomous=true;
+			}
+			
+			return;
+		}
+		if(e.getActionCommand().startsWith("rel")){
+			//e.getActionCommand().charAt(5);
+			rebuy(e.getActionCommand().charAt(3)-48);
 			return;
 		}
 		
@@ -657,70 +717,7 @@ public class TableView extends JPanel implements MouseInputListener,
 			return;
 		}
 		
-//			switch(i){
-//			
-//			case 0:	if(table.getSeats()[i].canReload()){
-//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
-//					table.getSeats()[i].setStack(table.getDefaultStackSize
-//							-table.getSeats()[i].getStack());
-//					//table.getSeats()[i].setSittingOut(false);
-//					table.getSeats()[i].isWaiting=true;
-//					repaint();
-//				}
-//			}
-//			return;
-//			case 1:if(table.getSeats()[i].canReload()){
-//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
-//					table.getSeats()[i].setStack(table.getDefaultStackSize
-//							-table.getSeats()[i].getStack());
-//					//table.getSeats()[i].setSittingOut(false);
-//					table.getSeats()[i].isWaiting=true;
-//					repaint();
-//				}
-//			}
-//			return;
-//			case 2:if(table.getSeats()[i].canReload()){
-//				if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
-//					table.getSeats()[i].setStack(table.getDefaultStackSize
-//							-table.getSeats()[i].getStack());
-//					//table.getSeats()[i].setSittingOut(false);
-//					table.getSeats()[i].isWaiting=true;
-//					repaint();
-//				}
-//			}
-//			return;
-//			case 3:rebuy(i); return;
-//			case 4:
-//			case 5:
-//			case 6:
-//			case 7:
-//			case 8:
-//			case 9:
-//			
-//			
-//			}
-//			
-//		for(int i=0;i<10;i++){
-//			if (e.getSource() == reload[i]){
-//				if(table.getSeats()[i].canReload()){
-//					if(table.getSeats()[i].getStack()<table.getDefaultStackSize){
-//						table.getSeats()[i].setStack(table.getDefaultStackSize
-//								-table.getSeats()[i].getStack());
-//						//table.getSeats()[i].setSittingOut(false);
-//						table.getSeats()[i].isWaiting=true;
-//						repaint();
-//					}
-//				}
-//				return;
-//			}
-//			
-//		}
-//		}
-		// if(e.getSource()==clear){
-		// world.clrImstruct();
-		// repaint();
-		// return;
-		// }
+
 
 	}
 

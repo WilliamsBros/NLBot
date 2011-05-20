@@ -70,15 +70,21 @@ public class Player {
 				case 1:	if(table.legalActions[1])
 							table.view.check.doClick(pushed);
 								break;
-				case 2:	if(table.legalActions[2])
-							table.view.bet.doClick(pushed);
-								break;
-				case 3:	if(table.legalActions[3])
-							table.view.raise.doClick(pushed);
-								break;
-				case 6:	if(table.legalActions[6])
+				case 2:	if(table.legalActions[4])
+					table.view.betPot.doClick(pushed);
+						break;
+				case 3:	if(table.legalActions[6])
 							table.view.call.doClick(pushed);
 								break;
+				case 4:	if(table.legalActions[1])
+					table.view.check.doClick(pushed);
+						break;
+				case 5: if(table.legalActions[0])
+					table.view.fold.doClick(pushed);
+						break;
+				case 6:	if(table.legalActions[6])
+					table.view.call.doClick(pushed);
+						break;
 				//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
 				}
 				}
@@ -92,10 +98,10 @@ public class Player {
 									table.view.check.doClick(pushed);
 										break;
 						case 2:
-									table.view.bet.doClick(pushed);
+									table.view.betPot.doClick(pushed);
 										break;
 						case 3:	
-									table.view.raise.doClick(pushed);
+									table.view.betPot.doClick(pushed);
 										break;
 						case 6:	
 									table.view.call.doClick(pushed);
