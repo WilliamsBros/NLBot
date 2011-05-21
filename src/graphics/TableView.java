@@ -93,10 +93,15 @@ public class TableView extends JPanel implements MouseInputListener,
 			
 			
 			
-//for jar
+//for jar windows
 //			tbl = ImageIO.read(cldr.getResource("NLBot1\\graphics\\Texas_Holdem_Poker_Table.jpg"));
 //			cardImgs = ImageIO.read(cldr.getResource("NLBot1\\graphics\\clip_image004_2.gif"));
 //			chips = ImageIO.read(cldr.getResource("NLBot1\\graphics\\Chips3.png"));
+			
+//jar linux
+//			tbl = ImageIO.read(cldr.getResource("Texas_Holdem_Poker_Table.jpg"));
+//			cardImgs = ImageIO.read(cldr.getResource("clip_image004_2.gif"));
+//			chips = ImageIO.read(cldr.getResource("Chips3.png"));
 			
 		} catch (IOException e) {
 			System.out.println("Image could not be read");
@@ -615,8 +620,11 @@ public class TableView extends JPanel implements MouseInputListener,
 		}
 		if (e.getSource() == bet) {
 			if(table.legalActions[2]){
-				if(((Number)table.settings.amountField
-					.getValue()).doubleValue() >= table.getBB()
+				double amt=((Number)table.settings.amountField
+						.getValue()).doubleValue();
+				
+				if(amt >= table.getBB() 
+						||amt>=table.getSeats()[table.getToAct()].getStack()
 					){
 					
 					table.getSeats()[table.getToAct()].action = 2;
@@ -633,22 +641,16 @@ public class TableView extends JPanel implements MouseInputListener,
 		
 		if (e.getSource() == raise) {
 				if(table.legalActions[3]){
-					double lastToCall;
-//					int index=table.getState().get(table.getRound()).size()-1;
-//					Vector<Action> round=table.getState().get(table.getRound());
-//					
-//					while(index>=0 && !(round.get(index).action
-//							>1 && round.get(index).action
-//							<6)){
-//						index--;
-//						}
-				//	lastToCall=table.getState().get(table.getRound()).get(index).wager;
-					if(((Number)table.settings.amountField
-							.getValue()).doubleValue() >= table.getToCall()+table.minRaise
-							){
+					double amt=((Number)table.settings.amountField
+					.getValue()).doubleValue();
+					
+					if(amt >= table.getToCall()+table.minRaise
+							|| amt>= table.getSeats()[table.getToAct()].getStack()
+							+table.getSeats()[table.getToAct()].getContributed()){
 						table.getSeats()[table.getToAct()].action = 3;
 						table.getSeats()[table.getToAct()].amount=((Number)table.settings.amountField
 								.getValue()).doubleValue();
+								//+table.getSeats()[table.getToAct()].getContributed();
 						
 						//System.out.println("last toCall: "+(lastToCall));
 						//System.out.println("min raise: "+(table.getToCall()+lastToCall));

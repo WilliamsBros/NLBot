@@ -1,5 +1,6 @@
 package ai;
 
+import player.Player;
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 import game.Action;
 import game.Table;
@@ -10,10 +11,9 @@ public class Rote1 extends AIUnit {
 	Card cardA;
 	Card cardB;
 	
-	public Rote1(Table t) {
-		super(t);
-		
-	}
+	public Rote1(Table t, Player p, int w) {
+		super(t,p,w);
+		}
 	
 	public Action getAction(){
 		cardA=new Card(I.getHand().cardA);
@@ -30,34 +30,34 @@ public class Rote1 extends AIUnit {
 	if(table.getRound()==0){
 		if(plus(8)||(isSuitedConnector() && plus(5)) ||isPair()){
 			if(table.legalActions[3]){
-				return new Action(null,3,0);
+				return new Action(null,3,6);
 			}
 			
 			if(table.legalActions[6]){
-				return new Action(null,6,0);
+				return new Action(null,6,-1);
 			}
 		}
 		
 		if(table.legalActions[1]){
-			return new Action(null,1,0);
+			return new Action(null,1,-1);
 		}
-			return new Action(null,0,0);
+			return new Action(null,0,-1);
 		
 	}
 	
 	else{
 		if(table.legalActions[3]){
-			return new Action(null,3,0);
+			return new Action(null,3,3);
 		}
 		
 		if(table.legalActions[2]){
-			return new Action(null,2,0);
+			return new Action(null,2,3);
 		}
 		if(table.legalActions[6]){
-			return new Action(null,6,0);
+			return new Action(null,6,-1);
 		}
 		if(table.legalActions[1]){
-			return new Action(null,1,0);
+			return new Action(null,1,-1);
 		}
 	}
 	

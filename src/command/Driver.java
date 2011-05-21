@@ -51,7 +51,8 @@ public class Driver {
 		
 		
 		t.addPlayer(new Player("Connor",t.getDefaultStackSize), 3);
-		t.getSeats()[2].setAI(new Rote1(t));
+		//t.getSeats()[2].setAI(new Rote1(t));
+		t.getSeats()[2].addAIUnit(new Rote1(t,t.getSeats()[2],100));
 		
 		t.addPlayer(new Player("Forrest",t.getDefaultStackSize), 1);
 		t.addPlayer(new Player("Alexa",t.getDefaultStackSize), 2);

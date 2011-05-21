@@ -18,6 +18,7 @@ public class Action {
  * 9:potsizeShowdown
  * 10:loses hand
  * 11:beginning state
+ * 12: miscellaneous notes
  */
 	public Player player;
 	public int action;
@@ -67,6 +68,8 @@ public class Action {
 		case 10: return (player.getName()+ " lost");
 		
 		case 11: return (string);
+		
+		case 12: return (string);
 	
 	}
 	return "";

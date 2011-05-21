@@ -228,7 +228,8 @@ public void draw(){
 	    	
 	    	else if(source.equals(sliders.get(1))){
 	    		amountField.setValue(source.getValue()*
-	    				table.getSeats()[table.getToAct()].getStack()/1000);
+	    				(table.getSeats()[table.getToAct()].getStack()+
+	    				table.getSeats()[table.getToAct()].getContributed())/1000);
 	    		
 	    	}
 //
@@ -255,16 +256,18 @@ public void draw(){
 			
 			if(amt>table.getSeats()[table.getToAct()].getStack()){
 				
-				amountField.setValue(table.getSeats()[table.getToAct()].getStack());
-				sliders.get(1).setValue(1000);
+				amountField.setValue(table.getSeats()[table.getToAct()].getStack()
+						+table.getSeats()[table.getToAct()].getContributed()
+						);
+				//sliders.get(1).setValue(1000);
 			}
 			else if(amt<0){
 				amountField.setValue(0);
-				sliders.get(1).setValue(0);
+				//sliders.get(1).setValue(0);
 			}
 			else{
 				amountField.setValue(amt);
-				sliders.get(1).setValue((int)(1000*amt/table.getSeats()[table.getToAct()].getStack()));
+				//sliders.get(1).setValue((int)(1000*amt/table.getSeats()[table.getToAct()].getStack()));
 			}
 			
 		}

@@ -180,17 +180,23 @@ public class Table {
 
 		} while (!actionComplete);
 
+		
+		
+		
 		view.toChips(view.pot, pot);
 		view.repaint();
 
 		setTContributed();
 
-		System.out.println("preflop is over");
+		//System.out.println("preflop is over");
+		
 		if (livePlayers < 2) {
-			System.out.println("going to run complete hand");
+			//System.out.println("going to run complete hand");
 			completeHand();
 			return;
 		}
+		HH.get(round).add(new Action(null,12,0,"---------------End Pre-Flop" +
+		"---------------\n"));
 
 		resetContributed();
 		round = 1;
@@ -231,12 +237,15 @@ public class Table {
 		view.repaint();
 		setTContributed();
 
-		System.out.println("flop is over");
+		//System.out.println("flop is over");
+		
 		resetContributed();
 		if (livePlayers < 2) {
 			completeHand();
 			return;
 		}
+		HH.get(round).add(new Action(null,12,0,"---------------End Flop" +
+		"---------------\n"));
 
 		round = 2;
 		toAct = button;
@@ -272,12 +281,17 @@ public class Table {
 		view.repaint();
 		setTContributed();
 
-		System.out.println("turn is over");
+		//System.out.println("turn is over");
+		
 		resetContributed();
+		
 		if (livePlayers < 2) {
 			completeHand();
 			return;
 		}
+		HH.get(round).add(new Action(null,12,0,"---------------End Turn" +
+		"---------------\n"));
+		
 
 		round = 3;
 		toAct = button;
@@ -313,7 +327,9 @@ public class Table {
 		view.repaint();
 		setTContributed();
 
-		System.out.println("river is over");
+		//System.out.println("river is over");
+		HH.get(round).add(new Action(null,12,0,"---------------End River" +
+		"---------------\n"));
 		resetContributed();
 		if (livePlayers < 2) {
 			completeHand();
@@ -691,7 +707,7 @@ public class Table {
 		Player winner = seats[findNextLivePlayer(toAct)];
 		Action lastAggr = HH.get(round).get(1);
 		for (int i = HH.get(round).size() - 1; i >= 0; i--) {
-			if (HH.get(round).get(i).player.equals(winner)) {
+			if (HH.get(round).get(i).player!=null && HH.get(round).get(i).player.equals(winner)) {
 				lastAggr = HH.get(round).get(i);
 				break;
 			}

@@ -1,10 +1,12 @@
 package player;
 
+import java.text.ParseException;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
 
 import ai.AIUnit;
+import ai.Brain;
 
 import UofAHandEval.ca.ualberta.cs.poker.Card;
 
@@ -17,6 +19,7 @@ public class Player {
 	//private boolean canReload=false;
 	public boolean autonomous=false;
 	AIUnit ai;
+	private Brain brain;
 	
 	
 	public int pushed;
@@ -44,6 +47,18 @@ public class Player {
 	public Player(String n) {
 		this(n, 0);
 	}
+	
+	public Player(String n, double s) {
+		name = n;
+		stack = s;
+		
+		
+		
+		//frame=table.frame;//new JFrame(name);
+		//view=table.view;//new PlayerView(this);
+	}
+	
+	
 
 	public Action generateAction() {
 		pushed=table.sleep*10;
@@ -61,7 +76,7 @@ public class Player {
 			
 				
 			
-				if(autonomous && ai==null){
+				if(autonomous && !brain.sentient()){
 				switch((int)(Math.random()*7)){
 					
 				case 0: if(table.legalActions[0])
@@ -90,7 +105,8 @@ public class Player {
 				}
 				else{
 					if(autonomous){
-						switch(ai.getAction().action){
+						Action a=brain.getAction();
+						switch(a.action){
 							
 						case 0:table.view.fold.doClick(pushed);
 										break;
@@ -98,10 +114,17 @@ public class Player {
 									table.view.check.doClick(pushed);
 										break;
 						case 2:
-									table.view.betPot.doClick(pushed);
+							table.settings.amountField.setValue(a.wager);
+									table.view.bet.doClick(pushed);
 										break;
+						
 						case 3:	
-									table.view.betPot.doClick(pushed);
+							table.settings.amountField.setValue(a.wager);
+							table.view.raise.doClick(pushed);
+										break;
+									
+						
+						case 4:		table.view.betPot.doClick(pushed);
 										break;
 						case 6:	
 									table.view.call.doClick(pushed);
@@ -151,12 +174,7 @@ public class Player {
 		return (!isLive && stack<table.getDefaultStackSize);
 	}
 	
-	public Player(String n, double s) {
-		name = n;
-		stack = s;
-		//frame=table.frame;//new JFrame(name);
-		//view=table.view;//new PlayerView(this);
-	}
+	
 
 	public String getName() {
 		return name;
@@ -177,6 +195,7 @@ public class Player {
 	public void sit(Table t) {
 		table = t;
 		pushed=t.sleep;
+		brain=new Brain(table);
 	}
 
 	public boolean isLive() {
@@ -253,5 +272,9 @@ public class Player {
 	
 	public void setAI(AIUnit a){
 		ai=a;
+	}
+	
+	public void addAIUnit(AIUnit ai){
+		brain.addAIUnit(ai);
 	}
 }
