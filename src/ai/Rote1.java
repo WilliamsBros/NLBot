@@ -30,7 +30,7 @@ public class Rote1 extends AIUnit {
 	if(table.getRound()==0){
 		if(plus(8)||(isSuitedConnector() && plus(5)) ||isPair()){
 			if(table.legalActions[3]){
-				return new Action(null,3,6);
+				return new Action(null,3,4);
 			}
 			
 			if(table.legalActions[6]){
@@ -47,11 +47,11 @@ public class Rote1 extends AIUnit {
 	
 	else{
 		if(table.legalActions[3]){
-			return new Action(null,3,3);
+			return new Action(null,3,2);
 		}
 		
 		if(table.legalActions[2]){
-			return new Action(null,2,3);
+			return new Action(null,2,2);
 		}
 		if(table.legalActions[6]){
 			return new Action(null,6,-1);

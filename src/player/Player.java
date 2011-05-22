@@ -21,6 +21,8 @@ public class Player {
 	AIUnit ai;
 	private Brain brain;
 	
+	double lifetimeWinnings=0;
+	double stackAtStartOfHand;
 	
 	public int pushed;
 	private String name;
@@ -51,6 +53,7 @@ public class Player {
 	public Player(String n, double s) {
 		name = n;
 		stack = s;
+		stackAtStartOfHand=stack;
 		
 		
 		
@@ -68,6 +71,8 @@ public class Player {
 		table.view.repaint();
 		
 		
+		
+		Action a=brain.getAction();
 		while(action==-1 ||amount==-1)
 			{
 			
@@ -76,36 +81,36 @@ public class Player {
 			
 				
 			
-				if(autonomous && !brain.sentient()){
-				switch((int)(Math.random()*7)){
-					
-				case 0: if(table.legalActions[0])
-							table.view.fold.doClick(pushed);
-								break;
-				case 1:	if(table.legalActions[1])
-							table.view.check.doClick(pushed);
-								break;
-				case 2:	if(table.legalActions[4])
-					table.view.betPot.doClick(pushed);
-						break;
-				case 3:	if(table.legalActions[6])
-							table.view.call.doClick(pushed);
-								break;
-				case 4:	if(table.legalActions[1])
-					table.view.check.doClick(pushed);
-						break;
-				case 5: if(table.legalActions[0])
-					table.view.fold.doClick(pushed);
-						break;
-				case 6:	if(table.legalActions[6])
-					table.view.call.doClick(pushed);
-						break;
-				//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
-				}
-				}
-				else{
+//				if(autonomous && !brain.sentient()){
+//				switch((int)(Math.random()*7)){
+//					
+//				case 0: if(table.legalActions[0])
+//							table.view.fold.doClick(pushed);
+//								break;
+//				case 1:	if(table.legalActions[1])
+//							table.view.check.doClick(pushed);
+//								break;
+//				case 2:	if(table.legalActions[4])
+//					table.view.betPot.doClick(pushed);
+//						break;
+//				case 3:	if(table.legalActions[6])
+//							table.view.call.doClick(pushed);
+//								break;
+//				case 4:	if(table.legalActions[1])
+//					table.view.check.doClick(pushed);
+//						break;
+//				case 5: if(table.legalActions[0])
+//					table.view.fold.doClick(pushed);
+//						break;
+//				case 6:	if(table.legalActions[6])
+//					table.view.call.doClick(pushed);
+//						break;
+//				//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
+//				}
+//				}
 					if(autonomous){
-						Action a=brain.getAction();
+						
+						
 						switch(a.action){
 							
 						case 0:table.view.fold.doClick(pushed);
@@ -132,7 +137,7 @@ public class Player {
 						//case 5:	table.view.reload[(int)(Math.random()*10)].doClick(pushed);break;
 						}
 						}
-				}
+				
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -276,5 +281,29 @@ public class Player {
 	
 	public void addAIUnit(AIUnit ai){
 		brain.addAIUnit(ai);
+	}
+	public Brain getBrain(){
+		return brain;
+	}
+
+	public double getStartingStack() {
+		// TODO Auto-generated method stub
+		return stackAtStartOfHand;
+	}
+
+	public void setLifetimeWinnings(double d) {
+		
+		lifetimeWinnings+=d;
+		
+	}
+
+	public double getLifetimeWinnings() {
+		// TODO Auto-generated method stub
+		return lifetimeWinnings;
+	}
+
+	public void setStartingStack(double d) {
+		stackAtStartOfHand=d;
+		
 	}
 }

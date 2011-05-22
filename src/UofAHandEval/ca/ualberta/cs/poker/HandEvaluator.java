@@ -19,18 +19,20 @@ public class HandEvaluator {
    public static void main(String args[]){
        Hand hand1 = new Hand("Kc 8c 9c Tc Jc Qc Ac");
        Hand hand2 = new Hand("Kc 8c 9c Tc Jc Qc Ad");
-
+       Hand hand3 = new Hand("5s 5d 5c 5h 2c Qc Ad");
+       
        HandEvaluator handEval = new HandEvaluator();
 
        System.out.println(handEval.getBest5CardHand(hand1));
        System.out.println(handEval.getBest5CardHand(hand2));
+       System.out.println(handEval.getBest5CardHand(hand3));
 
        System.out.println(handEval.rankHand(hand1));
        System.out.println(handEval.rankHand(hand2));
 
        System.out.println(handEval.nameHand(hand1));
        System.out.println(handEval.nameHand(hand2));
-
+       System.out.println(handEval.nameHand(hand3));
    }
    
    /**
@@ -1199,24 +1201,29 @@ public class HandEvaluator {
          break;
       case PAIR:
          ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS;
-         t = "a Pair of " + rank_name[ident] + "s";
+         t = "a Pair of " + rank_name[ident]+ (rank_name[ident].charAt(2)=='x'? "es":"s");
          break;
       case TWOPAIR:
          ident2 = ident / (NUM_RANKS * NUM_RANKS);
          ident = (ident % (NUM_RANKS * NUM_RANKS)) / NUM_RANKS;
-         t = "Two Pair, " + rank_name[ident2] + "s and " + rank_name[ident]
-               + "s";
+         t = 	"Two Pair, " + rank_name[ident2] 
+                + (rank_name[ident2].charAt(2)=='x'? "es":"s") 
+            	+" and " + rank_name[ident]
+            	+ (rank_name[ident].charAt(2)=='x'? "es":"s");
          break;
       case THREEKIND:
          t = "Three of a Kind, " + rank_name[ident / (NUM_RANKS * NUM_RANKS)]
-               + "s";
+               + (rank_name[ident/ (NUM_RANKS * NUM_RANKS)].charAt(2)=='x'? "es":"s");
          break;
       case FULLHOUSE:
-         t = "a Full House, " + rank_name[ident / NUM_RANKS] + "s over "
-               + rank_name[ident % NUM_RANKS] + "s";
+         t = "a Full House, " + rank_name[ident / NUM_RANKS] 
+             + (rank_name[ident/ NUM_RANKS].charAt(2)=='x'? "es":"s")+" over "
+               + rank_name[ident % NUM_RANKS] 
+               + (rank_name[ident% NUM_RANKS].charAt(2)=='x'? "es":"s");
          break;
       case FOURKIND:
-         t = "Four of a Kind, " + rank_name[ident / NUM_RANKS] + "s";
+         t = "Four of a Kind, " + rank_name[ident / NUM_RANKS] 
+               + (rank_name[ident/ NUM_RANKS ].charAt(2)=='x'? "es":"s");
          break;
       case STRAIGHT:
          t = "a " + rank_name[ident] + " High Straight";

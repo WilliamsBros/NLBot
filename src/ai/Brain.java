@@ -5,6 +5,10 @@ import game.Table;
 
 import java.util.Vector;
 
+import player.Player;
+
+import UofAHandEval.ca.ualberta.cs.poker.Card;
+
 public class Brain {
 
 	
@@ -14,6 +18,14 @@ public class Brain {
 	int[] votesAmount=new int[7]; //amount relative pot: 0=minRaise,
 								 //1:25%,2:50%,3:75%,4:100%;5:2x,6:allin
 								 //
+	Player I;
+	public Card pCardA;
+	public Card pCardB;
+	private boolean suitedHoleCards;
+	private boolean pairedHoleCards;
+	private int lowestHoleCard;
+	private boolean connectedHoleCards;
+	private boolean suitedConnectedHoleCards;
 	
 	
 	public Brain(Table t){
@@ -25,7 +37,60 @@ public class Brain {
 		units.add(ai);
 	}
 	
+	public void analyze(){
+		I=table.getSeats()[table.getToAct()];
+		pCardA=new Card(I.getHand().cardA);
+		pCardB=new Card(I.getHand().cardB);
+		
+		suitedHoleCards=pCardA.getSuit()==pCardB.getSuit();
+		pairedHoleCards=pCardA.getRank()==pCardB.getRank();
+		
+		
+		int tmp=pCardA.getRank()-pCardB.getRank();
+		connectedHoleCards=(tmp==1 ||tmp==-1);
+		
+		suitedConnectedHoleCards=isSuited() && isConnected() ;
+		
+		lowestHoleCard=pCardA.getRank()>=pCardB.getRank()
+					? pCardA.getRank(): pCardB.getRank();
+					
+		
+	}
+	
+public boolean isSuited(){
+		
+		return suitedHoleCards;
+	}
+	
+	
+	public boolean isPair(){
+		return pairedHoleCards;
+	}
+	
+	public boolean isConnected(){
+		return connectedHoleCards;
+	}
+	
+	
+	public boolean isSuitedConnector(){
+		return suitedConnectedHoleCards;
+	}
+	
+	private boolean plus(int rank){
+		
+		int lowRank=pCardA.getRank();
+		if(pCardB.getRank()<lowRank){
+			lowRank=(pCardB.getRank());
+		}
+	
+		return lowRank>=rank;
+		
+	}
+	
+	
 	public Action getAction(){
+		analyze();
+		
 		
 		
 		for(int q=0;q<7;q++){
@@ -35,6 +100,7 @@ public class Brain {
 		
 		for(int i=0;i<units.size();i++){
 			Action a=units.get(i).getAction();
+			//System.out.println(a.action);
 			
 			votesAction[a.action]+=units.get(i).weight;
 			if(a.wager>=0){
@@ -47,7 +113,7 @@ public class Brain {
 		int tmp=indexOfLargest(votesAction);
 		if(tmp==2 || tmp==3){
 			int amtIndex=indexOfLargest(votesAmount);
-			System.out.println("amtIndex: "+amtIndex+"tmp: "+tmp);
+			//System.out.println("amtIndex: "+amtIndex+"tmp: "+tmp);
 			switch (amtIndex){
 			
 			case 0: return new Action(null, tmp, table.getToCall()+table.minRaise);
@@ -60,16 +126,16 @@ public class Brain {
 						+ table.getToCall());
 				
 			case 2:
-				System.out.println("table.minRaise: "+table.minRaise);
+				//System.out.println("table.minRaise: "+table.minRaise);
 				if(table.minRaise<=table.getPot()*.5+table.getToCall()){
-					System.out.println("going to bet1: "+table.getPot()/2 
-							+ table.getToCall());
-					System.out.println("amount field: "+table.settings.amountField.getValue());
+					//System.out.println("going to bet1: "+table.getPot()/2 
+							//+ table.getToCall());
+					//System.out.println("amount field: "+table.settings.amountField.getValue());
 					return new Action(null, tmp, table.getPot()/2 
 							+ table.getToCall());
 				}
-				System.out.println("going to bet 2: "+table.minRaise
-						+ table.getToCall());
+				//System.out.println("going to bet 2: "+table.minRaise
+					//	+ table.getToCall());
 				return new Action(null, tmp,table.minRaise
 						+ table.getToCall());
 			case 3:
@@ -98,7 +164,8 @@ public class Brain {
 		
 		
 		}
-		
+		//System.out.println("tmp: "+tmp);
+		//System.out.println("isLegal?: "+table.legalActions[tmp]);
 		return new Action(null, tmp, 0);
 		
 		

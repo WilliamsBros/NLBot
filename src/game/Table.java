@@ -88,6 +88,71 @@ public class Table {
 				+ "-----------------------");
 	}
 
+	public void simulation(int numHands){
+		initPlayerCount();
+		NumberFormat formatD=NumberFormat.getInstance();
+		formatD.setMaximumFractionDigits(2);
+		
+		for (int i = 1; i < numHands+1; i++) {
+			System.out.println("hand number "+i+"\n");
+			
+			
+			for (int j = 0; j < 10; j++) {
+				if (seats[j] != null) {
+//					System.out.println();
+//					System.out.println(seats[j].getName());
+//					System.out.println("lifetime Winnings: "+seats[j].getLifetimeWinnings());
+//					System.out.println("starting stack: "+seats[j].getStartingStack());
+//					System.out.println("ending stack: "+seats[j].getStack());
+//					System.out.println("ending stack - starting stack: "
+//							+(seats[j].getStack()-seats[j].getStartingStack()));
+					seats[j].setLifetimeWinnings
+						(seats[j].getStack()-seats[j].getStartingStack());
+					
+					
+					if (seats[j].getStack()<getDefaultStackSize) {
+						//view.reload[j].doClick(0);
+						seats[j].initStack(getDefaultStackSize);
+						seats[j].setStartingStack(getDefaultStackSize);
+						
+//						System.out.println("after reloading, lifetime Winnings: "+seats[j].getLifetimeWinnings());
+//						System.out.println("after reloading: starting stack: "+seats[j].getStartingStack());
+						
+					} 
+					else if(seats[j].getStack()>3*getDefaultStackSize){
+						seats[j].initStack(getDefaultStackSize);
+						seats[j].setStartingStack(getDefaultStackSize);
+					}
+					else{
+						seats[j].setStartingStack(seats[j].getStack());
+//						System.out.println("no reload, lifetime Winnings: "+seats[j].getLifetimeWinnings());
+//						System.out.println("no reload: starting stack: "+seats[j].getStartingStack());
+					}
+					
+				}
+			}
+			
+			playHand();
+			
+			
+			
+			
+			
+		}
+		double sum=0;
+		for (int j = 0; j < 10; j++) {
+			if (seats[j] != null) {
+				System.out.println(seats[j].getName()+" Lifetime Winnings" +
+						": "+ format.format(seats[j].getLifetimeWinnings())+
+						", winrate: "+formatD.format(seats[j].getLifetimeWinnings()/
+						numHands*100/(2*bb))+" PTBB/100");
+				sum=sum+seats[j].getLifetimeWinnings();
+			}
+		}
+		
+		System.out.println("net: "+format.format(sum));
+	}
+	
 	public void run(int numHands) {
 
 		initPlayerCount();
@@ -1068,13 +1133,6 @@ public class Table {
 
 	}
 
-	private void test(Action a) {
-		System.out.println("toCall: " + toCall);
-		System.out.println("pot: " + pot);
-		System.out.println("a.wager: " + a.wager);
-		System.out.println("toAct.getContributed: "
-				+ seats[toAct].getContributed());
-	}
 
 	// Adds a new player to the table if the seat is open.
 	public void addPlayer(Player p, int seat) {
