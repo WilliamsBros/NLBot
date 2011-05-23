@@ -4,8 +4,11 @@ import graphics.PlayerView;
 import graphics.Settings;
 import graphics.TableView;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.text.NumberFormat;
 import java.util.Vector;
 
@@ -22,16 +25,15 @@ public class Table {
 	Player[] seats = new Player[10];
 	Deck deck = new Deck();
 
-	
 	public double minRaise;
-	public int sleep=0;
+	public int sleep = 0;
 	public int smallBlind = 2;
 	public int bigBlind = 3;
 	int button = 1;
 	int toAct = 2;
 	double bb = 2;
-	double sb = bb/2;
-	public double getDefaultStackSize = 100*bb;
+	double sb = bb / 2;
+	public double getDefaultStackSize = 100 * bb;
 
 	double pot = 0;
 	double toCall = 0;
@@ -49,9 +51,9 @@ public class Table {
 	public boolean[] legalActions = { true, false, true, false, true, false,
 			true };
 	public Settings settings;
-	
-	NumberFormat format=NumberFormat.getCurrencyInstance();
-	
+
+	NumberFormat format = NumberFormat.getCurrencyInstance();
+
 	// This is a state!!!
 	Vector<Vector<Action>> HH = new Vector<Vector<Action>>(4);
 
@@ -64,10 +66,9 @@ public class Table {
 			HH.add(i, new Vector<Action>(100));
 		}
 		frame = new JFrame("Table");
-		settings=new Settings(this);
+		settings = new Settings(this);
 		view = new TableView(this);
-		
-		
+
 		view.repaint();
 	}
 
@@ -88,78 +89,59 @@ public class Table {
 				+ "-----------------------");
 	}
 
-	public void simulation(int numHands){
+	public void simulation(int numHands) {
 		initPlayerCount();
-		NumberFormat formatD=NumberFormat.getInstance();
+		NumberFormat formatD = NumberFormat.getInstance();
 		formatD.setMaximumFractionDigits(2);
-		
-		for (int i = 1; i < numHands+1; i++) {
-			System.out.println("hand number "+i+"\n");
-			
-			
+
+		for (int i = 1; i < numHands + 1; i++) {
+			System.out.println("hand number " + i + "\n");
+
 			for (int j = 0; j < 10; j++) {
 				if (seats[j] != null) {
-//					System.out.println();
-//					System.out.println(seats[j].getName());
-//					System.out.println("lifetime Winnings: "+seats[j].getLifetimeWinnings());
-//					System.out.println("starting stack: "+seats[j].getStartingStack());
-//					System.out.println("ending stack: "+seats[j].getStack());
-//					System.out.println("ending stack - starting stack: "
-//							+(seats[j].getStack()-seats[j].getStartingStack()));
-					seats[j].setLifetimeWinnings
-						(seats[j].getStack()-seats[j].getStartingStack());
-					
-					
-					if (seats[j].getStack()<getDefaultStackSize) {
-						//view.reload[j].doClick(0);
+					seats[j].setLifetimeWinnings(seats[j].getStack()
+							- seats[j].getStartingStack());
+
+					if (seats[j].getStack() < getDefaultStackSize) {
 						seats[j].initStack(getDefaultStackSize);
 						seats[j].setStartingStack(getDefaultStackSize);
-						
-//						System.out.println("after reloading, lifetime Winnings: "+seats[j].getLifetimeWinnings());
-//						System.out.println("after reloading: starting stack: "+seats[j].getStartingStack());
-						
-					} 
-					else if(seats[j].getStack()>3*getDefaultStackSize){
+
+					} else if (seats[j].getStack() > 3 * getDefaultStackSize) {
 						seats[j].initStack(getDefaultStackSize);
 						seats[j].setStartingStack(getDefaultStackSize);
-					}
-					else{
+					} else {
 						seats[j].setStartingStack(seats[j].getStack());
-//						System.out.println("no reload, lifetime Winnings: "+seats[j].getLifetimeWinnings());
-//						System.out.println("no reload: starting stack: "+seats[j].getStartingStack());
 					}
-					
+
 				}
 			}
-			
+
 			playHand();
-			
-			
-			
-			
-			
+
 		}
-		double sum=0;
+		double sum = 0;
 		for (int j = 0; j < 10; j++) {
 			if (seats[j] != null) {
-				System.out.println(seats[j].getName()+" Lifetime Winnings" +
-						": "+ format.format(seats[j].getLifetimeWinnings())+
-						", winrate: "+formatD.format(seats[j].getLifetimeWinnings()/
-						numHands*100/(2*bb))+" PTBB/100");
-				sum=sum+seats[j].getLifetimeWinnings();
+				System.out.println(seats[j].getName()
+						+ " Lifetime Winnings"
+						+ ": "
+						+ format.format(seats[j].getLifetimeWinnings())
+						+ ", winrate: "
+						+ formatD.format(seats[j].getLifetimeWinnings()
+								/ numHands * 100 / (2 * bb)) + " PTBB/100");
+				sum = sum + seats[j].getLifetimeWinnings();
 			}
 		}
-		
-		System.out.println("net: "+format.format(sum));
+
+		System.out.println("net: " + format.format(sum));
 	}
-	
+
 	public void run(int numHands) {
 
 		initPlayerCount();
 
-		for (int i = 1; i < numHands+1; i++) {
-			System.out.println("hand number "+i+"\n");
-			//System.out.println(sumAllMoney());
+		for (int i = 1; i < numHands + 1; i++) {
+			System.out.println("hand number " + i + "\n");
 			playHand();
 		}
 
@@ -167,10 +149,7 @@ public class Table {
 
 	// Plays an entire hand - pre-flop, flop, turn, and river.
 	public void playHand() {
-		// seats[(button+1)%10];
-
-		
-		minRaise=bb;
+		minRaise = bb;
 		resetTContributed();
 		playersAllin = 0;
 		view.clearChipCount(view.pot);
@@ -186,11 +165,10 @@ public class Table {
 		}
 
 		view.repaint();
-		//System.out.println(generateStartingAction());
-		if(livePlayers==1){
-			
+		if (livePlayers == 1) {
+
 		}
-		
+
 		while (livePlayers < 2) {
 			try {
 				Thread.sleep(200);
@@ -199,20 +177,18 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-		
+
 		HH.get(0).add(generateStartingAction());
-		
-		//System.out.println(sumAllMoney());
+
+		// System.out.println(sumAllMoney());
 		actionComplete = false;
 
 		dealCards();
-		
 
 		advanceButton();
-		toAct =findNextLivePlayer(button);
-		if(livePlayers==2){
+		toAct = findNextLivePlayer(button);
+		if (livePlayers == 2) {
 			advanceAction();
-			//bbActsLast=false;
 		}
 		postSB();
 		advanceAction();
@@ -224,8 +200,6 @@ public class Table {
 		do {
 			setLegalActions();
 			settings.resetWager();
-			//System.out.println("livePlayers: " + livePlayers);
-			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -234,34 +208,29 @@ public class Table {
 			} else {
 				actionComplete = isActionComplete();
 
-//				try {
-//					Thread.sleep(sleep);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				try {
+					Thread.sleep(sleep);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				advanceAction();
 			}
 
 		} while (!actionComplete);
 
-		
-		
-		
 		view.toChips(view.pot, pot);
 		view.repaint();
 
 		setTContributed();
 
-		//System.out.println("preflop is over");
-		
 		if (livePlayers < 2) {
-			//System.out.println("going to run complete hand");
 			completeHand();
 			return;
 		}
-		HH.get(round).add(new Action(null,12,0,"---------------End Pre-Flop" +
-		"---------------\n"));
+		HH.get(round).add(
+				new Action(null, 12, 0, "---------------End Pre-Flop"
+						+ "---------------\n"));
 
 		resetContributed();
 		round = 1;
@@ -274,13 +243,11 @@ public class Table {
 
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
-		minRaise=bb;
+		minRaise = bb;
 		// flop
 		do {
 			setLegalActions();
 			settings.resetWager();
-			//System.out.println("livePlayers: " + livePlayers);
-			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -288,12 +255,12 @@ public class Table {
 			} else {
 				actionComplete = isActionComplete();
 				advanceAction();
-//				try {
-//					Thread.sleep(sleep);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				try {
+					Thread.sleep(sleep);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		} while (!actionComplete);
@@ -301,16 +268,14 @@ public class Table {
 		view.toChips(view.pot, pot);
 		view.repaint();
 		setTContributed();
-
-		//System.out.println("flop is over");
-		
 		resetContributed();
 		if (livePlayers < 2) {
 			completeHand();
 			return;
 		}
-		HH.get(round).add(new Action(null,12,0,"---------------End Flop" +
-		"---------------\n"));
+		HH.get(round).add(
+				new Action(null, 12, 0, "---------------End Flop"
+						+ "---------------\n"));
 
 		round = 2;
 		toAct = button;
@@ -319,13 +284,11 @@ public class Table {
 		actionComplete = false;
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
-		minRaise=bb;
+		minRaise = bb;
 		// turn
 		do {
 			setLegalActions();
 			settings.resetWager();
-			//System.out.println("livePlayers: " + livePlayers);
-			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -333,30 +296,27 @@ public class Table {
 			} else {
 				actionComplete = isActionComplete();
 				advanceAction();
-//				try {
-//					Thread.sleep(sleep);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				try {
+					Thread.sleep(sleep);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} while (!actionComplete);
 
 		view.toChips(view.pot, pot);
 		view.repaint();
 		setTContributed();
-
-		//System.out.println("turn is over");
-		
 		resetContributed();
-		
+
 		if (livePlayers < 2) {
 			completeHand();
 			return;
 		}
-		HH.get(round).add(new Action(null,12,0,"---------------End Turn" +
-		"---------------\n"));
-		
+		HH.get(round).add(
+				new Action(null, 12, 0, "---------------End Turn"
+						+ "---------------\n"));
 
 		round = 3;
 		toAct = button;
@@ -366,12 +326,10 @@ public class Table {
 		lastAggressor = indexOfLastLivePlayer();
 		toCall = 0;
 		// river
-		minRaise=bb;
+		minRaise = bb;
 		do {
 			setLegalActions();
 			settings.resetWager();
-			//System.out.println("livePlayers: " + livePlayers);
-			//System.out.println("playersAllin: " + playersAllin);
 			if (seats[toAct].getStack() > 0
 					&& (livePlayers - playersAllin > 1 || seats[toAct]
 							.getContributed() < toCall)) {
@@ -379,12 +337,12 @@ public class Table {
 			} else {
 				actionComplete = isActionComplete();
 				advanceAction();
-//				try {
-//					Thread.sleep(sleep);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				try {
+					Thread.sleep(sleep);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} while (!actionComplete);
 
@@ -392,9 +350,9 @@ public class Table {
 		view.repaint();
 		setTContributed();
 
-		//System.out.println("river is over");
-		HH.get(round).add(new Action(null,12,0,"---------------End River" +
-		"---------------\n"));
+		HH.get(round).add(
+				new Action(null, 12, 0, "---------------End River"
+						+ "---------------\n"));
 		resetContributed();
 		if (livePlayers < 2) {
 			completeHand();
@@ -408,7 +366,7 @@ public class Table {
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null) {
 				seats[i].clearTContributed();
-				seats[i].handRank=-1;
+				seats[i].handRank = -1;
 			}
 		}
 
@@ -423,19 +381,6 @@ public class Table {
 
 	}
 
-	private int playersAllIn() {
-		int count = 0;
-		for (int i = 0; i < 10; i++) {
-			if (seats[i] != null && seats[i].isLive()
-					&& seats[i].getStack() <= 0) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	
-	
 	private void setLegalActions() {
 		// fold
 		if (seats[toAct].getContributed() - toCall == 0) {
@@ -484,25 +429,23 @@ public class Table {
 			view.raise.setBackground(view.raise.getParent().getBackground());
 		}
 
-		//pot
-		if (legalActions[2] ) {
+		// pot
+		if (legalActions[2]) {
 			legalActions[4] = true;
 			view.betPot.setText("Pot");
 			view.betPot.setBackground(Color.green);
-			
-		} 
-		else if ( legalActions[3] ) {
+
+		} else if (legalActions[3]) {
 			legalActions[4] = true;
 			view.betPot.setText("Pot");
 			view.betPot.setBackground(Color.red);
-		} 
-		
-		
+		}
+
 		else {
 			legalActions[4] = false;
-			view.bet.setBackground(view.bet.getParent().getBackground());
+			view.betPot.setBackground(view.bet.getParent().getBackground());
 		}
-		
+
 	}
 
 	private void resetContributed() {
@@ -517,13 +460,12 @@ public class Table {
 	private void showdown() {
 
 		Vector<Vector<Player>> hClasses = new Vector<Vector<Player>>();
-		Vector<Player> winners = new Vector<Player>();
+		Vector<Player> initialClass = new Vector<Player>();
 		Hand h = boardToHand();
 		HandEvaluator he = new HandEvaluator();
-		NumberFormat f=NumberFormat.getCurrencyInstance();
-		
-		
-		hClasses.add(winners);
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+
+		hClasses.add(initialClass);
 
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null && seats[i].isLive()) {
@@ -531,47 +473,38 @@ public class Table {
 						seats[i].getHand().cardA), new Card(
 						seats[i].getHand().cardB), h);
 
-//				System.out.println("trying to add "+seats[i].getName()+
-//						" with handrank: "+seats[i].handRank);
 				for (int j = hClasses.size() - 1; j >= 0; j--) {
 					if (!hClasses.lastElement().isEmpty()) {
 						if (seats[i].handRank > hClasses.get(j).get(0).handRank) {
-							hClasses.add(j+1,new Vector<Player>());
-							hClasses.get(j+1).add(seats[i]);
-							//System.out.println("adding "+seats[i].getName()+" in greater than");
+							hClasses.add(j + 1, new Vector<Player>());
+							hClasses.get(j + 1).add(seats[i]);
 							break;
 
-						} 
-						else if (seats[i].handRank == hClasses.get(j).get(0).handRank) {
-							//System.out.println("made it into equals");
+						} else if (seats[i].handRank == hClasses.get(j).get(0).handRank) {
 							for (int k = hClasses.get(j).size() - 1; k >= 0; k--) {
-								if (seats[i].getTContributed() >= hClasses.get(j).get(k)
-									.getTContributed()) {
-									hClasses.get(j).add(k+1,seats[i]);
-									//System.out.println("adding "+seats[i].getName()+" at equals");
+								if (seats[i].getTContributed() >= hClasses.get(
+										j).get(k).getTContributed()) {
+									hClasses.get(j).add(k + 1, seats[i]);
 									break;
-								}
-								else if(k==0){
-									hClasses.get(j).add(0,seats[i]);
-									//System.out.println("adding "+seats[i].getName()+" at equals");
+								} else if (k == 0) {
+									hClasses.get(j).add(0, seats[i]);
 									break;
 								}
 							}
 							break;
 						}
-						
-						else if(j==0 &&seats[i].handRank < hClasses.get(0).get(0).handRank ){
+
+						else if (j == 0
+								&& seats[i].handRank < hClasses.get(0).get(0).handRank) {
 							hClasses.add(0, new Vector<Player>());
 							hClasses.get(0).add(seats[i]);
-							//System.out.println("adding "+seats[i].getName()+" at less than 0th class");
 							break;
 						}
-					} 
-					
+					}
+
 					else {
 						hClasses.lastElement().add(seats[i]);
-						//System.out.println("adding "+seats[i].getName()+" in final else");
-							break;
+						break;
 					}
 				}
 
@@ -579,175 +512,201 @@ public class Table {
 
 		}
 
-		int plyrAtShowdown=0;
-		for(int s=0;s<hClasses.size();s++){
-			//System.out.println("hand rank class: "+s);
-			for(int b=0;b<hClasses.get(s).size();b++){
+		int plyrAtShowdown = 0;
+		for (int s = 0; s < hClasses.size(); s++) {
+			// System.out.println("hand rank class: "+s);
+			for (int b = 0; b < hClasses.get(s).size(); b++) {
 				plyrAtShowdown++;
-				//System.out.println(hClasses.get(s).get(b).getName()+
-				//		" hand rank: "+hClasses.get(s).get(b).handRank);
+				// System.out.println(hClasses.get(s).get(b).getName()+
+				// " hand rank: "+hClasses.get(s).get(b).handRank);
 			}
 		}
-		//System.out.println("livePlayers: "+livePlayers+" playersAtShowdown: "
-		//		+plyrAtShowdown);
-		
-		
-		
-		Hand tmpHand=new Hand();
+		// System.out.println("livePlayers: "+livePlayers+" playersAtShowdown: "
+		// +plyrAtShowdown);
 
-		while(!hClasses.isEmpty()){
-			
-			double pt=0;
-			double frstPlyrAmt=hClasses.lastElement().get(0).getTContributed();
-			for(int n=0;n<hClasses.size();n++){
-				for(int m=0;m<hClasses.get(n).size();m++){
-					if(frstPlyrAmt>hClasses.get(n).get(m).getTContributed()){
-						
-//						System.out.println(hClasses.get(n).get(m).getName()
-//								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
-//								+", stack: "+hClasses.get(n).get(m).getStack());
-						
-						pt=pt+hClasses.get(n).get(m).getTContributed();
-						hClasses.get(n).get(m).setTContributed
-							(-hClasses.get(n).get(m).getTContributed());
-						
-//						System.out.println(hClasses.get(n).get(m).getName()
-//								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
-//								+", stack: "+hClasses.get(n).get(m).getStack());
-						//System.out.println(sumAllMoney());
-					}
-					else{
-//						System.out.println(hClasses.get(n).get(m).getName()
-//								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
-//								+", stack: "+hClasses.get(n).get(m).getStack());
-						
-						pt=pt+frstPlyrAmt;
+		Hand tmpHand = new Hand();
+
+		while (!hClasses.isEmpty()) {
+
+			double pt = 0;
+			double frstPlyrAmt = hClasses.lastElement().get(0)
+					.getTContributed();
+			for (int n = 0; n < hClasses.size(); n++) {
+				for (int m = 0; m < hClasses.get(n).size(); m++) {
+					if (frstPlyrAmt > hClasses.get(n).get(m).getTContributed()) {
+
+						// System.out.println(hClasses.get(n).get(m).getName()
+						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
+						// +", stack: "+hClasses.get(n).get(m).getStack());
+
+						pt = pt + hClasses.get(n).get(m).getTContributed();
+						hClasses.get(n).get(m).setTContributed(
+								-hClasses.get(n).get(m).getTContributed());
+
+						// System.out.println(hClasses.get(n).get(m).getName()
+						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
+						// +", stack: "+hClasses.get(n).get(m).getStack());
+						// System.out.println(sumAllMoney());
+					} else {
+						// System.out.println(hClasses.get(n).get(m).getName()
+						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
+						// +", stack: "+hClasses.get(n).get(m).getStack());
+
+						pt = pt + frstPlyrAmt;
 						hClasses.get(n).get(m).setTContributed(-frstPlyrAmt);
-						
-//						System.out.println(hClasses.get(n).get(m).getName()
-//								+" total contributed: "+hClasses.get(n).get(m).getTContributed()
-//								+", stack: "+hClasses.get(n).get(m).getStack());
-						//System.out.println(sumAllMoney());
+
+						// System.out.println(hClasses.get(n).get(m).getName()
+						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
+						// +", stack: "+hClasses.get(n).get(m).getStack());
+						// System.out.println(sumAllMoney());
 					}
-					
-					
-					
+
+				}
+
+				// System.out.println();
 			}
-				
-			//System.out.println();
-		}
-			
-			for(int l=0;l<10;l++){
-				if(seats[l]!=null && !seats[l].isLive() 
-						&& seats[l].getTContributed()>0){
-					if(frstPlyrAmt>seats[l].getTContributed()){
-						
-//						System.out.println(seats[l].getName()
-//								+" total contributed: "+seats[l].getTContributed()
-//								+", stack: "+seats[l].getStack());
-						
-						pt=pt+seats[l].getTContributed();
-						seats[l].setTContributed
-							(-seats[l].getTContributed());
-//						
-//						System.out.println(seats[l].getName()
-//								+" total contributed: "+seats[l].getTContributed()
-//								+", stack: "+seats[l].getStack());
-						
-						
-						//System.out.println(sumAllMoney());
-					}
-					else{
-//						System.out.println(seats[l].getName()
-//								+" total contributed: "+seats[l].getTContributed()
-//								+", stack: "+seats[l].getStack());
-						
-						pt=pt+frstPlyrAmt;
+
+			for (int l = 0; l < 10; l++) {
+				if (seats[l] != null && !seats[l].isLive()
+						&& seats[l].getTContributed() > 0) {
+					if (frstPlyrAmt > seats[l].getTContributed()) {
+
+						// System.out.println(seats[l].getName()
+						// +" total contributed: "+seats[l].getTContributed()
+						// +", stack: "+seats[l].getStack());
+
+						pt = pt + seats[l].getTContributed();
+						seats[l].setTContributed(-seats[l].getTContributed());
+						//						
+						// System.out.println(seats[l].getName()
+						// +" total contributed: "+seats[l].getTContributed()
+						// +", stack: "+seats[l].getStack());
+
+						// System.out.println(sumAllMoney());
+					} else {
+						// System.out.println(seats[l].getName()
+						// +" total contributed: "+seats[l].getTContributed()
+						// +", stack: "+seats[l].getStack());
+
+						pt = pt + frstPlyrAmt;
 						seats[l].setTContributed(-frstPlyrAmt);
-						
-//						System.out.println(seats[l].getName()
-//								+" total contributed: "+seats[l].getTContributed()
-//								+", stack: "+seats[l].getStack());
-						//System.out.println(sumAllMoney());
+
+						// System.out.println(seats[l].getName()
+						// +" total contributed: "+seats[l].getTContributed()
+						// +", stack: "+seats[l].getStack());
+						// System.out.println(sumAllMoney());
 					}
 				}
 			}
-			
+
 			tmpHand.makeEmpty();
-			for(int m=0;m<hClasses.lastElement().size();m++){
-				
-					hClasses.lastElement().get(m).setStack(pt/(hClasses.lastElement().size()));
-				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardA));
-				//System.out.println(new Card(hClasses.lastElement().get(0).getHand().cardA).toString());
-				tmpHand.addCard(new Card(hClasses.lastElement().get(0).getHand().cardB));
-				//System.out.println(new Card(hClasses.lastElement().get(0).getHand().cardB).toString());
-				for(int a=0;a<5;a++){
+			for (int m = 0; m < hClasses.lastElement().size(); m++) {
+
+				hClasses.lastElement().get(m).setStack(
+						pt / (hClasses.lastElement().size()));
+				tmpHand.addCard(new Card(hClasses.lastElement().get(0)
+						.getHand().cardA));
+				// System.out.println(new
+				// Card(hClasses.lastElement().get(0).getHand().cardA).toString());
+				tmpHand.addCard(new Card(hClasses.lastElement().get(0)
+						.getHand().cardB));
+				// System.out.println(new
+				// Card(hClasses.lastElement().get(0).getHand().cardB).toString());
+				for (int a = 0; a < 5; a++) {
 					tmpHand.addCard(new Card(board[a]));
-					//System.out.println(new Card(board[a]).toString());
+					// System.out.println(new Card(board[a]).toString());
 				}
-				
-			//TODO when splitting, prints out same person multiple times
-				if(pt>0){			
-					HH.get(round).add(new Action(hClasses.lastElement().get(0),7
-							,pt/hClasses.lastElement().size()
-							, hClasses.lastElement().get(m).getName()
-							+" wins "
-							+f.format(pt/hClasses.lastElement().size())
-							+" with "+HandEvaluator.nameHand(tmpHand)));
-							
-//					view.getGraphics().setColor(Color.yellow);
-//					view.getGraphics().setFont(new Font(null,Font.BOLD,30));
-					
-					
-//					try {
-//						Thread.sleep(sleep);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-					//view.getGraphics().setColor(Color.WHITE);
+
+				// TODO when splitting, prints out same person multiple times
+				if (pt > 0) {
+					HH.get(round).add(
+							new Action(hClasses.lastElement().get(0), 7, pt
+									/ hClasses.lastElement().size(), hClasses
+									.lastElement().get(m).getName()
+									+ " wins "
+									+ f.format(pt
+											/ hClasses.lastElement().size())
+									+ " with "
+									+ HandEvaluator.nameHand(tmpHand)));
+
 				}
-				//System.out.println(sumAllMoney());
-				
-			//}
 			}
-			
-			while(hClasses.get(0).get(0).handRank==-1 && 
-					hClasses.get(0).get(0).getTContributed()<=0){
+
+			while (hClasses.get(0).get(0).handRank == -1
+					&& hClasses.get(0).get(0).getTContributed() <= 0) {
 				hClasses.get(0).remove(0);
 			}
 			hClasses.lastElement().remove(0);
-			
-			if(hClasses.lastElement().isEmpty()){
-				hClasses.remove(hClasses.size()-1);
+
+			if (hClasses.lastElement().isEmpty()) {
+				hClasses.remove(hClasses.size() - 1);
 			}
-			//System.out.println(sumAllMoney());
-			
+
 		}
-		
-	p();
+
+		p();
+		Graphics g = view.getGraphics();
 		try {
-			Thread.sleep(30*sleep);
+
+			if (sleep > 0) {
+				for (int j = 0; j < 6; j++) {
+
+					Thread.sleep(1000);
+					Graphics2D g2 = (Graphics2D) g;
+					g2.setStroke(new BasicStroke(10F));
+
+					for (int i = 0, winners = 0; i < HH.get(3).size(); i++) {
+						g.setFont(new Font("Lucida Sans", Font.BOLD, 15));
+						g.setColor(Color.orange);
+
+						Action a = HH.get(3).get(i);
+						if (a.action == 7) {
+
+							g.drawString(HH.get(3).get(i).string, 160,
+									230 + 15 * winners);
+							g2
+									.drawRoundRect(view.cardPos[a.player
+											.getSeatIndex() * 2].x - 4,
+											view.cardPos[a.player
+													.getSeatIndex() * 2].y - 4,
+											62, 67, 10, 10);
+
+							g.setColor(Color.black);
+							g.setFont(new Font("Lucida Sans", Font.BOLD, 12));
+							g.drawString(a.player.getName(), view.sPos[a.player
+									.getSeatIndex()].x, view.sPos[a.player
+									.getSeatIndex()].y);
+
+							winners++;
+						}
+
+					}
+					g.setFont(new Font("Lucida Sans", Font.BOLD, 12));
+					g2.setStroke(new BasicStroke(1F));
+
+				}
+			} else {
+				Thread.sleep(30 * sleep);
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	
-	private double sumAllMoney(){
-		double acc=0;
-		for(int l=0;l<10;l++){
-			if(seats[l]!=null //&& !seats[l].isSittingOut() 
-					){
-				acc=acc+seats[l].getStack();
-				//System.out.println(acc);
+	private double sumAllMoney() {
+		double acc = 0;
+		for (int l = 0; l < 10; l++) {
+			if (seats[l] != null // && !seats[l].isSittingOut()
+			) {
+				acc = acc + seats[l].getStack();
+
 			}
 		}
-		//System.out.println(acc);
-		return acc+pot;
+
+		return acc + pot;
 	}
-	
+
 	private Hand boardToHand() {
 		Hand h = new Hand();
 
@@ -771,19 +730,55 @@ public class Table {
 	private void completeHand() {
 		Player winner = seats[findNextLivePlayer(toAct)];
 		Action lastAggr = HH.get(round).get(1);
+
 		for (int i = HH.get(round).size() - 1; i >= 0; i--) {
-			if (HH.get(round).get(i).player!=null && HH.get(round).get(i).player.equals(winner)) {
+			if (HH.get(round).get(i).player != null
+					&& HH.get(round).get(i).player.equals(winner)) {
 				lastAggr = HH.get(round).get(i);
 				break;
 			}
 
 		}
 		// TODO two player will be buggy need to fix
-		HH.get(round).add(new Action(winner, 8, pot - lastAggr.wager));
+		HH.get(round).add(
+				new Action(winner, 7, pot - lastAggr.wager, winner.getName()
+						+ " wins " + format.format(pot - lastAggr.wager)));
+
+		Graphics g = view.getGraphics();
+
 		winner.setStack(pot);
+		pot = pot - lastAggr.wager;
+		view.toChips(view.pot, pot);
 		p();
 		try {
-			Thread.sleep(20*sleep);
+			if (sleep > 0) {
+				for (int i = 0; i < 2; i++) {
+
+					Thread.sleep(1000);
+					g.setFont(new Font("Lucida Sans", Font.BOLD, 15));
+					g.setColor(Color.orange);
+					g.drawString(HH.get(round).lastElement().string, 200, 230);
+
+					Graphics2D g2 = (Graphics2D) g;
+					g2.setStroke(new BasicStroke(10F));
+
+					g2.drawRoundRect(
+							view.cardPos[winner.getSeatIndex() * 2].x - 4,
+							view.cardPos[winner.getSeatIndex() * 2].y - 4, 62,
+							67, 10, 10);
+					g.setFont(new Font("Lucida Sans", Font.BOLD, 12));
+					g.setColor(Color.black);
+
+					g.drawString(winner.getName(), view.sPos[winner
+							.getSeatIndex()].x,
+							view.sPos[winner.getSeatIndex()].y);
+
+					g2.setStroke(new BasicStroke(1F));
+
+				}
+			} else {
+				Thread.sleep(20 * sleep);
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -810,15 +805,12 @@ public class Table {
 		int cards = 5; // livePlayers * 2;
 		for (int i = 0; i < 10; i++) {
 			if (seats[i] != null && !seats[i].isSittingOut()) {
-				seats[i].setHand(deck.deck[cards],
-				// can be negative -fixing bug -connor
-						deck.deck[cards + 1]);
+				seats[i].setHand(deck.deck[cards], deck.deck[cards + 1]);
 				cards += 2;
-			}
-			else if(seats[i] != null){
-				
-				seats[i].getHand().cardA=-1;
-				
+			} else if (seats[i] != null) {
+
+				seats[i].getHand().cardA = -1;
+
 			}
 		}
 
@@ -867,8 +859,7 @@ public class Table {
 			if (livePlayers == 1
 					|| (findNextLivePlayer(toAct) == lastAggressor && bbActsLast == false)
 					|| (lastAggressor == toAct && bbActsLast == true)
-					|| (lastAggressor == toAct && !(totalContributed() > 0) ))
-			{
+					|| (lastAggressor == toAct && !(totalContributed() > 0))) {
 				return true;
 			}
 
@@ -899,26 +890,25 @@ public class Table {
 	// Forces the player at index toAct to post the big blind.
 
 	private void postBB() {
-		
-		if(seats[toAct].getStack()>bb){
-		HH.get(round).add(new Action(seats[toAct], 5, bb));
-		setPot(bb);
-		seats[toAct].setContributed(bb);
-		seats[toAct].setStack(-bb);
-		
-		
+
+		if (seats[toAct].getStack() > bb) {
+			HH.get(round).add(new Action(seats[toAct], 5, bb));
+			setPot(bb);
+			seats[toAct].setContributed(bb);
+			seats[toAct].setStack(-bb);
+
 		}
-		
-		else{
-			HH.get(round).add(new Action(seats[toAct], 5, seats[toAct].getStack()));
+
+		else {
+			HH.get(round).add(
+					new Action(seats[toAct], 5, seats[toAct].getStack()));
 			setPot(seats[toAct].getStack());
 			seats[toAct].setContributed(seats[toAct].getStack());
 			seats[toAct].setStack(-seats[toAct].getStack());
-			
-			
+
 			playersAllin++;
 		}
-		
+
 		toCall = bb;
 		view.toChips(seats[toAct].stackChips, seats[toAct].getContributed());
 		// view.repaint();
@@ -926,92 +916,74 @@ public class Table {
 	}
 
 	// Forces the player at index toAct to post the small blind.
-	private Action generateStartingAction(){
-		String s="";
-		
-		
-		for(int i=0;i<10;i++){
-			if(seats[i]==null){
-				s=s+"seat "+(i+1)+": empty.\n";
+	private Action generateStartingAction() {
+		String s = "";
+
+		for (int i = 0; i < 10; i++) {
+			if (seats[i] == null) {
+				s = s + "seat " + (i + 1) + ": empty.\n";
+			} else if (seats[i].isSittingOut()) {
+				s = s + "seat " + (i + 1) + ": " + seats[i].getName() + " has "
+						+ format.format(seats[i].getStack())
+						+ " and is sitting out.\n";
 			}
-			else if(seats[i].isSittingOut()){
-				s=s+"seat "+(i+1)+": "+seats[i].getName()
-				     +" has "+format.format(seats[i].getStack())
-				     +" and is sitting out.\n";
-			}
-			
-			else{
-				s=s+"seat "+(i+1)+": "+seats[i].getName()
-				       		+" has "+format.format(seats[i].getStack())
-				       	+".\n";
-				
+
+			else {
+				s = s + "seat " + (i + 1) + ": " + seats[i].getName() + " has "
+						+ format.format(seats[i].getStack()) + ".\n";
+
 			}
 		}
-		Action start=new Action(null,11,0);
-		start.string=s;
+		Action start = new Action(null, 11, 0);
+		start.string = s;
 		return start;
 	}
-	
+
 	private void postSB() {
-//		HH.get(round).add(new Action(seats[toAct], 4, sb));
-//		seats[toAct].setStack(-sb);
-//		seats[toAct].setContributed(sb);
-//		setPot(sb);
-		
-		if(seats[toAct].getStack()>sb){
+
+		if (seats[toAct].getStack() > sb) {
 			HH.get(round).add(new Action(seats[toAct], 4, sb));
 			seats[toAct].setStack(-sb);
 			seats[toAct].setContributed(sb);
 			setPot(sb);
-			}
-			
-			else{
-				HH.get(round).add(new Action(seats[toAct], 4, seats[toAct].getStack()));
-				setPot(seats[toAct].getStack());
-				seats[toAct].setContributed(seats[toAct].getStack());
-				seats[toAct].setStack(-seats[toAct].getStack());
-				
-				
-				playersAllin++;
-			}
-		
-		
-		
+		}
+
+		else {
+			HH.get(round).add(
+					new Action(seats[toAct], 4, seats[toAct].getStack()));
+			setPot(seats[toAct].getStack());
+			seats[toAct].setContributed(seats[toAct].getStack());
+			seats[toAct].setStack(-seats[toAct].getStack());
+
+			playersAllin++;
+		}
+
 		toCall = sb;
-		lastAggressor=toAct;
+		lastAggressor = toAct;
 		view.toChips(seats[toAct].stackChips, seats[toAct].getContributed());
 		// view.repaint();
 	}
 
 	// Moves the button forward one player, skips null seats.
 	private void advanceButton() {
-		
-//		for(int i=0;i<10;i++){
-//			if(seats[button] == null || seats[button].isSittingOut()){
-//				button = (button + 1) % 10;
-//			}
-//		}
-		
+
 		do {
 			button = (button + 1) % 10;
 		} while (seats[button] == null || seats[button].isSittingOut());
 
-		
-		
-		if(!(livePlayers<3)){
+		if (!(livePlayers < 3)) {
 			smallBlind = findNextLivePlayer(button);
 			bigBlind = findNextLivePlayer(smallBlind);
 		}
-		
-		else if(livePlayers==2){
-			smallBlind=button;
-			bigBlind=findNextLivePlayer(smallBlind);
-		}
-		
-		else{
-			
+
+		else if (livePlayers == 2) {
+			smallBlind = button;
+			bigBlind = findNextLivePlayer(smallBlind);
 		}
 
+		else {
+
+		}
 
 	}
 
@@ -1069,9 +1041,8 @@ public class Table {
 			}
 			lastAggressor = toAct;
 			seats[toAct].setContributed(a.wager);
-			// test(a);
 			toCall = a.wager;
-			minRaise=a.wager;
+			minRaise = a.wager;
 			view
 					.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
@@ -1091,11 +1062,11 @@ public class Table {
 			seats[toAct]
 					.setContributed(a.wager - seats[toAct].getContributed());//
 			lastAggressor = toAct;
-			// test(a);
-			minRaise=a.wager-toCall;
+			minRaise = a.wager - toCall;
 			toCall = a.wager;
-			
-			view.toChips(seats[toAct].stackChips, seats[toAct]
+
+			view
+					.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
 			advanceAction();
 		}
@@ -1121,10 +1092,11 @@ public class Table {
 			setPot(a.wager - seats[toAct].getContributed());
 			seats[toAct]
 					.setContributed(a.wager - seats[toAct].getContributed());// -
-																				// seats[toAct].getContributed());
+			// seats[toAct].getContributed());
 
 			// test(a);
-			view.toChips(seats[toAct].stackChips, seats[toAct]
+			view
+					.toChips(seats[toAct].stackChips, seats[toAct]
 							.getContributed());
 			advanceAction();
 		}
@@ -1133,14 +1105,13 @@ public class Table {
 
 	}
 
-
 	// Adds a new player to the table if the seat is open.
 	public void addPlayer(Player p, int seat) {
 		if (seats[seat - 1] == null) {
 			seats[seat - 1] = p;
 		}
 		p.setSittingOut(true);
-		p.sit(this);
+		p.sit(this, seat - 1);
 	}
 
 	public double getSB() {
@@ -1160,12 +1131,10 @@ public class Table {
 	}
 
 	public int getLastAggressor() {
-		// TODO Auto-generated method stub
 		return lastAggressor;
 	}
 
 	public double getLastAggWager() {
-		// TODO Auto-generated method stub
 		return lastAggressor;
 	}
 
@@ -1185,17 +1154,15 @@ public class Table {
 	}
 
 	public int[] getBoard() {
-		// TODO Auto-generated method stub
 		return board;
 	}
 
 	public int getToAct() {
-		// TODO Auto-generated method stub
 		return toAct;
 	}
 
 	public Vector<Vector<Action>> getState() {
-		
+
 		return HH;
 	}
 }

@@ -66,8 +66,8 @@ public class TableView extends JPanel implements MouseInputListener,
 	NumberFormat format1=NumberFormat.getCurrencyInstance();
 	BufferedImage tbl;
 	BufferedImage cardImgs;
-	Point[] sPos = new Point[10];
-	Point[] cardPos = new Point[20];
+	public Point[] sPos = new Point[10];
+	public Point[] cardPos = new Point[20];
 
 	Double[] chipVals = { .01, .05, .25, 1.0, 5.0, 25.0, 100.0, 500.0, 1000.0,
 			5000.0, 25000.0, 100000.0, 500000.0, 1000000.0, 5000000.0 };
@@ -344,22 +344,6 @@ public class TableView extends JPanel implements MouseInputListener,
 				g2D.setStroke(new BasicStroke(10F));
 				g2D.drawRoundRect(cardPos[i*2].x-4, cardPos[i*2].y-4, 62, 67, 10, 10);
 				
-//				g.setColor(Color.orange);
-//				g2D.setStroke(new BasicStroke(3F));
-//				g2D.drawRoundRect(cardPos[i*2].x-4, cardPos[i*2].y-4, 61, 66, 10, 10);
-//				
-//				g.setColor(Color.yellow);
-//				g2D.setStroke(new BasicStroke(3F));
-//				g2D.drawRoundRect(cardPos[i*2].x-3, cardPos[i*2].y-3, 60, 65, 10, 10);
-//				
-//				g.setColor(Color.green);
-//			    g2D.setStroke(new BasicStroke(2F));
-//				g2D.drawRoundRect(cardPos[i*2].x-2, cardPos[i*2].y-2, 59, 64, 10, 10);
-//				
-//				g.setColor(Color.black);
-//				g2D.setStroke(new BasicStroke(4F));
-//				g2D.drawRoundRect(cardPos[i*2].x, cardPos[i*2].y, 55, 60, 10, 10);
-				
 				g2D.setStroke(new BasicStroke(1F));
 				g.setColor(Color.black);
 			}
@@ -505,6 +489,38 @@ public class TableView extends JPanel implements MouseInputListener,
 				g.drawImage(getCardImage(table.getBoard()[i]), 284 + i * 44,
 						105, 44, 60, null);
 			}
+//			if(!table.getState().get(3).isEmpty()){
+//				g.setFont(g.getFont().deriveFont(Font.BOLD,15));
+//				g.setColor(Color.yellow);
+//				Graphics2D g2=(Graphics2D)g;
+//				g2.setStroke(new BasicStroke(10F));
+//		
+//				for(int i=0, winners=0;i<table.getState().get(3).size();i++){
+//					Action a=table.getState().get(3).get(i);
+//					if(a.action==7){
+//					//Graphics2D g2=(Graphics2D)g;
+//					//g.setColor(Color.red);
+//					//g2.setStroke(new BasicStroke(10F));
+//					
+//					g.drawString(table.getState().get(3).get(i).string, 160, 230+15*winners);
+//					g2.drawRoundRect(cardPos[a.player.getSeatIndex()*2].x-4
+//							, cardPos[a.player.getSeatIndex()*2].y-4, 62, 67, 10, 10);
+//					
+//					g.setColor(Color.black);
+//					g.setFont(g.getFont().deriveFont(Font.BOLD,12));
+//					g.drawString(a.player.getName(), sPos[a.player.getSeatIndex()].x,
+//							sPos[a.player.getSeatIndex()].y);
+//					
+//					g.setFont(g.getFont().deriveFont(Font.BOLD,15));
+//					g.setColor(Color.yellow);
+//					winners++;
+//					}
+//				}
+//				g.setFont(g.getFont().deriveFont(12));
+//				g2.setStroke(new BasicStroke(1F));
+//			}
+			
+			
 			break;
 
 		}

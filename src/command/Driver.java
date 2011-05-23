@@ -17,74 +17,41 @@ public class Driver {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-//		Deck d=new Deck();
-//		d.p();
-//		d.shuffle();
-//		d.p();
-		//int[] a={13,14,44,45,9};
 		Table t=new Table();
+	
+		t.addPlayer(new Player("Michelangelo",t.getDefaultStackSize), 3);
+		t.getSeats()[2].addAIUnit(new PotButtonMasher(t,t.getSeats()[2],100));
 		
-//		Hand h = t.boardToHand(a);
-//		HandEvaluator he = new HandEvaluator();
-//		int bestHand = -1;
-//
-//			System.out.println(
-//				he.rankHand(new Card(51),
-//						new Card(38), h));
-//			
-//			System.out.println(
-//					he.rankHand(new Card(50),
-//							new Card(37), h));
-		
-		
-//		Hand tmpHand=new Hand();
-//		int[] board={33,34,35,42,3};
-//		tmpHand.addCard(new Card(38));
-//		tmpHand.addCard(new Card(51));
-//		for(int a=0;a<5;a++){
-//			tmpHand.addCard(new Card(board[a]));
-//		}
-//		System.out.println(HandEvaluator.nameHand(tmpHand));
-		
-		
-		
-		
-		
-		
-		t.addPlayer(new Player("Connor",t.getDefaultStackSize), 3);
-		t.getSeats()[2].addAIUnit(new Rote1(t,t.getSeats()[2],100));
-		
-		t.addPlayer(new Player("Forrest",t.getDefaultStackSize), 1);
+		t.addPlayer(new Player("April",t.getDefaultStackSize), 1);
 		t.getSeats()[0].addAIUnit(new PotButtonMasher(t,t.getSeats()[0],100));
 		
-		t.addPlayer(new Player("Alexa",t.getDefaultStackSize), 2);
+		t.addPlayer(new Player("Donatello",t.getDefaultStackSize), 2);
 		t.getSeats()[1].addAIUnit(new PotButtonMasher(t,t.getSeats()[1],100));
 		
-		t.addPlayer(new Player("Prometheus",t.getDefaultStackSize), 4);
+		t.addPlayer(new Player("Rocksteady",t.getDefaultStackSize), 4);
 		t.getSeats()[3].addAIUnit(new PotButtonMasher(t,t.getSeats()[3],100));
 		
-		t.addPlayer(new Player("Corey",t.getDefaultStackSize), 5);
+		t.addPlayer(new Player("Splinter",t.getDefaultStackSize), 5);
 		t.getSeats()[4].addAIUnit(new PotButtonMasher(t,t.getSeats()[4],100));
 		
-		t.addPlayer(new Player("Rani",t.getDefaultStackSize), 6);
+		t.addPlayer(new Player("Shredder",t.getDefaultStackSize), 6);
 		t.getSeats()[5].addAIUnit(new PotButtonMasher(t,t.getSeats()[5],100));
 		
-		t.addPlayer(new Player("Bob",t.getDefaultStackSize), 7);
+		t.addPlayer(new Player("Raphael",t.getDefaultStackSize), 7);
 		t.getSeats()[6].addAIUnit(new PotButtonMasher(t,t.getSeats()[6],100));
 		
-		t.addPlayer(new Player("Turner",t.getDefaultStackSize), 8);
-		t.getSeats()[7].addAIUnit(new PotButtonMasher(t,t.getSeats()[7],100));
+		t.addPlayer(new Player("Leonardo",t.getDefaultStackSize), 8);
+		t.getSeats()[7].addAIUnit(new Rote1(t,t.getSeats()[7],100));
 		
-		t.addPlayer(new Player("Amy",t.getDefaultStackSize), 9);
+		t.addPlayer(new Player("Krang",t.getDefaultStackSize), 9);
 		t.getSeats()[8].addAIUnit(new PotButtonMasher(t,t.getSeats()[8],100));
 		
-		t.addPlayer(new Player("Ben Franklin",t.getDefaultStackSize), 10);
+		t.addPlayer(new Player("Bebop",t.getDefaultStackSize), 10);
 		t.getSeats()[9].addAIUnit(new PotButtonMasher(t,t.getSeats()[9],100));
-		//t.playHand();
 		
 		long l=System.nanoTime();
-		//t.run(100000);
-		t.simulation(500);
+		t.run(100000);
+		//t.simulation(500);
 		System.out.println((System.nanoTime()-l)/1000000000+" seconds");
 	}
 

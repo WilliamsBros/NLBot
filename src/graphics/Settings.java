@@ -68,7 +68,7 @@ ChangeListener,PropertyChangeListener{
 
 		//Turn on labels at major tick marks.
 		//sleep.setMajorTickSpacing(10);
-		//sleep.setMinorTickSpacing(1);
+		sleep.setMinorTickSpacing(10);
 		//maxCreatures.setBounds(100, 100, 100, 20);
 		//maxCreatures.setPreferredSize(new Dimension(20,300));
 		sleep.setPaintTicks(true);

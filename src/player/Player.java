@@ -28,6 +28,7 @@ public class Player {
 	private String name;
 	private double stack;
 	private Table table;
+	private int seatIndex;
 	private Boolean isLive = false;
 	private Hole hand = new Hole();
 	boolean isSittingOut;
@@ -76,9 +77,17 @@ public class Player {
 		while(action==-1 ||amount==-1)
 			{
 			
-			try {
-				Thread.sleep(pushed);
 			
+			
+			try {
+				if(autonomous){
+				Thread.sleep(pushed*4);
+				}
+				
+				else{
+					Thread.sleep(10);
+				}
+					
 				
 			
 //				if(autonomous && !brain.sentient()){
@@ -197,12 +206,16 @@ public class Player {
 		stack += d;
 	}
 
-	public void sit(Table t) {
+	public void sit(Table t, int i) {
 		table = t;
+		seatIndex=i;
 		pushed=t.sleep;
 		brain=new Brain(table);
 	}
 
+	public int getSeatIndex(){
+		return seatIndex;
+	}
 	public boolean isLive() {
 		return isLive;
 	}
