@@ -24,6 +24,7 @@ public class Player {
 	double lifetimeWinnings=0;
 	double stackAtStartOfHand;
 	
+	private boolean cardsFaceDown=false;
 	public int pushed;
 	private String name;
 	private double stack;
@@ -318,5 +319,14 @@ public class Player {
 	public void setStartingStack(double d) {
 		stackAtStartOfHand=d;
 		
+	}
+
+	public boolean isHidden() {
+		// TODO Auto-generated method stub
+		return cardsFaceDown;
+	}
+	
+	public void setCardsHidden(boolean b){
+		cardsFaceDown=b;
 	}
 }

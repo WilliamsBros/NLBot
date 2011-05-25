@@ -42,7 +42,7 @@ public class Table {
 	boolean actionComplete;
 	public boolean bbActsLast = true;
 	public int livePlayers;
-	int playerCount;
+	public int playerCount;
 	int lastAggressor;
 
 	public int playersAllin = 0;
@@ -149,6 +149,8 @@ public class Table {
 
 	// Plays an entire hand - pre-flop, flop, turn, and river.
 	public void playHand() {
+		
+		
 		minRaise = bb;
 		resetTContributed();
 		playersAllin = 0;
@@ -178,6 +180,8 @@ public class Table {
 			}
 		}
 
+		
+		playerCount=livePlayers;
 		HH.get(0).add(generateStartingAction());
 
 		// System.out.println(sumAllMoney());
@@ -514,15 +518,11 @@ public class Table {
 
 		int plyrAtShowdown = 0;
 		for (int s = 0; s < hClasses.size(); s++) {
-			// System.out.println("hand rank class: "+s);
 			for (int b = 0; b < hClasses.get(s).size(); b++) {
 				plyrAtShowdown++;
-				// System.out.println(hClasses.get(s).get(b).getName()+
-				// " hand rank: "+hClasses.get(s).get(b).handRank);
 			}
 		}
-		// System.out.println("livePlayers: "+livePlayers+" playersAtShowdown: "
-		// +plyrAtShowdown);
+
 
 		Hand tmpHand = new Hand();
 
@@ -535,35 +535,19 @@ public class Table {
 				for (int m = 0; m < hClasses.get(n).size(); m++) {
 					if (frstPlyrAmt > hClasses.get(n).get(m).getTContributed()) {
 
-						// System.out.println(hClasses.get(n).get(m).getName()
-						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
-						// +", stack: "+hClasses.get(n).get(m).getStack());
-
 						pt = pt + hClasses.get(n).get(m).getTContributed();
 						hClasses.get(n).get(m).setTContributed(
 								-hClasses.get(n).get(m).getTContributed());
 
-						// System.out.println(hClasses.get(n).get(m).getName()
-						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
-						// +", stack: "+hClasses.get(n).get(m).getStack());
-						// System.out.println(sumAllMoney());
 					} else {
-						// System.out.println(hClasses.get(n).get(m).getName()
-						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
-						// +", stack: "+hClasses.get(n).get(m).getStack());
 
 						pt = pt + frstPlyrAmt;
 						hClasses.get(n).get(m).setTContributed(-frstPlyrAmt);
 
-						// System.out.println(hClasses.get(n).get(m).getName()
-						// +" total contributed: "+hClasses.get(n).get(m).getTContributed()
-						// +", stack: "+hClasses.get(n).get(m).getStack());
-						// System.out.println(sumAllMoney());
 					}
 
 				}
 
-				// System.out.println();
 			}
 
 			for (int l = 0; l < 10; l++) {
@@ -571,30 +555,13 @@ public class Table {
 						&& seats[l].getTContributed() > 0) {
 					if (frstPlyrAmt > seats[l].getTContributed()) {
 
-						// System.out.println(seats[l].getName()
-						// +" total contributed: "+seats[l].getTContributed()
-						// +", stack: "+seats[l].getStack());
-
 						pt = pt + seats[l].getTContributed();
 						seats[l].setTContributed(-seats[l].getTContributed());
-						//						
-						// System.out.println(seats[l].getName()
-						// +" total contributed: "+seats[l].getTContributed()
-						// +", stack: "+seats[l].getStack());
 
-						// System.out.println(sumAllMoney());
 					} else {
-						// System.out.println(seats[l].getName()
-						// +" total contributed: "+seats[l].getTContributed()
-						// +", stack: "+seats[l].getStack());
 
 						pt = pt + frstPlyrAmt;
 						seats[l].setTContributed(-frstPlyrAmt);
-
-						// System.out.println(seats[l].getName()
-						// +" total contributed: "+seats[l].getTContributed()
-						// +", stack: "+seats[l].getStack());
-						// System.out.println(sumAllMoney());
 					}
 				}
 			}
@@ -606,18 +573,12 @@ public class Table {
 						pt / (hClasses.lastElement().size()));
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0)
 						.getHand().cardA));
-				// System.out.println(new
-				// Card(hClasses.lastElement().get(0).getHand().cardA).toString());
 				tmpHand.addCard(new Card(hClasses.lastElement().get(0)
 						.getHand().cardB));
-				// System.out.println(new
-				// Card(hClasses.lastElement().get(0).getHand().cardB).toString());
 				for (int a = 0; a < 5; a++) {
 					tmpHand.addCard(new Card(board[a]));
-					// System.out.println(new Card(board[a]).toString());
 				}
 
-				// TODO when splitting, prints out same person multiple times
 				if (pt > 0) {
 					HH.get(round).add(
 							new Action(hClasses.lastElement().get(0), 7, pt
@@ -649,6 +610,15 @@ public class Table {
 		try {
 
 			if (sleep > 0) {
+				
+				int[] hidden=new int[10];
+				for(int k=0;k<10;k++){
+					if(seats[k].isHidden()){
+						hidden[k]=1;
+						seats[k].setCardsHidden(false);
+					}
+				}
+				view.repaint();
 				for (int j = 0; j < 6; j++) {
 
 					Thread.sleep(1000);
@@ -683,6 +653,12 @@ public class Table {
 					}
 					g.setFont(new Font("Lucida Sans", Font.BOLD, 12));
 					g2.setStroke(new BasicStroke(1F));
+					
+					for(int k=0;k<10;k++){
+						if(hidden[k]==1){
+							seats[k].setCardsHidden(true);
+						}
+					}
 
 				}
 			} else {

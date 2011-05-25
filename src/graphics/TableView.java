@@ -62,10 +62,12 @@ public class TableView extends JPanel implements MouseInputListener,
 	public JButton[] reload=new JButton[10]; 
 	public JCheckBoxMenuItem allAut=new JCheckBoxMenuItem("Autonomous");
 	
+	
 	public JCheckBox[] autonomous=new JCheckBox[10]; 
 	NumberFormat format1=NumberFormat.getCurrencyInstance();
 	BufferedImage tbl;
 	BufferedImage cardImgs;
+	BufferedImage cardBack;
 	public Point[] sPos = new Point[10];
 	public Point[] cardPos = new Point[20];
 
@@ -83,14 +85,16 @@ public class TableView extends JPanel implements MouseInputListener,
 	public TableView(Table t) {
 		try {
 			
+			//this.getToolkit().g
 			
+			//getClass().getgetResource(name)
 			ClassLoader cldr = TableView.class.getClassLoader();
 			
 //no jar			
-			tbl = ImageIO.read(cldr.getResource("\\graphics\\Texas_Holdem_Poker_Table.jpg"));
-			cardImgs = ImageIO.read(cldr.getResource("\\graphics\\clip_image004_2.gif"));
-			chips = ImageIO.read(cldr.getResource("\\graphics\\Chips3.png"));	
-			
+			tbl = ImageIO.read(cldr.getResource("graphics/Texas_Holdem_Poker_Table.jpg"));
+			cardImgs = ImageIO.read(cldr.getResource("graphics/clip_image004_2.gif"));
+			chips = ImageIO.read(cldr.getResource("graphics/Chips3.png"));	
+			cardBack=ImageIO.read(cldr.getResource("graphics/cardBack.jpeg")).getSubimage(7,28, 57, 81);
 			
 			
 //for jar windows
@@ -126,6 +130,7 @@ public class TableView extends JPanel implements MouseInputListener,
 		//frame.setExtendedState();
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(this);
+		this.addMouseListener(this);
 		
 		fold.addActionListener(this);
 		fold.setFont(new Font("Lucida Sans",Font.BOLD,fontSize));
@@ -376,7 +381,9 @@ public class TableView extends JPanel implements MouseInputListener,
 					}
 					
 					
-				} else {
+				} 
+				
+				else if(!table.getSeats()[i].isHidden()){
 					if (i > 3 && i < 8) {
 						g
 								.drawImage(getCardImage(table.getSeats()[i]
@@ -440,7 +447,41 @@ public class TableView extends JPanel implements MouseInputListener,
 //					g.drawString(f.format(table.getSeats()[i]
 //					           .getTContributed()), sPos[i].x, sPos[i].y + 45);
 				}
-			} else if (table.getSeats()[i] == null) {
+				
+				else{
+					
+					g.drawImage(cardBack, cardPos[i*2].x,
+								cardPos[i*2].y, 44, 60, null);
+					g.drawImage(cardBack, cardPos[i*2+1].x ,
+							 cardPos[i*2+1].y, 44, 60, null);
+					
+					if (table.getSeats()[i].getContributed() > 0) {
+						for (int q = 14, count = 0; q >= 0; q--) {
+							if (table.getSeats()[i].stackChips[q] != 0) {
+								for (int z = 0; z < table.getSeats()[i].stackChips[q]; z++) {
+									count++;
+									g.drawImage(getChipImg(q), chipPos[i].x,
+											chipPos[i].y - count * 4, 29, 23,
+											null);
+								}
+
+							}
+						}
+					}
+					
+					g.drawString(table.getSeats()[i].getName(), sPos[i].x,
+							sPos[i].y);
+
+					g.drawString(format1.format(table.getSeats()[i].getStack()),
+							sPos[i].x, sPos[i].y + 15);
+					g.drawString(format1.format(table.getSeats()[i]
+							.getContributed()), sPos[i].x, sPos[i].y + 30);
+					
+				}
+				
+			} 
+			
+			else if (table.getSeats()[i] == null) {
 				g.drawString("empty", sPos[i].x, sPos[i].y);
 			}
 		}
@@ -538,7 +579,146 @@ public class TableView extends JPanel implements MouseInputListener,
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		Point p=arg0.getPoint();
+		if(p.x>=cardPos[0].x && p.x<(cardPos[0].x+55)
+				&& p.y>=cardPos[0].y && p.y<=(cardPos[0].y+60) 
+				&& table.getSeats()[0].isLive()){
+			if(table.getSeats()[0].isHidden()){
+				table.getSeats()[0].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[0].setCardsHidden(true);
+				
+			}
+			repaint();
+		}
+		else if(p.x>=cardPos[2].x && p.x<(cardPos[2].x+55)
+				&& p.y>=cardPos[2].y && p.y<=(cardPos[2].y+60) 
+				&& table.getSeats()[1].isLive()){
+			
+			if(table.getSeats()[1].isHidden()){
+				table.getSeats()[1].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[1].setCardsHidden(true);
+				
+			}
+			repaint();
+		}	
+		
+		else if(p.x>=cardPos[4].x && p.x<(cardPos[4].x+55)
+				&& p.y>=cardPos[4].y && p.y<=(cardPos[4].y+60) 
+				&& table.getSeats()[2].isLive()){
+			
+			if(table.getSeats()[2].isHidden()){
+				table.getSeats()[2].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[2].setCardsHidden(true);
+				
+			}
+			repaint();
+		}		
+		
+		else if(p.x>=cardPos[6].x && p.x<(cardPos[6].x+55)
+				&& p.y>=cardPos[6].y && p.y<=(cardPos[6].y+60) 
+				&& table.getSeats()[3].isLive()){
+			if(table.getSeats()[3].isHidden()){
+				table.getSeats()[3].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[3].setCardsHidden(true);
+				
+			}
+			repaint();
+		}		
+		
+		else if(p.x>=cardPos[8].x && p.x<(cardPos[8].x+55)
+				&& p.y>=cardPos[8].y && p.y<=(cardPos[8].y+60) 
+				&& table.getSeats()[4].isLive()){
+			
+			if(table.getSeats()[4].isHidden()){
+				table.getSeats()[4].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[4].setCardsHidden(true);
+				
+			}
+			repaint();
+		}		
+		
+		else if(p.x>=cardPos[10].x && p.x<(cardPos[10].x+55)
+				&& p.y>=cardPos[10].y && p.y<=(cardPos[10].y+60) 
+				&& table.getSeats()[5].isLive()){
+			
+			if(table.getSeats()[5].isHidden()){
+				table.getSeats()[5].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[5].setCardsHidden(true);
+				
+			}
+			repaint();
+		}		
+		
+		else if(p.x>=cardPos[12].x && p.x<(cardPos[12].x+55)
+				&& p.y>=cardPos[12].y && p.y<=(cardPos[12].y+60) 
+				&& table.getSeats()[6].isLive()){
+			
+			if(table.getSeats()[6].isHidden()){
+				table.getSeats()[6].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[6].setCardsHidden(true);
+				
+			}
+			repaint();
+			
+		}		
+		
+		else if(p.x>=cardPos[14].x && p.x<(cardPos[14].x+55)
+				&& p.y>=cardPos[14].y && p.y<=(cardPos[14].y+60) 
+				&& table.getSeats()[7].isLive()){
+			
+			if(table.getSeats()[7].isHidden()){
+				table.getSeats()[7].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[7].setCardsHidden(true);
+				
+			}
+			repaint();
+			
+		}		
+		
+		else if(p.x>=cardPos[16].x && p.x<(cardPos[16].x+55)
+				&& p.y>=cardPos[16].y && p.y<=(cardPos[16].y+60) 
+				&& table.getSeats()[8].isLive()){
+			
+			if(table.getSeats()[8].isHidden()){
+				table.getSeats()[8].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[8].setCardsHidden(true);
+				
+			}
+			repaint();
+		}		
+		
+		else if(p.x>=cardPos[18].x && p.x<(cardPos[18].x+55)
+				&& p.y>=cardPos[18].y && p.y<=(cardPos[18].y+60) 
+				&& table.getSeats()[9].isLive()){
+			
+			if(table.getSeats()[9].isHidden()){
+				table.getSeats()[9].setCardsHidden(false);
+			}
+			else {
+				table.getSeats()[9].setCardsHidden(true);
+				
+			}
+			repaint();
+			
+		}		
 
 	}
 

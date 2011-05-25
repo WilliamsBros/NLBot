@@ -18,11 +18,22 @@ public class Rote2 extends AIUnit {
 	public Rote2(Table t, Player p, int w) {
 		super(t, p, w);
 		// TODO Auto-generated constructor stub
+		
+		
+		int[] playersStartingHand=new int[10];
+		
 	}
 	
 	public Action getAction(){
 		cardA=I.getBrain().pCardA;
 		cardB=I.getBrain().pCardB;
+		
+		
+		if(table.getRound()==0){
+			
+		}
+		
+		
 		
 		return null;
 	}
