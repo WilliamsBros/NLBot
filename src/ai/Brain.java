@@ -26,10 +26,14 @@ public class Brain {
 	private int lowestHoleCard;
 	private boolean connectedHoleCards;
 	private boolean suitedConnectedHoleCards;
+	public int raises;
+	public Vector<Vector<Action>> history;
+	public int[] raisesByRound=new int[4];
 	
 	
 	public Brain(Table t){
 		table=t;
+		history=table.getState();
 		
 	}
 	
@@ -53,6 +57,13 @@ public class Brain {
 		
 		lowestHoleCard=pCardA.getRank()>=pCardB.getRank()
 					? pCardA.getRank(): pCardB.getRank();
+					
+		for(int i=0; i<history.get(table.getRound()).size(); i++){
+			if(history.get(table.getRound()).get(i).action==3 
+					||history.get(table.getRound()).get(i).action==2){
+				raisesByRound[table.getRound()]++;
+			}
+		}
 					
 		
 	}
@@ -189,4 +200,5 @@ public boolean isSuited(){
 	public boolean sentient(){
 		return units.size()>0;
 	}
+	
 }
